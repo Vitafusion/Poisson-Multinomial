@@ -1,0 +1,228 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Akter%
+, Moon%
+\BCBL {}\ \BBA {} Kwon%
+}{%
+Akter%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2019}}%
+}]{%
+akter2019double}
+\APACinsertmetastar {%
+akter2019double}%
+\begin{APACrefauthors}%
+Akter, L\BPBI A.%
+, Moon, I.%
+\BCBL {}\ \BBA {} Kwon, G\BHBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Double random phase encoding with a Poisson-multinomial
+  distribution for efficient colorful image authentication} {Double random
+  phase encoding with a poisson-multinomial distribution for efficient colorful
+  image authentication}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Multimedia Tools and
+  Applications}{78}{11}{14613--14632}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Cheng%
+, Diakonikolas%
+\BCBL {}\ \BBA {} Stewart%
+}{%
+Cheng%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2017}}%
+}]{%
+Cheng2017PlayingAG}
+\APACinsertmetastar {%
+Cheng2017PlayingAG}%
+\begin{APACrefauthors}%
+Cheng, Y.%
+, Diakonikolas, I.%
+\BCBL {}\ \BBA {} Stewart, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Playing Anonymous Games using Simple Strategies}
+  {Playing anonymous games using simple strategies}.{\BBCQ}
+\newblock
+\BIn{} \APACrefbtitle {SODA.} {Soda.}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Daskalakis%
+, Kamath%
+\BCBL {}\ \BBA {} Tzamos%
+}{%
+Daskalakis%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+Daskalakis2015OnTS}
+\APACinsertmetastar {%
+Daskalakis2015OnTS}%
+\begin{APACrefauthors}%
+Daskalakis, C.%
+, Kamath, G.%
+\BCBL {}\ \BBA {} Tzamos, C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {On the Structure, Covering, and Learning of Poisson
+  Multinomial Distributions} {On the structure, covering, and learning of
+  poisson multinomial distributions}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{2015 IEEE 56th Annual Symposium on Foundations of
+  Computer Science}{}{}{1203-1217}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Diakonikolas%
+, Kane%
+\BCBL {}\ \BBA {} Stewart%
+}{%
+Diakonikolas%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2016}}%
+}]{%
+diakonikolas2016fourier}
+\APACinsertmetastar {%
+diakonikolas2016fourier}%
+\begin{APACrefauthors}%
+Diakonikolas, I.%
+, Kane, D\BPBI M.%
+\BCBL {}\ \BBA {} Stewart, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2016}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The fourier transform of poisson multinomial
+  distributions and its algorithmic applications} {The fourier transform of
+  poisson multinomial distributions and its algorithmic applications}.{\BBCQ}
+\newblock
+\BIn{} \APACrefbtitle {Proceedings of the forty-eighth annual ACM symposium on
+  Theory of Computing} {Proceedings of the forty-eighth annual acm symposium on
+  theory of computing}\ (\BPGS\ 1060--1073).
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Hong%
+}{%
+Hong%
+}{%
+{\protect \APACyear {2013}}%
+{\protect \APACexlab {{\protect \BCnt {1}}}}}]{%
+hong2013computing}
+\APACinsertmetastar {%
+hong2013computing}%
+\begin{APACrefauthors}%
+Hong, Y.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2013{\protect \BCnt {1}}}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {On computing the distribution function for the Poisson
+  binomial distribution} {On computing the distribution function for the
+  poisson binomial distribution}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Computational Statistics \& Data
+  Analysis}{59}{}{41--51}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Hong%
+}{%
+Hong%
+}{%
+{\protect \APACyear {2013}}%
+{\protect \APACexlab {{\protect \BCnt {2}}}}}]{%
+HONG201341}
+\APACinsertmetastar {%
+HONG201341}%
+\begin{APACrefauthors}%
+Hong, Y.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2013{\protect \BCnt {2}}}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {On computing the distribution function for the Poisson
+  binomial distribution} {On computing the distribution function for the
+  poisson binomial distribution}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Computational Statistics \& Data
+  Analysis}{59}{}{41-51}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0167947312003568}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.csda.2012.10.006}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Kamath%
+}{%
+Kamath%
+}{%
+{\protect \APACyear {2014}}%
+}]{%
+kamath2014learning}
+\APACinsertmetastar {%
+kamath2014learning}%
+\begin{APACrefauthors}%
+Kamath, G\BPBI G\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2014}.
+\newblock
+\APACrefbtitle {On learning and covering structured distributions} {On learning
+  and covering structured distributions}.
+\newblock
+\BUPhD, Massachusetts Institute of Technology.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Zhang%
+, Hong%
+\BCBL {}\ \BBA {} Balakrishnan%
+}{%
+Zhang%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2018}}%
+}]{%
+zhang2018generalized}
+\APACinsertmetastar {%
+zhang2018generalized}%
+\begin{APACrefauthors}%
+Zhang, M.%
+, Hong, Y.%
+\BCBL {}\ \BBA {} Balakrishnan, N.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The generalized Poisson-binomial distribution and the
+  computation of its distribution function} {The generalized poisson-binomial
+  distribution and the computation of its distribution function}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Statistical Computation and
+  Simulation}{88}{8}{1515--1527}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
