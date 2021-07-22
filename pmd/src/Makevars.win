@@ -1,0 +1,3 @@
+PKG_CPPFLAGS=-I$(LIB_FFTW)/include -I$(GSL_CFLAGS)/include
+PKG_LIBS=-L$(LIB_FFTW)/lib -l fftw3 -L$(GSL_LIBS)/lib -lgsl -lgslcblas
+
