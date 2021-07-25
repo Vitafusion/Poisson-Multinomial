@@ -67,7 +67,8 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
   int mm=pp.n_cols;  
   int nn=pp.n_rows;
   
-  int nn_vec_a[mm-1] = {0};
+  //int nn_vec_a[mm-1] = {0};
+  int* nn_vec_a = new int[mm-1];
   
   fftw_complex *in, *out;
   int i, j, k;
