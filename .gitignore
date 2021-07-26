@@ -1,4 +1,11 @@
 .Rproj.user
-.Rhistory
-.RData
-.Ruserdata
+*.Rhistory
+*.RData
+*.Ruserdata
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.synctex
+
