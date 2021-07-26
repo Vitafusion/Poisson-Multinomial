@@ -1,8 +1,12 @@
 #include <RcppArmadillo.h>
 #include <iostream>
 #include <Rcpp.h>
-#include <complex.h>
+//#include <complex.h>
 #include <fftw3.h>
+
+#define REAL 0
+#define IMAG 1
+#define PI2 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803482534211706798214808651e+00
 
 //using namespace Rcpp;
 //using namespace std;
@@ -92,13 +96,15 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
   in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nt); 
   out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nt);  
   
-  ww=2*PI/(n+1);
+  ww=2*PI2/(n+1);
 
   //Rprintf("ww %lf \n", ww);
   
   for(k=0; k<nt; k++)
   {
-    qval=0.0 + 0.0 * I;
+    //qval=0.0 + 0.0 * I;
+    qval=arma::cx_double(0.0, 0.0); 
+
 
     l_vec_compute_arma(k, l_vec, cn_vec, m);
     
@@ -109,7 +115,10 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
       
     for(i=0; i<n; i++)
     {
-      ctmp=0.0 + 0.0 * I; 
+      //ctmp=0.0 + 0.0 * I;
+      
+      ctmp=arma::cx_double(0.0, 0.0);
+       
       
       for(j=0; j<m-1; j++)
       {
@@ -117,11 +126,16 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
 
         //printf("pij: %lf, l_vec[j], %u, ww, %lf, \n", pij, l_vec[j], ww);
         
-        ctmp1=0.0+l_vec(j)*ww*I;
+        //ctmp1=0.0+l_vec(j)*ww*I;
+        
+        ctmp1=arma::cx_double(0.0, l_vec(j)*ww);
         
         //printf("ctmp1: %lf +%lf*i\n", creal(ctmp1), cimag(ctmp1));
 
-        a1=pij+0.0*I;
+        //a1=pij+0.0*I;
+        
+        a1=arma::cx_double(pij, 0.0);
+        
         a2=exp(ctmp1);
         //printf("a1: %lf +%lf*i\n", creal(a1), cimag(a1));
         //printf("a2: %lf +%lf*i\n", creal(a2), cimag(a2));
@@ -142,8 +156,8 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
     
     qval=exp(qval);
     
-    in[k][0]= real(qval);
-    in[k][1]= imag(qval);
+    in[k][REAL]= real(qval);
+    in[k][IMAG]= imag(qval);
     
     //printf("qval: %lf +%lf*i\n", creal(qval), cimag(qval));
     //printf("in[k]: %lf +%lf*i\n", creal(in[k]), cimag(in[k]));
@@ -159,7 +173,7 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
   
   for(k=0; k<nt; k++)
   {
-    tmp=out[k][0];
+    tmp=out[k][REAL];
     res[k]=tmp/con;
     //printf("out[k]: %lf +%lf*i\n", creal(out[k]), cimag(out[k]));
   }
