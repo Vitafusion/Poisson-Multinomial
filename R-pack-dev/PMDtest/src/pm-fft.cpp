@@ -168,6 +168,8 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
   fftw_free(in);
   fftw_free(out);  
   
+  delete[] nn_vec_a;
+  
   return res;
 }
 
