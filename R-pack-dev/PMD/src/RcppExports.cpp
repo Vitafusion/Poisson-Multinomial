@@ -13,7 +13,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // mod
 int mod(int a, int n);
-RcppExport SEXP _PMDtest_mod(SEXP aSEXP, SEXP nSEXP) {
+RcppExport SEXP _PMD_mod(SEXP aSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,7 @@ END_RCPP
 }
 // l_vec_compute_arma
 void l_vec_compute_arma(int k, arma::vec& l_vec, arma::vec& cn_vec, int m);
-RcppExport SEXP _PMDtest_l_vec_compute_arma(SEXP kSEXP, SEXP l_vecSEXP, SEXP cn_vecSEXP, SEXP mSEXP) {
+RcppExport SEXP _PMD_l_vec_compute_arma(SEXP kSEXP, SEXP l_vecSEXP, SEXP cn_vecSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
@@ -38,7 +38,7 @@ END_RCPP
 }
 // pmn_mdfft_arma
 arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_vec, arma::vec cn_vec);
-RcppExport SEXP _PMDtest_pmn_mdfft_arma(SEXP nntSEXP, SEXP ppSEXP, SEXP nn_vecSEXP, SEXP l_vecSEXP, SEXP cn_vecSEXP) {
+RcppExport SEXP _PMD_pmn_mdfft_arma(SEXP nntSEXP, SEXP ppSEXP, SEXP nn_vecSEXP, SEXP l_vecSEXP, SEXP cn_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -53,13 +53,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_PMDtest_mod", (DL_FUNC) &_PMDtest_mod, 2},
-    {"_PMDtest_l_vec_compute_arma", (DL_FUNC) &_PMDtest_l_vec_compute_arma, 4},
-    {"_PMDtest_pmn_mdfft_arma", (DL_FUNC) &_PMDtest_pmn_mdfft_arma, 5},
+    {"_PMD_mod", (DL_FUNC) &_PMD_mod, 2},
+    {"_PMD_l_vec_compute_arma", (DL_FUNC) &_PMD_l_vec_compute_arma, 4},
+    {"_PMD_pmn_mdfft_arma", (DL_FUNC) &_PMD_pmn_mdfft_arma, 5},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_PMDtest(DllInfo *dll) {
+RcppExport void R_init_PMD(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

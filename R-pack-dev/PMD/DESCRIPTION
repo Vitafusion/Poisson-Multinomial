@@ -1,4 +1,4 @@
-Package: PMDtest
+Package: PMD
 Type: Package
 Title: What the package does (short line)
 Version: 1.0
@@ -6,6 +6,11 @@ Date: 2021-07-24
 Author: Who wrote it
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
-Imports: Rcpp (>= 1.0.7)
+License: GPL (>= 2)
+Encoding: UTF-8
+Imports: 
+    mvtnorm,
+    Rcpp
 LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.1.1
+

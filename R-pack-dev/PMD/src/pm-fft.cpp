@@ -13,7 +13,10 @@
 //using namespace arma;
 
 //[[Rcpp::depends(RcppArmadillo)]]
-
+//' Mod
+//' @param a integer
+//' @param n integer
+//' @return a - floor(a/n)*n
 //[[Rcpp::export]]
 int mod(int a, int n)
 {
@@ -21,7 +24,11 @@ int mod(int a, int n)
 }  
 
 //*****************************************************************************//
-
+//' l.vec.cmpt
+//' @param k interger
+//' @param l_vec vector
+//' @param cn_vec vector
+//' @param m integer
 //[[Rcpp::export]]
 void l_vec_compute_arma(int k, arma::vec& l_vec, arma::vec& cn_vec, int m)
 {
@@ -62,7 +69,13 @@ arma::vec test(int mm, arma::vec nn_vec)
 }  
 */
 
-
+//' mdfft method
+//' @param nnt interger
+//' @param pp matrix
+//' @param nn_vec vector
+//' @param l_vec vector
+//' @param cn_vec vector
+//' @return result
 //[[Rcpp::export]]  
 arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_vec, arma::vec cn_vec)
 {  
