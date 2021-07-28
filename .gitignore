@@ -4,6 +4,8 @@
 *.Ruserdata
 *.aux
 *.bbl
+.DS_Store
+
 *.blg
 *.dvi
 *.log
