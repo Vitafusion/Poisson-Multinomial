@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{l.vec.compute}
 \alias{l.vec.compute}
-\title{Title}
+\title{l.vec}
 \usage{
 l.vec.compute(k, cn.vec, m)
 }
@@ -17,5 +17,5 @@ l.vec.compute(k, cn.vec, m)
 A vector, which will be used in other functions
 }
 \description{
-Title
+l.vec
 }

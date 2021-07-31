@@ -1,4 +1,5 @@
 useDynLib(PMD, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
+importFrom("stats", "runif")
 exportPattern("^[[:alpha:]]+")
 

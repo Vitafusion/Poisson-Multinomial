@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{pmatrix}
 \alias{pmatrix}
-\title{Title}
+\title{pmatrix}
 \usage{
 pmatrix(n, m)
 }
@@ -15,9 +15,9 @@ pmatrix(n, m)
 a randomly generated Poisson multinomial distribution probability matrix
 }
 \description{
-Title
+pmatrix
 }
 \examples{
-pmatrix(2,2)
-
+pp = pmatrix(2,2)
+pp
 }
