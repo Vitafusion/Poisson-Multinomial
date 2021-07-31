@@ -158,7 +158,7 @@ pmatrix = function(n,m){
 
 
 ########################################################################################
-#' cumulative probability function of PMN
+#' cumulative distribution function of PMN
 #'
 #' @param pp input matrix of probabilities
 #' @param x input vector
