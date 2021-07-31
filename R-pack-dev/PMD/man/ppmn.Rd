@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{ppmn}
 \alias{ppmn}
-\title{cumulative probability function of PMN}
+\title{cumulative distribution function of PMN}
 \usage{
 ppmn(pp, x, method = "DFT-CF", t = 1000)
 }
@@ -19,7 +19,7 @@ ppmn(pp, x, method = "DFT-CF", t = 1000)
 prob
 }
 \description{
-cumulative probability function of PMN
+cumulative distribution function of PMN
 }
 \examples{
 aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
