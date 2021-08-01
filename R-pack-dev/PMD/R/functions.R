@@ -255,6 +255,25 @@ ppmn = function(pp,x,method="DFT-CF",t=1000){
          })
   return(prob)
 }
+########################################################################################
+#' generate random number from PMD
+#'
+#' @param pp input matrix of probabilities
+#' @return the random number vector generated from PMD
+#' @examples
+#' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
+#' rpmd(pp)
+#' @export
+#'
+rpmd = function(pp){
+  if(any(pp<0)|any(pp>1)){
+    stop("invalid values in pp.")
+  }
+  
+  rnd = rpmd(pp)
+  
+  return(pnd)
+}
 
 ###############################################################################
 #' PMN density calculated by input vector
@@ -276,9 +295,9 @@ pmd.by.demands = function(x_vec,pp,t=1000){
     # if(sum(x_vec)!=nn)   stop("invalid x_vec.")
     res0=0
     #input simulation method here
-    
+    temp=pm_simulation_arma(pp, x_vec, t)
     #temp = .C("pmd_simulation_vec",as.double(res0), as.integer(nn), as.integer(mm), as.double(pp), as.integer(x_vec), as.double(t), PACKAGE = "poissonmulti")
-    #res0=round(temp[[1]],10)
+    res0=round(temp[[1]],10)
     return(res0)
 }
 
