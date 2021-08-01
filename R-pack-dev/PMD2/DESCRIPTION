@@ -1,0 +1,16 @@
+Package: PMD
+Type: Package
+Title: Poisson-Multinomial Density Function
+Version: 1.0
+Date: 2021-07-24
+Author: Yili Hong, Zhengzhi Lin, Yueyao Wang
+Maintainer: Yili Hong <yilihong@vt.edu>
+Description: Provide three method to calculate probability density function of Poisson-Multinomial distribution.
+License: GPL (>= 2)
+Encoding: UTF-8
+Imports: 
+    mvtnorm,
+    Rcpp
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.1.1
+
