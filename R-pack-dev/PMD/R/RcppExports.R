@@ -29,3 +29,48 @@ pmn_mdfft_arma <- function(nnt, pp, nn_vec, l_vec, cn_vec) {
     .Call(`_PMD_pmn_mdfft_arma`, nnt, pp, nn_vec, l_vec, cn_vec)
 }
 
+#' rmultinom_1 method
+#' @param size vector of sizes
+#' @param probs probability vector
+#' @param N number of samples
+#' @return outcome
+rmultinom_1 <- function(size, probs, N) {
+    .Call(`_PMD_rmultinom_1`, size, probs, N)
+}
+
+#' rmultinom
+#' @param n length of probability vector
+#' @param size vector of sizes
+#' @param probs probabilities
+#' @return sim simulation matrix
+rmultinom_rcpp <- function(n, size, probs) {
+    .Call(`_PMD_rmultinom_rcpp`, n, size, probs)
+}
+
+#' rpmn
+#' @param pp probability matrix
+#' @return finalres a sample of Poisson-Multinomial distribution given probability matrix pp.
+rpmd_arma <- function(pp) {
+    .Call(`_PMD_rpmd_arma`, pp)
+}
+
+#' pm_simulation
+#' @param pp probability matrix
+#' @param x_vec result vector
+#' @param t simulation time
+#' @return res probability of x_vec
+pm_simulation_arma <- function(pp, x_vec, t) {
+    .Call(`_PMD_pm_simulation_arma`, pp, x_vec, t)
+}
+
+#' pmn_simulation
+#' @param pp probability matrix
+#' @param nnt number of outcomes
+#' @param l_vec result vector
+#' @param cn_vec cn vector
+#' @param t simulation time
+#' @return res array of probabilities
+pmn_simulation_arma <- function(pp, nnt, l_vec, cn_vec, t) {
+    .Call(`_PMD_pmn_simulation_arma`, pp, nnt, l_vec, cn_vec, t)
+}
+

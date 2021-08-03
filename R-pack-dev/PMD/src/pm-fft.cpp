@@ -200,6 +200,152 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
   return res;
 }
 
+//' rmultinom_1 method
+//' @param size vector of sizes
+//' @param probs probability vector
+//' @param N number of samples
+//' @return outcome
+//[[Rcpp::export]]
+Rcpp::IntegerVector rmultinom_1(unsigned int &size,Rcpp:: NumericVector &probs, unsigned int &N) {
+    Rcpp::IntegerVector outcome(N);
+    rmultinom(size, probs.begin(), N, outcome.begin());
+    return outcome;
+}
+
+//' rmultinom
+//' @param n length of probability vector
+//' @param size vector of sizes
+//' @param probs probabilities
+//' @return sim simulation matrix
+//[[Rcpp::export]]
+Rcpp::IntegerMatrix rmultinom_rcpp(unsigned int &n, unsigned int &size, Rcpp::NumericVector &probs) {
+    unsigned int N = probs.length();
+    Rcpp::IntegerMatrix sim(N, n);
+    for (unsigned int i = 0; i < n; i++) {
+        sim(Rcpp::_,i) = rmultinom_1(size, probs, N);
+    }
+    return sim;
+}
+
+
+//' rpmn
+//' @param pp probability matrix
+//' @return finalres a sample of Poisson-Multinomial distribution given probability matrix pp.
+//[[Rcpp::export]]
+arma::vec rpmd_arma(arma::mat pp)
+{
+  int mm=pp.n_cols;
+  int nn=pp.n_rows;
+  int i;
+  
+  unsigned int n=1;
+  unsigned int size=1;
+  
+  arma::mat tmp(nn, mm, arma::fill::zeros);
+  
+  for(i=0;i<nn;i++){
+    Rcpp::NumericVector prob=Rcpp::wrap(pp.row(i));
+    
+    Rcpp::IntegerMatrix res=rmultinom_rcpp(n, size, prob);
+    /*tmp.row(i)=arma::conv_to<arma::rowvec>::from(res);*/
+
+    arma::mat xx = Rcpp::as<arma::vec>(res);
+    tmp.row(i)=xx.as_row();
+  
+  }
+  
+  arma::vec finalres(mm, arma::fill::zeros);
+  finalres=sum(tmp).as_col();
+  
+  return finalres;
+}
+
+//' pm_simulation
+//' @param pp probability matrix
+//' @param x_vec result vector
+//' @param t simulation time
+//' @return res probability of x_vec
+//[[Rcpp::export]]
+double pm_simulation_arma(arma::mat pp, arma::vec x_vec, int t)
+{
+    /*arma::vec res(nnt, arma::fill::zeros);*/
+    double res=0;
+    int mm=pp.n_cols;
+
+  int k, u;
+  double count;
+  
+
+  arma::mat sim(t,mm,arma::fill::zeros);
+  for(k=0;k<t;k++){
+    //arma::mat tmp(nn, mm, arma::fill::zeros);
+    //rpmd(pp).as_row().print();
+    sim.row(k)=rpmd_arma(pp).as_row();
+    //sim.row(k).print();
+  }
+
+
+
+    count=0;
+    for(u=0;u<t;u++){
+        if(all(sim.row(u)==x_vec.as_row())){
+          count++;
+          }
+    
+
+    }
+
+    res=count/t;
+
+
+    return res;
+}
+
+
+//' pmn_simulation
+//' @param pp probability matrix
+//' @param nnt number of outcomes
+//' @param l_vec result vector
+//' @param cn_vec cn vector
+//' @param t simulation time
+//' @return res array of probabilities
+//[[Rcpp::export]]
+arma::vec pmn_simulation_arma(arma::mat pp, int nnt, arma::vec l_vec, arma::vec cn_vec, int t){
+    arma::vec res(nnt, arma::fill::zeros);
+
+    int mm=pp.n_cols;
+    int nn=pp.n_rows;
+
+    int j, k;
+    int n, m, nt;
+    
+    nt=nnt;
+    n=nn;
+    m=mm;
+    
+    arma::vec x_vec(m, arma::fill::zeros);
+    
+    for(k=0; k<nt; k++)
+    {
+        l_vec_compute_arma(k, l_vec, cn_vec, m);
+       /* for (int i=0; i<m-1; i++) {
+            Rcpp::Rcout << l_vec(i)<<arma::endl;
+       }
+        Rcpp::Rcout <<"print x_vec" <<arma::endl; */
+        for (j=0; j<m-1; j++) {
+            x_vec(j) = l_vec(j);
+        }
+        x_vec(m-1)=n-sum(l_vec);
+        /* for(int i=0;i<m;i++){
+            Rcpp::Rcout << x_vec(i)<<arma::endl;
+        } */
+        res(k) = pm_simulation_arma(pp, x_vec, t);
+        
+    }
+    
+    return res;
+}
+
 
 
 

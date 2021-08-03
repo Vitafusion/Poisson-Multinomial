@@ -51,11 +51,81 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rmultinom_1
+Rcpp::IntegerVector rmultinom_1(unsigned int& size, Rcpp:: NumericVector& probs, unsigned int& N);
+RcppExport SEXP _PMD_rmultinom_1(SEXP sizeSEXP, SEXP probsSEXP, SEXP NSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< unsigned int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< Rcpp:: NumericVector& >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< unsigned int& >::type N(NSEXP);
+    rcpp_result_gen = Rcpp::wrap(rmultinom_1(size, probs, N));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rmultinom_rcpp
+Rcpp::IntegerMatrix rmultinom_rcpp(unsigned int& n, unsigned int& size, Rcpp::NumericVector& probs);
+RcppExport SEXP _PMD_rmultinom_rcpp(SEXP nSEXP, SEXP sizeSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< unsigned int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< unsigned int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(rmultinom_rcpp(n, size, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rpmd_arma
+arma::vec rpmd_arma(arma::mat pp);
+RcppExport SEXP _PMD_rpmd_arma(SEXP ppSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type pp(ppSEXP);
+    rcpp_result_gen = Rcpp::wrap(rpmd_arma(pp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pm_simulation_arma
+double pm_simulation_arma(arma::mat pp, arma::vec x_vec, int t);
+RcppExport SEXP _PMD_pm_simulation_arma(SEXP ppSEXP, SEXP x_vecSEXP, SEXP tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type pp(ppSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x_vec(x_vecSEXP);
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    rcpp_result_gen = Rcpp::wrap(pm_simulation_arma(pp, x_vec, t));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pmn_simulation_arma
+arma::vec pmn_simulation_arma(arma::mat pp, int nnt, arma::vec l_vec, arma::vec cn_vec, int t);
+RcppExport SEXP _PMD_pmn_simulation_arma(SEXP ppSEXP, SEXP nntSEXP, SEXP l_vecSEXP, SEXP cn_vecSEXP, SEXP tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type pp(ppSEXP);
+    Rcpp::traits::input_parameter< int >::type nnt(nntSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type l_vec(l_vecSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cn_vec(cn_vecSEXP);
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    rcpp_result_gen = Rcpp::wrap(pmn_simulation_arma(pp, nnt, l_vec, cn_vec, t));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PMD_mod", (DL_FUNC) &_PMD_mod, 2},
     {"_PMD_l_vec_compute_arma", (DL_FUNC) &_PMD_l_vec_compute_arma, 4},
     {"_PMD_pmn_mdfft_arma", (DL_FUNC) &_PMD_pmn_mdfft_arma, 5},
+    {"_PMD_rmultinom_1", (DL_FUNC) &_PMD_rmultinom_1, 3},
+    {"_PMD_rmultinom_rcpp", (DL_FUNC) &_PMD_rmultinom_rcpp, 3},
+    {"_PMD_rpmd_arma", (DL_FUNC) &_PMD_rpmd_arma, 1},
+    {"_PMD_pm_simulation_arma", (DL_FUNC) &_PMD_pm_simulation_arma, 3},
+    {"_PMD_pmn_simulation_arma", (DL_FUNC) &_PMD_pmn_simulation_arma, 5},
     {NULL, NULL, 0}
 };
 

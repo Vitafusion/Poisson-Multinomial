@@ -93,9 +93,44 @@ dpmn <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),t=100)
            res=round(res, 10)
            
          },
-        # "simulation"=    {
-           #simulation method
-        # },
+         "simulation"={
+             mm=ncol(pp) # ncol of pp
+             nn=nrow(pp) # nrow of pp
+             nn.vec=rep(nn+1, mm-1)
+             l.vec=rep(0, mm-1)
+             cn.vec=cumprod(nn.vec)
+             cn.vec=c(1, cn.vec[-(mm-1)])
+             cn.vec=cn.vec[length(cn.vec):1]
+             cn.vec=as.integer(cn.vec) #((n+1)^(m-2),...,(n+1)^2,(n+1),1)
+             nnt=prod(nn.vec) # (n+1)^(m-1) density points
+             
+             res0 = pmn_simulation_arma(pp, nnt, l.vec, cn.vec, t)
+             
+             res=array(0, nn.vec)
+             
+             res.expr="res[idx[1]"
+             if(mm>=3)
+             {
+               for(i in 2:(mm-1))
+               {
+                 res.expr=paste0(res.expr, ", idx[", i, "]")
+               }
+             }
+             res.expr=paste0(res.expr, "]=res0[i]")
+             
+             #browser()
+             
+             #print(nnt)
+             
+             for(i in 1:nnt)
+             {
+               idx=l.vec.compute(k=i, cn.vec=cn.vec, m=mm)
+               #print(idx)
+               eval(parse(text=res.expr))
+             }
+             
+             res=round(res, 10)
+         },
          "NA"=   {
            mm=ncol(pp) # m categories
            nn=nrow(pp) # n people
@@ -262,7 +297,7 @@ ppmn = function(pp,x,method="DFT-CF",t=1000){
 #' @return the random number vector generated from PMD
 #' @examples
 #' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
-#' rpmd(pp)
+#' rpmd(pp=aa[1:3,])
 #' @export
 #'
 rpmd = function(pp){
