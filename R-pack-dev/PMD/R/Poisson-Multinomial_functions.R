@@ -222,11 +222,12 @@ pmatrix = function(n,m){
 
 
 ########################################################################################
-#' cumulative distribution function of PMN
+#' @title cumulative mass function of PMN
 #'
+#' @description  By an input vector x = (x_{1},x_{2},\dots), this function compute P(X_{1} \leq x_{1}, X_{2} \leq x_{2}, \dots) 
 #' @param pp input matrix of probabilities
-#' @param x input vector
-#' @param method method
+#' @param x input result vector
+#' @param method method selected by users to compute the cumulative mass probabilities.
 #' @param B repeating time
 #' @return prob
 #' @examples
