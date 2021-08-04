@@ -18,8 +18,7 @@
 #' 
 #' @return For a single mass point, dpmd returns a probability. 
 #'         For all probability mass points of a given pp, it returns a multi-dimensional array. To understand this, here is an example:
-#'         aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
-#'         pp=aa[1:3,]
+#'         pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #'         > dpmd(pp)
 #'         , , 1
 #'
@@ -57,8 +56,7 @@
 #'    
 #' @examples
 #' 
-#' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
-#' pp=aa[1:3,]
+#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #' dpmd(pp)
 #' dpmd(pp,"simulation".B=10^5)
 #' dpmd(pp,"NA by demands", vec = c(0,0,1,2))
@@ -232,8 +230,7 @@ pmatrix = function(n,m){
 #' @param B repeating time
 #' @return prob
 #' @examples
-#' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
-#' pp=aa[1:3,]
+#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #' ppmd(pp,c(3,2,1,3))
 #' @export
 #'
@@ -327,7 +324,7 @@ ppmd = function(pp,x,method="DFT-CF",B=1000){
 #' @param pp input matrix of probabilities
 #' @return the random number vector generated from PMD
 #' @examples
-#' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
+#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #' rpmd(pp=aa[1:3,])
 #' @export
 #'
