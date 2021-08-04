@@ -107,7 +107,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
              
              res=round(res, 10)
          },
-         "NA"=   {
+         "NA by demands"=   {
            mm=ncol(pp) # m categories
            nn=nrow(pp) # n people
            if(sum(vec)>nn|any(vec<0)|length(vec)!=mm)
@@ -136,6 +136,9 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
            }
            mu = as.vector(mu)
            res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
+         },
+         "simulation by demands" = {
+             res = pmd.by.demands(x_vec,pp,B)
          }
          
   )
