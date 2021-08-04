@@ -1,43 +1,19 @@
 
 ################################################################################
-#' l.vec
+#' Probability Mass of Poisson-Multinomial Distributions
 #'
-#' @param k input by given functions
-#' @param cn.vec calculated by given fucntions
-#' @param m dimensions
-#'
-#' @return A vector, which will be used in other functions
-
-
-l.vec.compute=function(k, cn.vec, m)
-{
-  k=k-1
-  l.vec=rep(0, m-1)
-  for(i in 1:(m-1))
-  {
-    aa=k%%cn.vec[i]
-    bb=(k-aa)/cn.vec[i]
-    l.vec[i]=bb
-    k=aa
-  }
-  l.vec=l.vec+1
-  return(l.vec)
-}
-################################################################################
-#' probability density of Poisson multinomial distribution
-#'
-#' @param pp The pp is a probability matrix which will be input by user
+#' @param pp a probability matrix
 #' @param vec result vec input by user
 #' @param method method selected by user to compute the probability mass
-#' @param t simulation repeat time
+#' @param B simulation repeat time
 #' @return The probability mass of PMD
 #' @examples
 #' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
 #' pp=aa[1:3,]
-#' dpmn(pp)
+#' dpmd(pp)
 #' @export
 #'
-dpmn <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),t=100)
+dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
 {
   
   if(any(pp<0)|any(pp>1))
@@ -104,7 +80,7 @@ dpmn <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),t=100)
              cn.vec=as.integer(cn.vec) #((n+1)^(m-2),...,(n+1)^2,(n+1),1)
              nnt=prod(nn.vec) # (n+1)^(m-1) density points
              
-             res0 = pmn_simulation_arma(pp, nnt, l.vec, cn.vec, t)
+             res0 = pmd_simulation_allpoints(pp, nnt, l.vec, cn.vec, B)
              
              res=array(0, nn.vec)
              
@@ -198,15 +174,15 @@ pmatrix = function(n,m){
 #' @param pp input matrix of probabilities
 #' @param x input vector
 #' @param method method
-#' @param t repeating time
+#' @param B repeating time
 #' @return prob
 #' @examples
 #' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
 #' pp=aa[1:3,]
-#' ppmn(pp,c(3,2,1,3))
+#' ppmd(pp,c(3,2,1,3))
 #' @export
 #'
-ppmn = function(pp,x,method="DFT-CF",t=1000){
+ppmd = function(pp,x,method="DFT-CF",B=1000){
   if(any(pp<0)|any(pp>1)){
     stop("invalid values in pp.")
   }
@@ -255,7 +231,7 @@ ppmn = function(pp,x,method="DFT-CF",t=1000){
   points = idx[index,]
   switch(method,
          "DFT-CF" = {
-           res = dpmn(pp)
+           res = dpmd(pp)
            temp.index = idx0[index,]
            prob  = 0
            res.expr="prob = prob + res[temp[1]"
@@ -275,7 +251,7 @@ ppmn = function(pp,x,method="DFT-CF",t=1000){
            
          },
          "simulation" = {
-             T=t
+             T=B
              points.pos = points[which(points[,mm]>=0),]
              prob = 0
              for(i in 1:nrow(points.pos)){
@@ -285,7 +261,7 @@ ppmn = function(pp,x,method="DFT-CF",t=1000){
          "NA" = {
            prob = 0
            for(i in 1:nrow(points.pos)){
-             prob = prob + dpmn(pp,method="NA",vec = points.pos[i,])
+             prob = prob + dpmd(pp,method="NA",vec = points.pos[i,])
            }
          })
   return(prob)
@@ -310,29 +286,5 @@ rpmd = function(pp){
   return(rnd)
 }
 
-###############################################################################
-#' PMN density calculated by input vector
-#'
-#' @param pp The pp is a probability matrix which will be input by user
-#' @param x_vec result vec input by user
-#' @param t simulation repeat time
-#' @return The probability mass of PMD
-#' @examples
-#' aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
-#' pp=aa[1:3,]
-#' pmd.by.demands(c(1,2,0,0),pp,t=10^5)
-#' @export
-#'
-pmd.by.demands = function(x_vec,pp,t=1000){
-    x_vec = as.vector(x_vec)
-    nn = nrow(pp)
-    mm = ncol(pp)
-    # if(sum(x_vec)!=nn)   stop("invalid x_vec.")
-    res0=0
-    #input simulation method here
-    temp=pm_simulation_arma(pp, x_vec, t)
-    #temp = .C("pmd_simulation_vec",as.double(res0), as.integer(nn), as.integer(mm), as.double(pp), as.integer(x_vec), as.double(t), PACKAGE = "poissonmulti")
-    res0=round(temp[[1]],10)
-    return(res0)
-}
+
 

@@ -1,3 +1,6 @@
+// [[Rcpp::interfaces(r, cpp)]]
+//'
+
 #include <RcppArmadillo.h>
 #include <iostream>
 #include <Rcpp.h>
@@ -13,23 +16,12 @@
 //using namespace arma;
 
 //[[Rcpp::depends(RcppArmadillo)]]
-//' Mod
-//' @param a integer
-//' @param n integer
-//' @return a - floor(a/n)*n
-//[[Rcpp::export]]
 int mod(int a, int n)
 {
     return a - floor(a/n)*n;
 }  
 
-//*****************************************************************************//
-//' l.vec.cmpt
-//' @param k interger
-//' @param l_vec vector
-//' @param cn_vec vector
-//' @param m integer
-//[[Rcpp::export]]
+
 void l_vec_compute_arma(int k, arma::vec& l_vec, arma::vec& cn_vec, int m)
 {
   int i, aa, bb;
@@ -69,13 +61,7 @@ arma::vec test(int mm, arma::vec nn_vec)
 }  
 */
 
-//' mdfft method
-//' @param nnt interger
-//' @param pp matrix
-//' @param nn_vec vector
-//' @param l_vec vector
-//' @param cn_vec vector
-//' @return result
+
 //[[Rcpp::export]]  
 arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_vec, arma::vec cn_vec)
 {  
@@ -200,24 +186,14 @@ arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_ve
   return res;
 }
 
-//' rmultinom_1 method
-//' @param size vector of sizes
-//' @param probs probability vector
-//' @param N number of samples
-//' @return outcome
-//[[Rcpp::export]]
+
 Rcpp::IntegerVector rmultinom_1(unsigned int &size,Rcpp:: NumericVector &probs, unsigned int &N) {
     Rcpp::IntegerVector outcome(N);
     rmultinom(size, probs.begin(), N, outcome.begin());
     return outcome;
 }
 
-//' rmultinom
-//' @param n length of probability vector
-//' @param size vector of sizes
-//' @param probs probabilities
-//' @return sim simulation matrix
-//[[Rcpp::export]]
+
 Rcpp::IntegerMatrix rmultinom_rcpp(unsigned int &n, unsigned int &size, Rcpp::NumericVector &probs) {
     unsigned int N = probs.length();
     Rcpp::IntegerMatrix sim(N, n);
@@ -228,9 +204,6 @@ Rcpp::IntegerMatrix rmultinom_rcpp(unsigned int &n, unsigned int &size, Rcpp::Nu
 }
 
 
-//' rpmn
-//' @param pp probability matrix
-//' @return finalres a sample of Poisson-Multinomial distribution given probability matrix pp.
 //[[Rcpp::export]]
 arma::vec rpmd_arma(arma::mat pp)
 {
@@ -260,13 +233,9 @@ arma::vec rpmd_arma(arma::mat pp)
   return finalres;
 }
 
-//' pm_simulation
-//' @param pp probability matrix
-//' @param x_vec result vector
-//' @param t simulation time
-//' @return res probability of x_vec
+
 //[[Rcpp::export]]
-double pm_simulation_arma(arma::mat pp, arma::vec x_vec, int t)
+double pmd_simulation_singlepoint(arma::mat pp, arma::vec x_vec, int t)
 {
     /*arma::vec res(nnt, arma::fill::zeros);*/
     double res=0;
@@ -302,15 +271,9 @@ double pm_simulation_arma(arma::mat pp, arma::vec x_vec, int t)
 }
 
 
-//' pmn_simulation
-//' @param pp probability matrix
-//' @param nnt number of outcomes
-//' @param l_vec result vector
-//' @param cn_vec cn vector
-//' @param t simulation time
-//' @return res array of probabilities
+
 //[[Rcpp::export]]
-arma::vec pmn_simulation_arma(arma::mat pp, int nnt, arma::vec l_vec, arma::vec cn_vec, int t){
+arma::vec pmd_simulation_allpoints(arma::mat pp, int nnt, arma::vec l_vec, arma::vec cn_vec, int t){
     arma::vec res(nnt, arma::fill::zeros);
 
     int mm=pp.n_cols;
@@ -339,7 +302,7 @@ arma::vec pmn_simulation_arma(arma::mat pp, int nnt, arma::vec l_vec, arma::vec 
         /* for(int i=0;i<m;i++){
             Rcpp::Rcout << x_vec(i)<<arma::endl;
         } */
-        res(k) = pm_simulation_arma(pp, x_vec, t);
+        res(k) = pmd_simulation_singlepoint(pp, x_vec, t);
         
     }
     
