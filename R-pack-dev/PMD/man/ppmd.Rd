@@ -24,4 +24,6 @@ By an input vector x = (x_{1},x_{2},...), this function compute P(X_{1} < x_{1},
 \examples{
 pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 ppmd(pp,c(3,2,1,3))
+ppmd(pp,c(3,2,1,3),"simulation",B=10^3)
+ppmd(pp,c(3,2,1,3),"NA")
 }

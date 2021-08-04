@@ -166,8 +166,8 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
            }
            mm = mm - 1
            x_vec = vec[1:(length(vec)-1)]
-           lb = x_vec - 0.5
-           ub = x_vec+0.5
+           lb = as.numeric(x_vec - 0.5)
+           ub = as.numeric(x_vec+0.5)
            res = 0
            
            # asymptotic sigma
@@ -234,6 +234,8 @@ pmatrix = function(n,m){
 #' @examples
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #' ppmd(pp,c(3,2,1,3))
+#' ppmd(pp,c(3,2,1,3),"simulation",B=10^3)
+#' ppmd(pp,c(3,2,1,3),"NA")
 #' @export
 #'
 ppmd = function(pp,x,method="DFT-CF",B=1000){
@@ -314,8 +316,9 @@ ppmd = function(pp,x,method="DFT-CF",B=1000){
          },
          "NA" = {
            prob = 0
+           points.pos = points[which(points[,mm]>=0),]
            for(i in 1:nrow(points.pos)){
-             prob = prob + dpmd(pp,method="NA",vec = points.pos[i,])
+             prob = prob + dpmd(pp,method="NA by demands",vec = points.pos[i,])
            }
          })
   return(prob)
