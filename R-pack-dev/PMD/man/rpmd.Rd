@@ -10,12 +10,12 @@ rpmd(pp)
 \item{pp}{input matrix of probabilities}
 }
 \value{
-the random number vector generated from PMD
+the random number vector generated from PMD.
 }
 \description{
 generate random number from PMD
 }
 \examples{
-aa=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2, .5, .1, .1, .3), nrow=4, byrow=TRUE)
-rpmd(pp=aa[1:3,])
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+rpmd(pp)
 }

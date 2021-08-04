@@ -8,7 +8,7 @@
 #' @param pp         A matrix of probabilities.
 #'                   Each row of pp should add up to 1.
 #' @param vec        Result vector(probability mass point) specified by user.
-#'                   eg. pp is 4 \times 3 matrix then user might be interested in the probability of getting result: vec=c(0,0,1,2).
+#'                   eg. pp is 4 times 3 matrix then user might be interested in the probability of getting result: vec=c(0,0,1,2).
 #' @param method     Method selected by user to compute the probability mass. There are totally 4 methods.
 #'                   DFT-CF: An exact method to calculate all probability mass points of Poisson-Multinomial Distributions via FFT algorithm.
 #'                   simulation: A simulation method calculating all probability mass points.
@@ -52,15 +52,15 @@
 #'    [3,] 0.000    0    0    0
 #'    [4,] 0.000    0    0    0
 #'    
-#'    The array value of [1,2,1] = 0.90 means the probability of vecor (0,1,0,2=3-0-1-0) = (0,1,0,2) is 0.9
+#'    The array value of [1,2,1] = 0.90 means the probability of vecor (0,1,0,2=3-0-1-0) = (0,1,0,2) is 0.9.
 #'    
 #' @examples
 #' 
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #' dpmd(pp)
-#' dpmd(pp,"simulation".B=10^5)
+#' dpmd(pp,"simulation",B=10^3)
 #' dpmd(pp,"NA by demands", vec = c(0,0,1,2))
-#' dpmd(pp,"simulation by demands", vec = c(0,0,1,2), B=10^5)
+#' dpmd(pp,"simulation by demands", vec = c(0,0,1,2), B=10^3)
 #' @export
 #'
 dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
@@ -172,7 +172,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
            
            # asymptotic sigma
            n = nn
-           m = mm-1
+           m = mm
            if(n==1) pp = t(as.matrix(pp[,1:m])) else pp = as.matrix(pp[,1:m])
            sig = matrix(0,m,m)
            for (i in 1:n) {
@@ -186,9 +186,10 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
            }
            mu = as.vector(mu)
            res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
+           res = res[[1]]
          },
          "simulation by demands" = {
-             res = pmd.by.demands(x_vec,pp,B)
+             res = pmd.by.demands(vec,pp,B)
          }
          
   )
@@ -202,7 +203,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
 #' @param n column dimension
 #' @param m row dimension
 #'
-#' @return a randomly generated Poisson multinomial distribution probability matrix
+#' @return a randomly generated Poisson multinomial distribution probability matrix.
 #' @export
 #'
 #' @examples
@@ -224,7 +225,7 @@ pmatrix = function(n,m){
 ########################################################################################
 #' @title cumulative mass function of PMN
 #'
-#' @description  By an input vector x = (x_{1},x_{2},\dots), this function compute P(X_{1} \leq x_{1}, X_{2} \leq x_{2}, \dots) 
+#' @description  By an input vector x = (x_{1},x_{2},...), this function compute P(X_{1} < x_{1}, X_{2} < x_{2}, ...) 
 #' @param pp input matrix of probabilities
 #' @param x input result vector
 #' @param method method selected by users to compute the cumulative mass probabilities.
@@ -323,10 +324,10 @@ ppmd = function(pp,x,method="DFT-CF",B=1000){
 #' generate random number from PMD
 #'
 #' @param pp input matrix of probabilities
-#' @return the random number vector generated from PMD
+#' @return the random number vector generated from PMD.
 #' @examples
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
-#' rpmd(pp=aa[1:3,])
+#' rpmd(pp)
 #' @export
 #'
 rpmd = function(pp){

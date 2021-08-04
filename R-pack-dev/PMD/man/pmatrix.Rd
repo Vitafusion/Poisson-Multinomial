@@ -12,7 +12,7 @@ pmatrix(n, m)
 \item{m}{row dimension}
 }
 \value{
-a randomly generated Poisson multinomial distribution probability matrix
+a randomly generated Poisson multinomial distribution probability matrix.
 }
 \description{
 pmatrix
