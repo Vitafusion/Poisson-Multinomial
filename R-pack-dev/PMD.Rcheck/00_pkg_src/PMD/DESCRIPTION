@@ -1,0 +1,16 @@
+Package: PMD
+Type: Package
+Title: Computation of Poisson-Multinomial Distribtuions
+Version: 1.0
+Date: 2021-08-06
+Author: Yili Hong<yilihong@vt.edu>, Zhengzhi Lin<zhengzhi@vt.edu>, Yueyao Wang<yueyao94@vt.edu>
+Maintainer: Yili Hong <yilihong@vt.edu>
+Description: Application of exact and simulation and approximation methods for computing probability density functions, cumulative probabilities of Poisson-Multinomial distributions together with a Poisson-Multinomial random number generator.
+License: GPL (>= 2)
+Encoding: UTF-8
+Imports: mvtnorm, Rcpp
+LinkingTo: Rcpp, RcppArmadillo
+SystemRequirements: fftw3(>=3.3)
+RoxygenNote: 7.1.1
+NeedsCompilation: yes
+Packaged: 2021-08-04 17:56:56 UTC; alex
