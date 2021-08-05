@@ -18,7 +18,7 @@
 #' 
 #' @return For a single mass point, \code{dpmd} returns a probability.
 #'         For all probability mass points of a given \code{pp}, it returns a multi-dimensional array. For instance, for the \code{pp} matrix in the following example, the value of the array element \eqn{a_{1,2,1}} = 0.90 means the value of probability mass point (0,1,0,2) is 0.90.
-#'    
+#' 
 #' @examples
 #' 
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
@@ -49,7 +49,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
            cn.vec=cn.vec[length(cn.vec):1]
            cn.vec=as.integer(cn.vec) #((n+1)^(m-2),...,(n+1)^2,(n+1),1)
            
-           nnt=prod(nn.vec) # (n+1)^(m-1) density points
+           nnt=prod(nn.vec) # (n+1)^(m-1) probability mass points
            
            #browser()
            
@@ -93,7 +93,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
              cn.vec=c(1, cn.vec[-(mm-1)])
              cn.vec=cn.vec[length(cn.vec):1]
              cn.vec=as.integer(cn.vec) #((n+1)^(m-2),...,(n+1)^2,(n+1),1)
-             nnt=prod(nn.vec) # (n+1)^(m-1) density points
+             nnt=prod(nn.vec) # (n+1)^(m-1) probability mass points
              
              res0 = pmd_simulation_allpoints(pp, nnt, l.vec, cn.vec, B)
              
@@ -165,14 +165,14 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
 
 
 ########################################################################################
-#' @title cumulative mass function of PMN
+#' @title cumulative distribution function of PMN
 #'
 #' @description  By an input vector x = \eqn{(x_{1},x_{2},...)}, this function compute \eqn{P(X_{1} \leq x_{1}, X_{2} \leq x_{2}, ...)}. 
 #' @param pp input matrix of probabilities
 #' @param x input result vector
 #' @param method method selected by users to compute the cumulative mass probabilities.
 #' @param B repeating time
-#' @return prob
+#' @return cumulative distribution of given \code{pp}.
 #' @examples
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #' ppmd(pp,c(3,2,1,3))
@@ -213,7 +213,7 @@ ppmd = function(pp,x,method="DFT-CF",B=1000){
     #print(idx)
   }
   
-  # filter density points
+  # filter probability mass points
   conditions = c()
   expr0 = 'which('
   expr1 = ')'
