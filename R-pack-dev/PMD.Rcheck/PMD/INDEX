@@ -1,5 +1,0 @@
-dpmd                    Probability Mass of Poisson-Multinomial
-                        Distributions
-pmatrix                 pmatrix
-ppmd                    cumulative mass function of PMN
-rpmd                    generate random number from PMD

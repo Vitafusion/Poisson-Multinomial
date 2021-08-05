@@ -2,7 +2,7 @@
 % Please edit documentation in R/Poisson-Multinomial_functions.R
 \name{ppmd}
 \alias{ppmd}
-\title{cumulative mass function of PMN}
+\title{cumulative distribution function of PMN}
 \usage{
 ppmd(pp, x, method = "DFT-CF", B = 1000)
 }
@@ -16,7 +16,7 @@ ppmd(pp, x, method = "DFT-CF", B = 1000)
 \item{B}{repeating time}
 }
 \value{
-prob
+cumulative distribution of given \code{pp}.
 }
 \description{
 By an input vector x = \eqn{(x_{1},x_{2},...)}, this function compute \eqn{P(X_{1} \leq x_{1}, X_{2} \leq x_{2}, ...)}.
