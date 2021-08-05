@@ -3,6 +3,5 @@ importFrom(Rcpp, evalCpp)
 importFrom("stats", "runif")
 
 export(dpmd)
-export(pmatrix)
 export(ppmd)
 export(rpmd)

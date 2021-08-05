@@ -1,58 +1,23 @@
 
 ################################################################################
-#'@title Probability Mass of Poisson-Multinomial Distributions
+#' @title Probability Mass of Poisson-Multinomial Distributions
 #'
-#'@description
-#'Computation of probability mass for Poisson-Multinomial Distributions using exact, simulation, approximation methods. Users are allowed to specified a method and can choose to compute single mass point or all mass points. For simulation method, users can also choose the repeating time to enhance the accuracy of outcomes.
+#' @description
+#' Computation of probability mass for Poisson-Multinomial Distributions using exact, simulation, approximation methods. Users are allowed to specified a method and can choose to compute single mass point or all mass points. For simulation method, users can also choose the repeating time to enhance the accuracy of outcomes.
 #' 
 #' @param pp         A matrix of probabilities.
 #'                   Each row of pp should add up to 1.
 #' @param vec        Result vector(probability mass point) specified by user.
-#'                   eg. pp is 4 times 3 matrix then user might be interested in the probability of getting result: vec=c(0,0,1,2).
+#'                   eg. pp is 4 by 3 matrix then a user might be interested in the probability of getting result: vec=c(0,0,1,2).
 #' @param method     Method selected by user to compute the probability mass. There are totally 4 methods.
-#'                   DFT-CF: An exact method to calculate all probability mass points of Poisson-Multinomial Distributions via FFT algorithm.
-#'                   simulation: A simulation method calculating all probability mass points.
-#'                   NA by demands: An approximation method using Normal approximation to compute the probability for the 'vec' vector input by user.
-#'                   simulation by demands: The same simulation method as above just to compute single probability mass point as input by user.
+#'                  \code{"DFT-CF"}: An exact method to calculate all probability mass points of Poisson-Multinomial Distributions via FFT algorithm.
+#'                   \code{"simulation"}: A simulation method calculating all probability mass points.
+#'                   \code{"NA by demands"}: An approximation method using Normal approximation to compute the probability for the 'vec' vector input by user.
+#'                   \code{"simulation by demands"}: The same simulation method as above just to compute single probability mass point as input by user.
 #' @param B Simulation repeat time.
 #' 
-#' @return For a single mass point, dpmd returns a probability. 
-#'         For all probability mass points of a given pp, it returns a multi-dimensional array. To understand this, here is an example:
-#'         pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
-#'         > dpmd(pp)
-#'         , , 1
-#'
-#'         [,1]  [,2]  [,3]  [,4]
-#'    [1,] 0.042 0.090 0.054 0.006
-#'    [2,] 0.125 0.148 0.023 0.000
-#'    [3,] 0.052 0.022 0.000 0.000
-#'    [4,] 0.005 0.000 0.000 0.000
-#'
-#'         , , 2
-#'
-#'    [,1]  [,2]  [,3] [,4]
-#'    [1,] 0.069 0.084 0.015    0
-#'    [2,] 0.138 0.042 0.000    0
-#'    [3,] 0.021 0.000 0.000    0
-#'    [4,] 0.000 0.000 0.000    0
-#'
-#'         , , 3
-#'
-#'    [,1]  [,2] [,3] [,4]
-#'    [1,] 0.030 0.012    0    0
-#'    [2,] 0.019 0.000    0    0
-#'    [3,] 0.000 0.000    0    0
-#'    [4,] 0.000 0.000    0    0
-
-#'        , , 4
-
-#'    [,1] [,2] [,3] [,4]
-#'    [1,] 0.003    0    0    0
-#'    [2,] 0.000    0    0    0
-#'    [3,] 0.000    0    0    0
-#'    [4,] 0.000    0    0    0
-#'    
-#'    The array value of [1,2,1] = 0.90 means the probability of vecor (0,1,0,2=3-0-1-0) = (0,1,0,2) is 0.9.
+#' @return For a single mass point, \code{dpmd} returns a probability.
+#'         For all probability mass points of a given \code{pp}, it returns a multi-dimensional array. For instance, for the \code{pp} matrix in the following example, the value of the array element \eqn{a_{1,2,1}} = 0.90 means the value of probability mass point (0,1,0,2) is 0.90.
 #'    
 #' @examples
 #' 
@@ -197,35 +162,12 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
   return(res)
 }
 
-################################################################################
-#' pmatrix
-#'
-#' @param n column dimension
-#' @param m row dimension
-#'
-#' @return a randomly generated Poisson multinomial distribution probability matrix.
-#' @export
-#'
-#' @examples
-#' pp = pmatrix(2,2)
-#' pp
-#' @export
-#'
-pmatrix = function(n,m){
-  pp = matrix(0,nrow = n,ncol = m,byrow = T)
-  for (i in 1:n) {
-    r = runif(m)
-    r = r/sum(r) #generate row
-    pp[i,] = r
-  }
-  return(pp)
-}
 
 
 ########################################################################################
 #' @title cumulative mass function of PMN
 #'
-#' @description  By an input vector x = (x_{1},x_{2},...), this function compute P(X_{1} < x_{1}, X_{2} < x_{2}, ...) 
+#' @description  By an input vector x = \eqn{(x_{1},x_{2},...)}, this function compute \eqn{P(X_{1} \leq x_{1}, X_{2} \leq x_{2}, ...)}. 
 #' @param pp input matrix of probabilities
 #' @param x input result vector
 #' @param method method selected by users to compute the cumulative mass probabilities.
