@@ -1,58 +1,62 @@
-#' @name PoissonMultinomial-distribution
 #' @title Probability Mass Function of Poisson-Multinomial Distributions
-#' @description Probability mass function, 
-#' cumulative distribution function, 
-#' and a random number generator of Poisson-Multinomial distributions.
+#' 
+#' @description Probability mass function of Poisson-Multinomial distributions 
+#' specified by input matrix and computed through selected method. This function 
+#' is capable for computation of the whole probability mass function as well as
+#' of one single probability mass point. 
+#' 
 #' @param pp         A matrix of probabilities. Each row of pp should add up 
 #'                   to 1.
 #' @param method     Character string stands for the method selected by user to 
-#'                   compute the probability mass. There are totally 4 methods.
-#'                   
-#'                   \code{"DFT-CF"}: An exact method to calculate all 
-#'                   probability mass points of Poisson-Multinomial Distributions
-#'                   via FFT algorithm.
-#'                   
-#'                   \code{"simulation"}: A simulation method calculating all 
-#'                   probability mass points.
-#'                   
-#'                   \code{"NA by demands"}: An approximation 
-#'                   method using Normal approximation to compute the 
-#'                   probability for the 'vec' vector input by user.
-#'                   
-#'                   \code{"simulation by demands"}: The same simulation method 
-#'                   as above just to compute single probability mass point as 
-#'                   input by user.
+#'                   compute the probability mass. The method can only be one of 
+#'                   the following four,
+#'                   \code{"DFT-CF"}
+#'                   \code{"simulation"}
+#'                   \code{"NA by demands"}
+#'                   \code{"simulation by demands"}
 #' @param vec        Result vector(probability mass point) specified by user.
 #'                   Eg. pp is 4 by 3 matrix then a user might be interested in 
 #'                   the probability of getting result: vec=c(0,0,1,2).
-#' @param B          Simulation repeating time.
+#' @param B          Simulation repeating time. Will be ignored if users do not
+#'                   choose \code{"simulation"} or \code{"simulation by demands"}
+#'                   as method.
+#'                   
+#' @details 
+#' For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method 
+#' to calculate all probability mass points of Poisson-Multinomial Distributions
+#' via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
+#' \code{vec} and output the whole probability mass function.
 #' 
-#' @param x          Vector \eqn{x = (x_{1},x_{2},\ldots)} for computing 
-#'                   \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)}.
+#' \code{"simulation"} is a simulation method using naive simulation scheme to 
+#' calculate the whole probability mass function, under this selection the input 
+#' of \code{vec} will be ignore. Notice the accuracy and running time will be
+#' effected by user choice of \code{B}. Usually \code{B}=10^5 or 10^6 will be 
+#' accurate enough. Increasing \code{B} to larger than 10^8 will heavily aggravate 
+#' computation burden of a CPU or GPU. 
 #' 
-#' @param n          Number of samples to be generated.
+#' Given \code{pp} with dimension \eqn{n \times m}, the number of total probability 
+#' mass points is \eqn{(n+1)^{m-1}}. Thus when the dimension of \code{pp} 
+#' increases and the users selected method is one of \code{"DFT-CF"} and 
+#' \code{"simulation"}, the computation burden of \code{dpmd} might challenge the 
+#' capability of a computer because both of the methods calculate all probability 
+#' mass points of Poisson-Multinomial distributions.
+#' 
+#' \code{"NA by demands"} specifies an approximation method using Normal 
+#' approximation to compute the probability mass point of the \code{vec} vector
+#' input by user.
+#'  
+#' \code{"simulation by demands"} is as same as \code{"simulation"} except that it 
+#' only computes a single probability mass point specified by \code{vec}.
 #' 
 #' 
 #' @return           
-#' For a single mass point, \code{dpmd} returns a probability. 
-#' 
+#' For a single probability mass point, \code{dpmd} returns a probability value. 
 #' 
 #' For all probability mass points of a given \code{pp}, it returns a 
 #' multi-dimensional array. For instance, for the \code{pp} matrix in the 
-#' following example, the value of the
-#' array element \eqn{a_{1,2,1}} = 0.90 means the value of probability mass point 
-#' (0,1,0,2) is 0.90. Notice method \code{"DFT-CF"} can not return a probability 
-#' of single mass point.
+#' following example, the value of the array element \eqn{a_{1,2,1}} = 0.90 means 
+#' the value of probability mass point (0,1,0,2) is 0.90. 
 #'                    
-#'                    
-#' Given matrix \code{pp}, vector \code{x} and method, \code{ppmd} returns 
-#' \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)}.
-#'                    
-#'                    
-#' \code{rpmd} gives a matrix of generated samples with given \code{pp}. 
-#' Each row represents a sample.
-#' 
-#' 
 #' @examples
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 #' 
@@ -62,14 +66,6 @@
 #' dpmd(pp,"NA by demands", vec = c(0,0,1,2))
 #' dpmd(pp,"simulation by demands", vec = c(0,0,1,2), B=10^3)
 #' 
-#' 
-#' ppmd(pp, x = c(3,2,1,3))
-#' ppmd(pp, x = c(3,2,1,3), method = "simulation", B = 10^3)
-#' ppmd(pp, x = c(3,2,1,3), method = "NA")
-#' 
-#' 
-#' 
-#' rpmd(pp,5)
 #' @export
 dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
 {
@@ -208,8 +204,44 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
 
 
 ########################################################################################
-#'@rdname PoissonMultinomial-distribution
-#'@export
+#' @title Cumulative Distribution Function of Poisson-Multinomial Distribution
+#' 
+#' @description This function computes cumulative distribution function of 
+#' Poisson-Multinomial distributions that specified by input probability matrix 
+#' via given method.
+#'  
+#' @param pp         A matrix of probabilities. Each row of pp should add up 
+#'                   to 1.
+#' @param method     Character string stands for the method selected by user to 
+#'                   compute the probability mass. The method can only be one of 
+#'                   the following three,
+#'                   \code{"DFT-CF"}
+#'                   \code{"simulation"}
+#'                   \code{"NA"}
+#' @param B          Simulation repeating time. Will be ignored if users do not
+#'                   choose \code{"simulation"} as method.
+#' @param x          Vector \eqn{x = (x_{1},x_{2},\ldots)} for computing 
+#'                   \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)}.
+#' 
+#' @details 
+#' Three methods are same as listed in the details of \code{dpmd} but \code{"NA"}
+#' stands for normal approximation. 
+#' 
+#' \code{ppmd} computes the cumulative distribution function by adding all probability 
+#' mass points within hyper-dimensional space limited by \code{x}. 
+#' 
+#' @return 
+#' The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)} of given 
+#' \eqn{x = (x_{1},x_{2},\ldots)}.
+#' 
+#' @examples
+#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+#' 
+#' 
+#' ppmd(pp, x = c(3,2,1,3))
+#' ppmd(pp, x = c(3,2,1,3), method = "simulation", B = 10^3)
+#' ppmd(pp, x = c(3,2,1,3), method = "NA")
+#' @export
 ppmd = function(pp,x,method="DFT-CF",B=1000){
   if(any(pp<0)|any(pp>1)){
     stop("invalid values in pp.")
@@ -296,8 +328,24 @@ ppmd = function(pp,x,method="DFT-CF",B=1000){
   return(prob)
 }
 ########################################################################################
-#'@rdname PoissonMultinomial-distribution
-#'@export
+#' @title Poisson-Multinomial Distribution Random Number Generator
+#' @description Generating random samples of given a Poisson-Multinomial distribution.
+#'  
+#' @param pp         A matrix of probabilities. Each row of pp should add up 
+#'                   to 1.
+#' @param n          Number of samples to be generated.
+#' 
+#' @return 
+#' A matrix of samples, each row stands for one sample.
+#' 
+#' @examples 
+#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+#' 
+#' n=5
+#' 
+#' rpmd(pp,5)
+#' 
+#' @export
 rpmd = function(pp,n){
   if(any(pp<0)|any(pp>1)){
     stop("invalid values in pp.")
