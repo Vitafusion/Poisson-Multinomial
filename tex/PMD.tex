@@ -1,15 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[12pt]{article}
-\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,multirow,chicago,psfrag,paralist,dsfont,url,apacite}
-\usepackage[utf8]{inputenc}
-\usepackage[section]{placeins}
+\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,undertilde,multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
-\usepackage{diagbox}
-\usepackage{epstopdf}
-\usepackage{listings}
-\usepackage{amsthm}
-\usepackage[ruled,vlined]{algorithm2e}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textwidth  6.6in \textheight 9.2in \topmargin -.0in \oddsidemargin
+-0.0in \evensidemargin -0.0in \pagestyle{plain}
+
 \newcommand{\thetavec}{{\boldsymbol{\theta}}}
 \newcommand{\veps}{\varepsilon}
 \newcommand{\vepsvec}{{\boldsymbol{\varepsilon}}}
@@ -51,6 +47,7 @@
 \newcommand{\avar}{{\rm AVar}}
 \newcommand{\abias}{{\rm ABias}}
 \newcommand{\bias}{{\rm Bias}}
+%\newcommand{\diag}{{\rm Diag}}
 \newcommand{\Arg}{{\rm Arg}}
 \newcommand{\Ber}{{\rm Ber}}
 \newcommand{\atantwo}{{\rm atan2}}
@@ -75,10 +72,31 @@
 \newcommand{\pvec}{\boldsymbol{p}}
 \newcommand{\minitab}[2][l]{\begin{tabular}{#1}#2\end{tabular}}
 
-\theoremstyle{definition}
-\newtheorem{exmp}{Example}[section]
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textwidth  6.6in \textheight 9.2in \topmargin -.0in \oddsidemargin
+\def\baselinestretch{1.25}
+\renewcommand{\arraystretch}{.8}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[ruled,vlined]{algorithm2e}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\theoremstyle{definition}
+%\newtheorem{exmp}{Example}[section]
+
+
+
+\newtheorem{example}{Example}
+\newtheorem{thm}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{defn}{Definition}
+\newtheorem{corl}{Corollary}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textwidth  6.6in \textheight 9.2in \topmargin -.5in \oddsidemargin
 -0.0in \evensidemargin -0.0in \pagestyle{plain}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,40 +104,49 @@
 \renewcommand{\arraystretch}{.8}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\setcounter{tocdepth}{2}
+
 %-------------------------------------------------------------------------
 \begin{document}
 	
 	%%%%%%%%%%%%TITLE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{\texttt{PMD}: An R package for Computing the Probability Mass Function for the Poisson-Multinomial Distribution}
-	%\iffalse
-\author{Zhengzhi Lin\quad Virginia Tech \\ Yueyao Wang \quad Virginia Tech \\
-	Yili Hong\quad Virginia Tech}
-	%\fi
+\title{The Computing of Probability Distribution Functions for the Poisson-Multinomial Distribution}
+
+%\iffalse
+\author{
+Zhengzhi Lin, Yueyao Wang, and Yili Hong\\[1.5ex]
+{Department of Statistics, Virginia Tech, Blacksburg, VA 24061}
+}
+%\fi
 	
 \date{\today}
 	
 \maketitle
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-	The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicators,  each indicator is an $m$ element vector, that follows a multinomial distribution. The PMD is useful in many areas such as, machine learning, uncertainty quantification, and voting theory. The distribution function (e.g., the probability mass function) has been studied by many authors for a long time, but there is no general computing method available for its distribution functions. In this paper, we develop algorithms to compute the probability mass function for the PMD, and we develop an R package that can calculate the probability mass function efficiently. We also study the accuracy of different methods and give several examples to illustrate different computing algorithms and the use of the R package.
+The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicators, in which each indicator is an $m$ element vector that follows a multinomial distribution. The PMD is useful in many areas such as, machine learning, uncertainty quantification, and voting theory. The distribution function (e.g., the probability mass function) has been studied by many authors for a long time, but there is no general computing method available for its distribution functions. In this paper, we develop algorithms to compute the probability mass function for the PMD, and we develop an R package that can calculate the probability mass function efficiently. We also study the accuracy of different methods. We illustrate the use of the PMD with three applications from voting theory, ecological inference, machine learning. We also provide examples to demonstrate the use of the R package.
 		
 \textbf{Key Words:} Binomial distribution; Classification; Poisson Binomial Distribution; Machine Learning; Uncertainty Quantification;  Voting Theory
 \end{abstract}
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	%\newpage
-	%\tableofcontents
+\newpage
+\tableofcontents
 \newpage
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory \cite{Cheng2017PlayingAG}, digital imaging \cite{akter2019double},machine learning \cite{kamath2014learning} .  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it. Some former studies have uncover PMD's structure and properties, \cite{diakonikolas2016fourier} shows the Fourier transformation of PMD is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \cite{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \cite{akter2019double} shows us some interesting application of PMD and its sparsity property. Due to the huge practical value of PMD, computing its pmf is of great importance. However, there is no available algorithm for computing pmf for PMD. In this case, we are motivated to develop a thorough method to calculate its pmf. We design three methods to calculate it,
+The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}).  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it. Some former studies have uncover PMD's structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of PMD is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} shows us some interesting application of PMD and its sparsity property. Due to the huge practical value of PMD, computing its pmf is of great importance. However, there is no available algorithm for computing pmf for PMD. In this case, we are motivated to develop a thorough method to calculate its pmf. We design three methods to calculate it,
+
 \begin{enumerate}[Method 1]
     \item MD-DFT(base on multi-dimensional discrete Fourier transform(MD-DFT)) method: we use Multidimensional Fast Discrete Fourier Transformation algorithm to calculate PMD's exact probability mass function.
     \item Simulation based method: we use multinomial distributions to simulate the process of voting and use the frequency as our result to approximate true result.
     \item Normal approximation based method: when $n$ is large, we apply CLT and use a approximated normal distribution as our result.
 \end{enumerate}
+
 We also compare the time efficiency and accuracy of each method, and come up a guide of the best situation for each method. A R package is developed to implement these three methods, users can call certain function to calculate user given $(n,m)$ PMD pmf's.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Poisson Multinomial Distribution}
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,22 +186,32 @@ The probability of $X=(1,3,0)$ is
  Keep doing this we can calculate all possible outcomes.\\
  \\
 
-Note that when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the PMD is a generalization of the multinomial distribution. When $m=1$, the PMD is reduced to the Poisson binomial distribution as in \cite{hong2013computing}.
+Note that when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the PMD is a generalization of the multinomial distribution. When $m=1$, the PMD is reduced to the Poisson binomial distribution as in \citeN{hong2013computing}.
 
-In related literature, \cite{hong2013computing} consider the exact and approximate methods for computing the pmf of the Poisson binomial distribution. \cite{zhang2018generalized} introduce the general Poisson binomial distribution and develop an algorithm to compute its distribution functions.
+In related literature, \citeN{hong2013computing} consider the exact and approximate methods for computing the pmf of the Poisson binomial distribution. \citeN{zhang2018generalized} introduce the general Poisson binomial distribution and develop an algorithm to compute its distribution functions.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-	
 
 \section{Computation of The Probability Mass Function}\label{sec:CA.driving.study}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 We introduce three methods for computing the pmf, which are the method based on multidimensional discrete Fourier transform (MD-DFT), the normal approximation (NA) method, and simulation based method.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The MD-DFT Method Multidimensional Fourier Transform}
+\subsection{The MD-DFT Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section we provide an exact formula to compute the pmf of the PMD. The formula is based on the characteristic function (CF) of the PMD and the MD-DFT. The CF of $X=(X_1, \dots, X_{m-1})'$ is
+In this section we provide an exact formula to compute the pmf of the PMD. The formula is based on the characteristic function (CF) of the PMD and the MD-DFT.
+
+Multidimensional Fourier Transform
+
+
+\begin{thm}
+The mean and variance-covariance matrix for the PMD is .
+
+The CF for the PMD is .
+
+\end{thm}
+
+
+The CF of $X=(X_1, \dots, X_{m-1})'$ is
 \begin{align*}
 \phi(t_1, \dots, t_{m-1}) & = \EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right]=\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right].
 \end{align*}
@@ -203,15 +240,36 @@ Note that $q(l_1, \ldots, l_{m-1})$ can be computed directly. The left side of e
 p(x_1, \ldots, x_{m-1}) = \frac{1}{(n+1)^{m-1}}\sum_{l_1 = 0}^{n}\cdots \sum_{l_{m-1} = 0}^n q(l_1, \ldots, l_{m-1}) \exp\left(-\ivec\omega\sum_{j=1}^{m-1}l_j x_j\right)
 \end{equation}
 Let $\ell = (l_1,\dots,l_{m-1})$, then we will have $(n
-+1)^{m-1}$ different $\ell$ as $l_i$ values from $0$ to $n$. For example, if we have $n=4$,$m=4$, then $\ell$ can be $(0,0,0),(0,0,1),\dots,(4,4,4)$, 125 different vectors in total. Now we have $q(l_1,\dots,l_{m-1}) = q(\ell)$. We design to use these vectors to generate respective $p(x_1,\dots,x_{m-1})$. For each $\ell$, we get a $p(x_1,\dots,x_{m-1})$. \\
-\\
-To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \times (m-1)}$, we apply the Fast Fourier Transformation algorithm(FFT) from GSL Scientific Library to make calculation efficient. This FFT algorithm is C language based, we implemented it and wrote a new MD-DFT algorithm. Our MD-DFT algorithm can calculate all values of distribution function as long as we input our $P_{n\times (m-1)}$ matrix, and it can be called from R.
++1)^{m-1}$ different $\ell$ as $l_i$ values from $0$ to $n$. For example, if we have $n=4$, $m=4$, then $\ell$ can be $(0, 0, 0), (0, 0, 1), \dots, (4, 4, 4)$, 125 different vectors in total. Now we have $q(l_1,\dots,l_{m-1}) = q(\ell)$. We design to use these vectors to generate respective $p(x_1,\dots,x_{m-1})$. For each $\ell$, we get a $p(x_1,\dots,x_{m-1})$.
 
+To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \times (m-1)}$, we apply the fast Fourier transformation (FFT) algorithm  from GSL Scientific Library to make calculation efficient. This FFT algorithm is C language based, we implemented it and wrote a new MD-DFT algorithm. Our MD-DFT algorithm can calculate all values of distribution function as long as we input our $P_{n\times (m-1)}$ matrix, and it can be called from R.
+
+
+\begin{thm}
+If the SPM $P$ can be written as a block diagonal matrix after row and column permutations. Then the pmf can computed as the product of the corresponding marginal pmf. Without loss of generality, let
+$P=\diag(P_1, \cdots, P_r)$, then,
+\begin{align*}
+p(x_1, \cdots, x_m)=\prod_{k=1}^rp_k(x).
+\end{align*}
+need a better way to define the notation here.
+
+Kind of independence property.
+
+\end{thm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normal-Approximation Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $P$.\\
+Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $P$.
+
+\begin{thm}
+Central limit theorem with approximation bound.
+
+See Gotze (1991)
+\end{thm}
+
+
+
 We first show that CLT can be applied to
 \begin{equation*}
 \frac{X}{n} - \pvec = \frac{(X_1,\dots,X_{m-1})}{n} - \pvec = \frac{(X_1 - \sum_{i=1}^{n}p_{i1},\dots,X_{m-1} - \sum_{i=1}^{n}p_{i,m-1})}{n}
@@ -247,7 +305,7 @@ To be specific,
     \item repeat step 1 to generate $I_1,\dots,I_n$. Calculate $X = (X_1,\dots,X_{m})'$, where $X_j = \sum_{i=1}^{n}I_{ij}, j=1,\dots,m$.
     \item repeat step 1 and step 2 for $T$ times, and calculate the frequency of $X$ as to form our distribution density.
 \end{enumerate}
-\begin{exmp}
+\begin{example}
 Suppose we are given $n=3$, $m=2$
 \begin{equation*}
 P_{n \times m} = P_{3 \times 1} = \begin{pmatrix}
@@ -257,10 +315,16 @@ P_{n \times m} = P_{3 \times 1} = \begin{pmatrix}
 \end{pmatrix}.
 \end{equation*}
 We first generate $I_1$ by using multinomial distribution with respect to probability vector $(0.1,0.9)$, we get $I_1 = (0,1)$  ,then we generate $I_2$ using multinomial distribution with probability vector $(0.5,0.5) \rightarrow I_2 = (1,0)$, and also generate $I_3$ by using prob vector $(0.3,0.7) \rightarrow I_3 = (0,1)$. Now we have a simulation result $X = I_1+I_2+I_3 = (1,2)$. We repeat above process $10^4$ times to get $10^4$ results, finally if we want to know probability of (1,2), we can calculate the frequency of it in the $10^4$ results.
-\end{exmp}
+\end{example}
 We design a C based algorithm to perform this simulation process. Our algorithm automatically calculate probabilities of all possible results and it can be called from R.\\
 
 In our package, as $n$ and $m$ get large, the total number of density points $(n+1)^{m-1}$ will be extensively great. For time efficiency purpose, we only calculate the probability as customer demand. User will be asked to input the resulting vector, and the probability for the vector will be calculated.
+
+
+\begin{thm}
+Simulation error bounds.
+
+\end{thm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
@@ -281,14 +345,14 @@ For MD-DFT method, we test its accuracy by using small PMD matrix with given inp
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Accuracy}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Accuracy of MD-DFT Method}
- As we know already, MD-DFT is a analytic proved method. For large $n$ and $m=2$, which is the Binomial Possion Distribution, the accuracy is justified by \cite{HONG201341}. Thus for convenience and incapability of calculating the true density of large $m$, here we show the accuracy of MD-DFT by using given small $(n,m)$ pairs. For those pairs, we can work out their probability densities by hand, and compare them with the results computed by MD-DFT method.
-\begin{table}[h!]
-    \centering
-\begin{tabular}{|c|c|c|c|}
-\hline
+\subsection{Accuracy of MD-DFT Method}
+As we know already, MD-DFT is a analytic proved method. For large $n$ and $m=2$, which is the Binomial Possion Distribution, the accuracy is justified by \citeN{HONG201341}. Thus for convenience and incapability of calculating the true density of large $m$, here we show the accuracy of MD-DFT by using given small $(n,m)$ pairs. For those pairs, we can work out their probability densities by hand, and compare them with the results computed by MD-DFT method.
+\begin{table}%[h!]
+\centering
+\caption{Accuracy of MD-DFT method.}\label{tab:my_label}
+\vspace{1ex}
+\begin{tabular}{c|c|c|c}
+\hline\hline
      $(n,m)$ & $\min (p_{i j})$ & $\max (p_{i j})$ & $\mathrm{MAE}$ \\
 \hline
     (2,2) & 0.14 & 0.86 & $\leq 10^{-16}$\\
@@ -304,32 +368,32 @@ For MD-DFT method, we test its accuracy by using small PMD matrix with given inp
     (5,4) &0.005 &0.39 &$\leq 10^{-16}$\\
 \hline
     (6,4) &0.007 &0.44 &$\leq 10^{-16}$\\
-\hline
+\hline\hline
 \end{tabular}
-    \caption{Accuracy of MD-DFT method}
-    \label{tab:my_label}
+
 \end{table}
 As we see from Table 1, the $\mathrm{MAE}$ are all less or equal to machine epsilon. This shows us that MD-DFT is accurate enough and the error is only due to the computation limit of devices. Therefore, it is convincing to use MD-DFT as true probability densities in the following subsections.
 
 \subsection{Accuracy of Normal Approximation}
 Figure 1 lists all $(n,m)$ pairs we will test in this section and next section, every $(n,m)$ combination will be tested if it is covered in blue bars. The respecting bar height for $m=3,4,5,6,7,8$ is $100,83,43,25,16,17$. We use density points computed by MD-DFT as true probabilities and compare those to the ones approximated by normal distribution(NA) to compute MAE and  TAE. Each PMD matrix is generated randomly using uniform distribution, thus we must consider the variation caused by randomness. To reduce the randomness effect, for each $(n,m)$ pair, we generate N PMD matrices and compute all of their MAE. Consequently, we be able to get the average MAE of them and use it as our final MAE. We use the same scheme for TAE.
-\begin{figure}[h!]
+\begin{figure}%[h!]
     \centering
-    \includegraphics[scale=0.8]{(n,m)pairs.png}
+    \includegraphics[width=0.8\textwidth]{nm_pairs.pdf}
     \caption{(n,m) pairs, y axis value represents n. For instance, when m=3, we test the pairs from $(n=1,m=3)$ to $(n=100,m=3)$, the second bar means we testing from $(n=1,m=4)$ to $(n=83,m=4)$}
 \end{figure}\\
 Figure 2 shows the accuracy test results for normal approximation(NA). The x axis is n and different colors represent different m values. As n increasing, MAE decreases for the same m value. We should also consider the effect of sparsity. As $n$ and $m$ raise, there will be a boost of number of density points. Hence every density point will be given less value averagely. Therefore, no matter what approximation method we apply here, the MAE will decrease as the number of density points grows.
 
-\begin{figure}[h!]
+\begin{figure}%[h!]
     \centering
-    \includegraphics[scale=0.9]{normal accuracy.png}
-    \caption{Different colors and types of lines representing different m. The TAE is under log transformation}
+    \includegraphics[width=0.8\textwidth]{normal_accuracy.pdf}
+    \caption{Different colors and types of lines representing different $m$. The TAE is under log transformation}
 \end{figure}
 
 
-\subsubsection{Accuracy of simulation method}
-While NA and MD-DFT can cover most cases, we introduce an other method for approximating PMDs', the simulation approximation method(SA). The idea behind this method is simple, as we know a PMD is a generalized multinomial distribution. Suppose each row of PMD matrix is a probability vector of a multinomial distribution, thus a $n\times m$ PMD matrix can be seen as n multinomial distributions with respect to n m-category probability vectors. Then we can have the following algorithm to approximate each density point of PMD.\\
-\begin{algorithm}[H]
+\subsubsection{Accuracy of Simulation Method}
+While NA and MD-DFT can cover most cases, we introduce an other method for approximating PMDs', the simulation approximation method(SA). The idea behind this method is simple, as we know a PMD is a generalized multinomial distribution. Suppose each row of PMD matrix is a probability vector of a multinomial distribution, thus a $n\times m$ PMD matrix can be seen as n multinomial distributions with respect to n m-category probability vectors. Then we can have the following algorithm to approximate each density point of PMD.
+
+\begin{algorithm}%[H]
 \SetAlgoLined
 \KwResult{Write here the result }
  Set the repeating time equals to $N$\;
@@ -343,9 +407,9 @@ While NA and MD-DFT can cover most cases, we introduce an other method for appro
      \item compute the frequency of every result that stored in R as our density point value.\\
      \item compare density calculated above and computed by MD-DFT to get MAE and TAE.
  \end{itemize}
- \caption{Simulation approximation algorithm(SA)}
+ \caption{Simulation approximation algorithm (SA)}
 \end{algorithm}
-\quad \\
+
 We also calculated the error bound of the simulation method.
 Suppose for $i$th repeat, we consider random variable matrix $[X_{1i},X_{2i},\dots,X_{n i}]'$, each $X$ is a vector of length $m$ representing a voter's voting result. We repeat $R$ times to simulate the voting process to get $X_{j1},\dots,X_{j R}$ for each $j=1,\dots, n$, then
 \begin{align*}
@@ -366,44 +430,44 @@ So the error of simulation will be controlled within
 \begin{equation*}
     \frac{1}{R} \times \frac{n}{4} = \frac{n}{4R}
 \end{equation*}
-\begin{figure}[h!]
+
+\begin{figure}%[h!]
     \centering
-    \includegraphics[scale=0.8]{simu accuracy.png}
+    \includegraphics[width=0.8\textwidth]{simu_accuracy.pdf}
     \caption{Simulation accuracy test result, the repeating time set as $10^4$}
 \end{figure}
 
-Figure 3 illustrates the performance of SA method. For a fixed m and t, as n increases MAE decreases. Due to sparsity effect if we fix n, we could find MAE also drops while m increasing.
+Figure 3 illustrates the performance of SA method. For a fixed m and t, as n increases MAE decreases. Due to sparsity effect if we fix $n$, we could find MAE also drops while m increasing.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Time Efficiency}
-In this section, we show computation efficiency of simulation method and MD-DFT for calculating all density points as $(n,m)$ gets large. We generate random matrices with respect to given (n,m), record the calculating time of each method. As for normal approach, it is a asymptotic method, we only need to calculate the asymptotic normal distribution.
-\begin{table}[h!]
-    \centering
-\begin{tabular}{|c|c|c|}
+In this section, we show computation efficiency of simulation method and MD-DFT for calculating all density points as $(n,m)$ gets large. We generate random matrices with respect to given $(n, m)$, record the calculating time of each method. As for normal approach, it is a asymptotic method, we only need to calculate the asymptotic normal distribution.
 
+\begin{table}%[h!]
+\centering
+\caption{Accuracy of simulation method.}\label{tab:my_label}
+\begin{tabular}{c|c|c}
 \hline
-     $(n,m)$ & $MD-DFT$ & Simulation based$(10^6)$  \\
 \hline
-    (4,3) & 0.023 & 0.542 \\
+     $(n, m)$ & MD-DFT & Simulation based $(10^6)$  \\
 \hline
-    (6,3) & 0.002 & 0.852\\
+    (4, 3) & 0.023 & 0.542 \\
 \hline
-    (8,3) & 0.003 & 1.177\\
-    (10,3) & 0.003 & 1.634\\
-    (20,3) & 0.014 & 4.532\\
-    (50,3) & 0.098 & 22.349\\
-    (100,3) & 0.49 & 80.243\\
-    (200,3) & 2.834 & 307.350\\
-    (1000,3) & 249.449  & 7992.507 \\
-
-
+    (6, 3) & 0.002 & 0.852\\
 \hline
+    (8, 3) & 0.003 & 1.177\\
+    (10, 3) & 0.003 & 1.634\\
+    (20, 3) & 0.014 & 4.532\\
+    (50, 3) & 0.098 & 22.349\\
+    (100, 3) & 0.49 & 80.243\\
+    (200, 3) & 2.834 & 307.350\\
+    (1000, 3) & 249.449  & 7992.507 \\
+\hline\hline
 \end{tabular}
-    \caption{Accuracy of simulation method}
-    \label{tab:my_label}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Study the computing of the three methods.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Recommendations}
@@ -415,13 +479,27 @@ For large $m$ and moderate $n$, the simulation-based method can be used.
 
 For large $n$, the NA-based method can be used.
 
-\section{Examples of Using PMD in Heart Disease Data}\label{sec:model.est.inf}	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Here we illustrate how to apply PMD in real data analysis by using hear disease data from UCI machine learning repository. The data was collected from multiple locations and here we only use the data from Cleveland.\\
-\\
-The data contains 14 variables and 297 observations after removal of missing values, our response variable is the diagnosis of heart disease, it has 5 levels coded with 0, 1, 2, 3, 4. There are other 13 variables such as age, sex, exang(exercise induced angina) etc. In order to apply our methods of calculating PMD, we first divided the data into 61 smaller groups by 5 variables(chest pain type, sex, exercise induced angina, resting electrocardiographic results and the slope of the peak exercise ST segment), reader can also divide the data in other reasoning. We use 5 variables as our covariates as shown in the following table. Among the groups, $n$ varies from 2 to 62, which are affordable for MD-DFT method. A group of data is shown in Table 7.\\
-\\
-\begin{table}[h!]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Applications}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Calculation of Voting Probability}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Statistical Inference for Aggregated Data}\label{sec:model.est.inf}	
+
+Ecological inference
+
+Examples of Using PMD in Heart Disease Data
+
+Here we illustrate how to apply PMD in real data analysis by using hear disease data from UCI machine learning repository. The data was collected from multiple locations and here we only use the data from Cleveland.
+
+
+The data contains 14 variables and 297 observations after removal of missing values, our response variable is the diagnosis of heart disease, it has 5 levels coded with 0, 1, 2, 3, 4. There are other 13 variables such as age, sex, exang(exercise induced angina) etc. In order to apply our methods of calculating PMD, we first divided the data into 61 smaller groups by 5 variables(chest pain type, sex, exercise induced angina, resting electrocardiographic results and the slope of the peak exercise ST segment), reader can also divide the data in other reasoning. We use 5 variables as our covariates as shown in the following table. Among the groups, $n$ varies from 2 to 62, which are affordable for MD-DFT method. A group of data is shown in Table 7.
+
+\begin{table}%[h!]
     \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 
@@ -435,23 +513,26 @@ The data contains 14 variables and 297 observations after removal of missing val
 \end{tabular}
     \caption{Selected Group of Heart Disease Data from Cleveland}
     \label{tab:my_label}
-\end{table}\\
-The total number for each level of our response variable in each group is known. WWe have 5 levels of response refer to 5 categories. In the example group shown in Table 7, the outcome vector is $\left(2,0,0,0,0\right)$ because both observations has response of level 0.   \\
-\\
-The first step is to estimate $P$ matrix for each group. Suppose the likelihood of each group is $\ell_1 ,\dots, \ell_{61}$, where $\ell_i = \text{the probability of getting the result of group i}$. We use softmax function to find 61 $P_i$ matrices for each one of the 61 groups. Then we can calculate $\ell_i$ via $P_i$, details are following.\\
-\\
-Initiate values for parameters $\boldsymbol{\beta} = \left[\boldsymbol{\beta}_1,\dots,\boldsymbol{\beta}_5 \right]'$, where $\boldsymbol{\beta}_i = \left[\beta_{i1},\dots,\beta_{i5} \right]$ for our 5 categories and 5 covariates. Suppose we have $n_i$ observations in group $i$, the respecting $P_i$ matrix should be of dimension $n_i \times 5$, $P_i = \left(p_{jk}^{(i)}\right), j=1,\dots, n_i, k = 1, 2, 3, 4, 5$. Our observations are $X_i$, $i= 1, \dots, n_i$, each $X_i = \left[x_{i1},x_{i2},\dots, x_{i5}\right]$, where $x_{i1}, \dots, x_{i5}$ representing the covariates information.\\
-\\
+\end{table}
+
+The total number for each level of our response variable in each group is known. WWe have 5 levels of response refer to 5 categories. In the example group shown in Table 7, the outcome vector is $\left(2,0,0,0,0\right)$ because both observations has response of level 0.
+
+The first step is to estimate $P$ matrix for each group. Suppose the likelihood of each group is $\ell_1 ,\dots, \ell_{61}$, where $\ell_i = \text{the probability of getting the result of group i}$. We use softmax function to find 61 $P_i$ matrices for each one of the 61 groups. Then we can calculate $\ell_i$ via $P_i$, details are following.
+
+
+Initiate values for parameters $\betavec = \left[\betavec_1,\dots,\betavec_5 \right]'$, where $\betavec_i = \left[\beta_{i1},\dots,\beta_{i5} \right]$ for our 5 categories and 5 covariates. Suppose we have $n_i$ observations in group $i$, the respecting $P_i$ matrix should be of dimension $n_i \times 5$, $P_i = \left(p_{jk}^{(i)}\right), j=1,\dots, n_i, k = 1, 2, 3, 4, 5$. Our observations are $X_i$, $i= 1, \dots, n_i$, each $X_i = \left[x_{i1},x_{i2},\dots, x_{i5}\right]$, where $x_{i1}, \dots, x_{i5}$ representing the covariates information.
+
+
 Then we have the following $P_i$ matrix for each i by using softmax function,
 \begin{align*}
-    p_{jk}^{(i)} = \frac{e^{\boldsymbol{\beta}'_{k}X_j}}{\sum_{h=1}^{5}e^{\boldsymbol{\beta}'_{h}X_j}}
+    p_{jk}^{(i)} = \frac{\exp(\betavec'_{k}X_j)}{\sum_{h=1}^{5}\exp(\betavec'_{h}X_j)}
 \end{align*}
 After we get our $P_i$ matrices, apply MD-DFT or simulation or normal method, we get our likelihoods $\ell_i$ for $i = 1,\dots, 61$.\\
 \\
-The total likelihood $L = \prod_{i=1}^{61}\ell_i$, we can use numerical methods eg. gradient descent, Newton method to find the $\boldsymbol{\beta}$ that maximized $L$, then we get our final $P_i$ matrices.\\
+The total likelihood $L = \prod_{i=1}^{61}\ell_i$, we can use numerical methods eg. gradient descent, Newton method to find the $\betavec$ that maximized $L$, then we get our final $P_i$ matrices.\\
 \\
-There are 3 categories and 2 observations, thus the $P$ matrix is $2 \times 3$. We calculate the $P$ matrix by using softmax function. The weights should be $4 \times 5$ dimension if we set the last category as baseline. By using MD-DFT we get the likelihood for the group getting result $\left(2,0,0\right)$. As we have 61 groups, we will have 61 likelihoods $l_1,\dots,l_61$ so that we can get a total likelihood $L = \prod_{i=1}^{61}l_i$.\\
-\\
+There are 3 categories and 2 observations, thus the $P$ matrix is $2 \times 3$. We calculate the $P$ matrix by using softmax function. The weights should be $4 \times 5$ dimension if we set the last category as baseline. By using MD-DFT we get the likelihood for the group getting result $\left(2,0,0\right)$. As we have 61 groups, we will have 61 likelihoods $l_1,\dots,l_{61}$ so that we can get a total likelihood $L = \prod_{i=1}^{61}l_i$.\\
+
 We estimated the 61 $P$ matrices of 61 groups by maximizing $L$. Two of the P matrices are
 \begin{align*}
     &P_1 =  \left[ \begin{array}{ccccc}
@@ -471,15 +552,30 @@ We estimated the 61 $P$ matrices of 61 groups by maximizing $L$. Two of the P ma
 \end{align*}
 Therefore we hereby using our MD-DFT method again to calculate $P(X_1=2,X_2=0, X_3=0, X_4 = 0, X_5 = 0) =   0.08842$ and $P(X_1=0,X_2=1,X_3=2, X_4 - 1, X_5 = 0)=0.03487$
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Uncertainty Quantification in Soft Classfication}
+
+Confusion matrix
+
+Use Theorem for independent.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Illustrations of the R Package}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\subsection{Examples}
 Illustrate the use of major functions in the R package.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Concluding Remarks}
+\subsection{Benchmark of R Packages for Poisson Binomial Distribution}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions and Areas for Future Research}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 We develop algorithm that can be useful for computing the pmf of the PMD distribution, which is challenging to compute but useful in many application scenarios.
@@ -491,11 +587,13 @@ We develop algorithm that can be useful for computing the pmf of the PMD distrib
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section*{Acknowledgments}
+%\section*{Acknowledgments}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\bibliographystyle{apacite}
+%\bibliographystyle{apacite}
 
+
+\bibliographystyle{chicago}
 \bibliography{refs}	
 
 \end{document}
