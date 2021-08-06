@@ -70,10 +70,16 @@
 #' @export
 dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
 {
-  
+  if(is.matrix(pmat)==F){
+    stop("pmat is not a matrix.")
+  }
   if(any(pmat<0)|any(pmat>1))
   {
-    stop("invalid values in pmat.")
+    stop("Invalid values in pmat.")
+  }
+  for(i in 1:nrow(pmat)){
+    if(sum(pmat[i,])!=1)
+      stop("Existing a row that doesn't sum up to 1.")
   }
   
   
@@ -163,11 +169,14 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
              res=round(res, 10)
          },
          "NA"=   {
+           if(is.vector(x)==F){
+             stop("x is not a vector.")
+           }
            mm=ncol(pmat) # m categories
            nn=nrow(pmat) # n people
            if(sum(x)>nn|any(x<0)|length(x)!=mm)
            {
-             stop("invalid result vector")
+             stop("Invalid value or length of x.")
            }
            mm = mm - 1
            x_vec = x[1:(length(x)-1)]
@@ -194,6 +203,15 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
            res = res[[1]]
          },
          "SIM" = {
+           mm=ncol(pmat) # m categories
+           nn=nrow(pmat) # n people
+           if(is.vector(x)==F){
+             stop("x is not a vector.")
+           }
+           if(sum(x)>nn|any(x<0)|length(x)!=mm)
+           {
+             stop("Invalid value or length of x.")
+           }
              res = pmd.by.demands(x,pmat,B)
          }
          
@@ -242,17 +260,21 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
 #' ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
 #' ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 10^3)
 #' @export
-ppmd = function(pmat,x,method="DFT-CF",B=1000){
+ppmd = function(pmat,x,method="DFT-CF",B=10^3){
+  if(is.matrix(pmat)==F){
+    stop("pmat is not a matrix.")
+  }
   if(any(pmat<0)|any(pmat>1)){
-    stop("invalid values in pmat.")
+    stop("Invalid values in pmat.")
   }
   nn = nrow(pmat)
   mm = ncol(pmat)
-  if(any(x<0)){
-    stop("invalid values in x.")
+  if(is.vector(x)==F){
+    stop("x is not a vector.")
   }
-  if(length(x)!=mm){
-    stop("invalid format of x.")
+  if(sum(x)>nn|any(x<0)|length(x)!=mm)
+  {
+    stop("Invalid value or length of x.")
   }
   #idx formed
   nn.vec=rep(nn+1, mm-1)
@@ -346,8 +368,11 @@ ppmd = function(pmat,x,method="DFT-CF",B=1000){
 #' 
 #' @export
 rpmd = function(n,pmat){
+  if(is.matrix(pmat)==F){
+    stop("pmat is not a matrix.")
+  }
   if(any(pmat<0)|any(pmat>1)){
-    stop("invalid values in pmat.")
+    stop("Invalid values in pmat.")
   }
   mm = ncol(pmat)
   rnd = matrix(NA,nrow = n,ncol = mm)

@@ -4,7 +4,7 @@
 \alias{ppmd}
 \title{Cumulative Distribution Function of Poisson-Multinomial Distribution}
 \usage{
-ppmd(pmat, x, method = "DFT-CF", B = 1000)
+ppmd(pmat, x, method = "DFT-CF", B = 10^3)
 }
 \arguments{
 \item{pmat}{A matrix of probabilities. Each row of pmat should add up 
