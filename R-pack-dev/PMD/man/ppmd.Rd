@@ -4,10 +4,10 @@
 \alias{ppmd}
 \title{Cumulative Distribution Function of Poisson-Multinomial Distribution}
 \usage{
-ppmd(pp, x, method = "DFT-CF", B = 1000)
+ppmd(pmat, x, method = "DFT-CF", B = 10^3)
 }
 \arguments{
-\item{pp}{A matrix of probabilities. Each row of pp should add up 
+\item{pmat}{A matrix of probabilities. Each row of pmat should add up 
 to 1.}
 
 \item{x}{Vector \eqn{x = (x_{1},x_{2},\ldots)} for computing 
@@ -15,13 +15,13 @@ to 1.}
 
 \item{method}{Character string stands for the method selected by user to 
 compute the probability mass. The method can only be one of 
-the following three,
-\code{"DFT-CF"}
-\code{"simulation"}
-\code{"NA"}}
+the following three: 
+\code{"DFT-CF"},
+\code{"NA"},
+\code{"SIM-ALL"}.}
 
 \item{B}{Simulation repeating time. Will be ignored if users do not
-choose \code{"simulation"} as method.}
+choose \code{"SIM-ALL"} as method.}
 }
 \value{
 The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)} of given 
@@ -40,10 +40,9 @@ stands for normal approximation.
 mass points within hyper-dimensional space limited by \code{x}.
 }
 \examples{
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
-
-ppmd(pp, x = c(3,2,1,3))
-ppmd(pp, x = c(3,2,1,3), method = "simulation", B = 10^3)
-ppmd(pp, x = c(3,2,1,3), method = "NA")
+ppmd(pmat = pp, x = c(3,2,1,3))
+ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
+ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 10^3)
 }
