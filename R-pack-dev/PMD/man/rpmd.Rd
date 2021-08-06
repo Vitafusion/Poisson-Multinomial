@@ -19,9 +19,9 @@ A matrix of samples, each row stands for one sample.
 Generating random samples of given a Poisson-Multinomial distribution.
 }
 \examples{
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
 
-rpmd(n=5,pmat = pp)
+rpmd(n = 5, pmat = pp)
 
 }

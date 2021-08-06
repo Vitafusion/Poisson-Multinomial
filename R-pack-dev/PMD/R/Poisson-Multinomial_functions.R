@@ -248,7 +248,7 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
 #' \eqn{x = (x_{1},x_{2},\ldots)}.
 #' 
 #' @examples
-#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 #' 
 #' ppmd(pmat = pp, x = c(3,2,1,3))
 #' ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
@@ -352,10 +352,10 @@ ppmd = function(pmat,x,method="DFT-CF",B=10^3){
 #' A matrix of samples, each row stands for one sample.
 #' 
 #' @examples 
-#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 #' 
 #' 
-#' rpmd(n=5,pmat = pp)
+#' rpmd(n = 5, pmat = pp)
 #' 
 #' @export
 rpmd = function(n,pmat){

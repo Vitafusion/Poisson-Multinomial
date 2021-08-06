@@ -40,7 +40,7 @@ stands for normal approximation.
 mass points within hyper-dimensional space limited by \code{x}.
 }
 \examples{
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
 ppmd(pmat = pp, x = c(3,2,1,3))
 ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
