@@ -10,15 +10,15 @@
 #' @param method     Character string stands for the method selected by user to 
 #'                   compute the probability mass. The method can only be one of 
 #'                   the following four,
-#'                   \code{"DFT-CF"}
-#'                   \code{"simulation"}
-#'                   \code{"NA by demands"}
+#'                   \code{"DFT-CF"},
+#'                   \code{"SIM-ALL"},
+#'                   \code{"NA by demands"},
 #'                   \code{"simulation by demands"}
 #' @param vec        Result vector(probability mass point) specified by user.
 #'                   Eg. pp is 4 by 3 matrix then a user might be interested in 
 #'                   the probability of getting result: vec=c(0,0,1,2).
 #' @param B          Simulation repeating time. Will be ignored if users do not
-#'                   choose \code{"simulation"} or \code{"simulation by demands"}
+#'                   choose \code{"SIM-ALL"} or \code{"simulation by demands"}
 #'                   as method.
 #'                   
 #' @details 
@@ -27,7 +27,7 @@
 #' via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
 #' \code{vec} and output the whole probability mass function.
 #' 
-#' \code{"simulation"} is a simulation method using naive simulation scheme to 
+#' \code{"SIM-ALL"} is a simulation method using naive simulation scheme to 
 #' calculate the whole probability mass function, under this selection the input 
 #' of \code{vec} will be ignore. Notice the accuracy and running time will be
 #' effected by user choice of \code{B}. Usually \code{B}=10^5 or 10^6 will be 
@@ -37,7 +37,7 @@
 #' Given \code{pp} with dimension \eqn{n \times m}, the number of total probability 
 #' mass points is \eqn{(n+1)^{m-1}}. Thus when the dimension of \code{pp} 
 #' increases and the users selected method is one of \code{"DFT-CF"} and 
-#' \code{"simulation"}, the computation burden of \code{dpmd} might challenge the 
+#' \code{"SIM-ALL"}, the computation burden of \code{dpmd} might challenge the 
 #' capability of a computer because both of the methods calculate all probability 
 #' mass points of Poisson-Multinomial distributions.
 #' 
@@ -45,7 +45,7 @@
 #' approximation to compute the probability mass point of the \code{vec} vector
 #' input by user.
 #'  
-#' \code{"simulation by demands"} is as same as \code{"simulation"} except that it 
+#' \code{"simulation by demands"} is as same as \code{"SIM-ALL"} except that it 
 #' only computes a single probability mass point specified by \code{vec}.
 #' 
 #' 
@@ -62,7 +62,7 @@
 #' 
 #' 
 #' dpmd(pp)
-#' dpmd(pp,"simulation",B=10^3)
+#' dpmd(pp,"SIM-ALL",B=10^3)
 #' dpmd(pp,"NA by demands", vec = c(0,0,1,2))
 #' dpmd(pp,"simulation by demands", vec = c(0,0,1,2), B=10^3)
 #' 
@@ -123,7 +123,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
            res=round(res, 10)
            
          },
-         "simulation"={
+         "SIM-ALL"={
              mm=ncol(pp) # ncol of pp
              nn=nrow(pp) # nrow of pp
              nn.vec=rep(nn+1, mm-1)
@@ -216,10 +216,10 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
 #'                   compute the probability mass. The method can only be one of 
 #'                   the following three,
 #'                   \code{"DFT-CF"}
-#'                   \code{"simulation"}
+#'                   \code{"SIM-ALL"}
 #'                   \code{"NA"}
 #' @param B          Simulation repeating time. Will be ignored if users do not
-#'                   choose \code{"simulation"} as method.
+#'                   choose \code{"SIM-ALL"} as method.
 #' @param x          Vector \eqn{x = (x_{1},x_{2},\ldots)} for computing 
 #'                   \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)}.
 #' 
@@ -239,7 +239,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
 #' 
 #' 
 #' ppmd(pp, x = c(3,2,1,3))
-#' ppmd(pp, x = c(3,2,1,3), method = "simulation", B = 10^3)
+#' ppmd(pp, x = c(3,2,1,3), method = "SIM-ALL", B = 10^3)
 #' ppmd(pp, x = c(3,2,1,3), method = "NA")
 #' @export
 ppmd = function(pp,x,method="DFT-CF",B=1000){
@@ -310,7 +310,7 @@ ppmd = function(pp,x,method="DFT-CF",B=1000){
            }
            
          },
-         "simulation" = {
+         "SIM-ALL" = {
              T=B
              points.pos = points[which(points[,mm]>=0),]
              prob = 0

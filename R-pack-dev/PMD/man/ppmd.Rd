@@ -17,11 +17,11 @@ to 1.}
 compute the probability mass. The method can only be one of 
 the following three,
 \code{"DFT-CF"}
-\code{"simulation"}
+\code{"SIM-ALL"}
 \code{"NA"}}
 
 \item{B}{Simulation repeating time. Will be ignored if users do not
-choose \code{"simulation"} as method.}
+choose \code{"SIM-ALL"} as method.}
 }
 \value{
 The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)} of given 
@@ -44,6 +44,6 @@ pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 
 
 ppmd(pp, x = c(3,2,1,3))
-ppmd(pp, x = c(3,2,1,3), method = "simulation", B = 10^3)
+ppmd(pp, x = c(3,2,1,3), method = "SIM-ALL", B = 10^3)
 ppmd(pp, x = c(3,2,1,3), method = "NA")
 }
