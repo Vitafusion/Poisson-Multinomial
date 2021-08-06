@@ -13,12 +13,12 @@
 #'                   \code{"DFT-CF"},
 #'                   \code{"SIM-ALL"},
 #'                   \code{"NA by demands"},
-#'                   \code{"simulation by demands"}
+#'                   \code{"SIM"}
 #' @param vec        Result vector(probability mass point) specified by user.
 #'                   Eg. pp is 4 by 3 matrix then a user might be interested in 
 #'                   the probability of getting result: vec=c(0,0,1,2).
 #' @param B          Simulation repeating time. Will be ignored if users do not
-#'                   choose \code{"SIM-ALL"} or \code{"simulation by demands"}
+#'                   choose \code{"SIM-ALL"} or \code{"SIM"}
 #'                   as method.
 #'                   
 #' @details 
@@ -45,7 +45,7 @@
 #' approximation to compute the probability mass point of the \code{vec} vector
 #' input by user.
 #'  
-#' \code{"simulation by demands"} is as same as \code{"SIM-ALL"} except that it 
+#' \code{"SIM"} is as same as \code{"SIM-ALL"} except that it 
 #' only computes a single probability mass point specified by \code{vec}.
 #' 
 #' 
@@ -64,7 +64,7 @@
 #' dpmd(pp)
 #' dpmd(pp,"SIM-ALL",B=10^3)
 #' dpmd(pp,"NA by demands", vec = c(0,0,1,2))
-#' dpmd(pp,"simulation by demands", vec = c(0,0,1,2), B=10^3)
+#' dpmd(pp,"SIM", vec = c(0,0,1,2), B=10^3)
 #' 
 #' @export
 dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
@@ -192,7 +192,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
            res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
            res = res[[1]]
          },
-         "simulation by demands" = {
+         "SIM" = {
              res = pmd.by.demands(vec,pp,B)
          }
          
