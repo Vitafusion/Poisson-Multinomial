@@ -169,9 +169,6 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
              res=round(res, 10)
          },
          "NA"=   {
-           if(is.vector(x)==F){
-             stop("x is not a vector.")
-           }
            mm=ncol(pmat) # m categories
            nn=nrow(pmat) # n people
            if(sum(x)>nn|any(x<0)|length(x)!=mm)
@@ -205,9 +202,6 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
          "SIM" = {
            mm=ncol(pmat) # m categories
            nn=nrow(pmat) # n people
-           if(is.vector(x)==F){
-             stop("x is not a vector.")
-           }
            if(sum(x)>nn|any(x<0)|length(x)!=mm)
            {
              stop("Invalid value or length of x.")
@@ -269,10 +263,7 @@ ppmd = function(pmat,x,method="DFT-CF",B=10^3){
   }
   nn = nrow(pmat)
   mm = ncol(pmat)
-  if(is.vector(x)==F){
-    stop("x is not a vector.")
-  }
-  if(sum(x)>nn|any(x<0)|length(x)!=mm)
+  if(any(x<0)|length(x)!=mm)
   {
     stop("Invalid value or length of x.")
   }
