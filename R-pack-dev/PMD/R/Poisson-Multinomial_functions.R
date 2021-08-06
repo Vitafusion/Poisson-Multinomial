@@ -12,7 +12,7 @@
 #'                   the following four,
 #'                   \code{"DFT-CF"},
 #'                   \code{"SIM-ALL"},
-#'                   \code{"NA by demands"},
+#'                   \code{"NA"},
 #'                   \code{"SIM"}
 #' @param vec        Result vector(probability mass point) specified by user.
 #'                   Eg. pp is 4 by 3 matrix then a user might be interested in 
@@ -41,7 +41,7 @@
 #' capability of a computer because both of the methods calculate all probability 
 #' mass points of Poisson-Multinomial distributions.
 #' 
-#' \code{"NA by demands"} specifies an approximation method using Normal 
+#' \code{"NA"} specifies an approximation method using Normal 
 #' approximation to compute the probability mass point of the \code{vec} vector
 #' input by user.
 #'  
@@ -63,7 +63,7 @@
 #' 
 #' dpmd(pp)
 #' dpmd(pp,"SIM-ALL",B=10^3)
-#' dpmd(pp,"NA by demands", vec = c(0,0,1,2))
+#' dpmd(pp,"NA", vec = c(0,0,1,2))
 #' dpmd(pp,"SIM", vec = c(0,0,1,2), B=10^3)
 #' 
 #' @export
@@ -161,7 +161,7 @@ dpmd <-function(pp,method="DFT-CF",vec=c(0,0,0,0,0),B=100)
              
              res=round(res, 10)
          },
-         "NA by demands"=   {
+         "NA"=   {
            mm=ncol(pp) # m categories
            nn=nrow(pp) # n people
            if(sum(vec)>nn|any(vec<0)|length(vec)!=mm)
@@ -322,7 +322,7 @@ ppmd = function(pp,x,method="DFT-CF",B=1000){
            prob = 0
            points.pos = points[which(points[,mm]>=0),]
            for(i in 1:nrow(points.pos)){
-             prob = prob + dpmd(pp,method="NA by demands",vec = points.pos[i,])
+             prob = prob + dpmd(pp,method="NA",vec = points.pos[i,])
            }
          })
   return(prob)

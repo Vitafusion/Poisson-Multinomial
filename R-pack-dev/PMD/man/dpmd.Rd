@@ -13,17 +13,17 @@ to 1.}
 \item{method}{Character string stands for the method selected by user to 
 compute the probability mass. The method can only be one of 
 the following four,
-\code{"DFT-CF"}
-\code{"SIM-ALL"}
-\code{"NA by demands"}
-\code{"simulation by demands"}}
+\code{"DFT-CF"},
+\code{"SIM-ALL"},
+\code{"NA"},
+\code{"SIM"}}
 
 \item{vec}{Result vector(probability mass point) specified by user.
 Eg. pp is 4 by 3 matrix then a user might be interested in 
 the probability of getting result: vec=c(0,0,1,2).}
 
 \item{B}{Simulation repeating time. Will be ignored if users do not
-choose \code{"SIM-ALL"} or \code{"simulation by demands"}
+choose \code{"SIM-ALL"} or \code{"SIM"}
 as method.}
 }
 \value{
@@ -60,11 +60,11 @@ increases and the users selected method is one of \code{"DFT-CF"} and
 capability of a computer because both of the methods calculate all probability 
 mass points of Poisson-Multinomial distributions.
 
-\code{"NA by demands"} specifies an approximation method using Normal 
+\code{"NA"} specifies an approximation method using Normal 
 approximation to compute the probability mass point of the \code{vec} vector
 input by user.
  
-\code{"simulation by demands"} is as same as \code{"SIM-ALL"} except that it 
+\code{"SIM"} is as same as \code{"SIM-ALL"} except that it 
 only computes a single probability mass point specified by \code{vec}.
 }
 \examples{
@@ -73,7 +73,7 @@ pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
 
 dpmd(pp)
 dpmd(pp,"SIM-ALL",B=10^3)
-dpmd(pp,"NA by demands", vec = c(0,0,1,2))
-dpmd(pp,"simulation by demands", vec = c(0,0,1,2), B=10^3)
+dpmd(pp,"NA", vec = c(0,0,1,2))
+dpmd(pp,"SIM", vec = c(0,0,1,2), B=10^3)
 
 }
