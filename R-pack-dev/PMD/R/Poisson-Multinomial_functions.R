@@ -9,14 +9,15 @@
 #'                   to 1.
 #' @param method     Character string stands for the method selected by user to 
 #'                   compute the probability mass. The method can only be one of 
-#'                   the following four,
+#'                   the following four: 
 #'                   \code{"DFT-CF"},
-#'                   \code{"SIM-ALL"},
 #'                   \code{"NA"},
-#'                   \code{"SIM"}
-#' @param vec        Result vector(probability mass point) specified by user.
-#'                   Eg. pp is 4 by 3 matrix then a user might be interested in 
-#'                   the probability of getting result: vec=c(0,0,1,2).
+#'                   \code{"SIM"},
+#'                   \code{"SIM-ALL"}.
+#' @param vec        Result vector(probability mass point) specified by user when 
+#'                   the selected method is "SIM" or "NA". Eg. pp is 4 by 3 matrix 
+#'                   then a user might be interested in the probability of getting 
+#'                   result: vec=c(0,0,1,2).
 #' @param B          Simulation repeating time. Will be ignored if users do not
 #'                   choose \code{"SIM-ALL"} or \code{"SIM"}
 #'                   as method.
