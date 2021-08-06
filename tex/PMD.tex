@@ -110,7 +110,7 @@
 \begin{document}
 	
 	%%%%%%%%%%%%TITLE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{The Computing of Probability Distribution Functions for the Poisson-Multinomial Distribution}
+\title{The Computing of Probability Mass Functions for the Poisson-Multinomial Distribution}
 
 %\iffalse
 \author{
@@ -318,7 +318,7 @@ We first generate $I_1$ by using multinomial distribution with respect to probab
 \end{example}
 We design a C based algorithm to perform this simulation process. Our algorithm automatically calculate probabilities of all possible results and it can be called from R.\\
 
-In our package, as $n$ and $m$ get large, the total number of density points $(n+1)^{m-1}$ will be extensively great. For time efficiency purpose, we only calculate the probability as customer demand. User will be asked to input the resulting vector, and the probability for the vector will be calculated.
+In our package, as $n$ and $m$ get large, the total number of probability mass points $(n+1)^{m-1}$ will be extensively great. For time efficiency purpose, we only calculate the probability as customer demand. User will be asked to input the resulting vector, and the probability for the vector will be calculated.
 
 
 \begin{thm}
@@ -329,7 +329,7 @@ Simulation error bounds.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we compare the three methods in terms of numerical accuracy and the time efficiency, we also give out recommendations of under what condition which method will be preferred. At the first three subsections, we show the accuracy of the methods we mention earlier. Here the major accuracy criterion we use is maximum absolute error(MAE). Suppose we have an PMD matrix with $n\times m$ dimension. Hence there will be $(n+1)^{m-1}$ density points notated as a set $X = \left\{x_1,\dots,x_{N}\right\}$, where $N=(n+1)^{m-1}$. By this way, MAE is defined as following,
+In this section, we compare the three methods in terms of numerical accuracy and the time efficiency, we also give out recommendations of under what condition which method will be preferred. At the first three subsections, we show the accuracy of the methods we mention earlier. Here the major accuracy criterion we use is maximum absolute error(MAE). Suppose we have an PMD matrix with $n\times m$ dimension. Hence there will be $(n+1)^{m-1}$ probability mass points notated as a set $X = \left\{x_1,\dots,x_{N}\right\}$, where $N=(n+1)^{m-1}$. By this way, MAE is defined as following,
 \begin{center}
 $\mathrm{MAE} = \underset{X}{\max}|p(x) - p_{\text{true}}(x)|$
 \end{center}
@@ -375,13 +375,13 @@ As we know already, MD-DFT is a analytic proved method. For large $n$ and $m=2$,
 As we see from Table 1, the $\mathrm{MAE}$ are all less or equal to machine epsilon. This shows us that MD-DFT is accurate enough and the error is only due to the computation limit of devices. Therefore, it is convincing to use MD-DFT as true probability densities in the following subsections.
 
 \subsection{Accuracy of Normal Approximation}
-Figure 1 lists all $(n,m)$ pairs we will test in this section and next section, every $(n,m)$ combination will be tested if it is covered in blue bars. The respecting bar height for $m=3,4,5,6,7,8$ is $100,83,43,25,16,17$. We use density points computed by MD-DFT as true probabilities and compare those to the ones approximated by normal distribution(NA) to compute MAE and  TAE. Each PMD matrix is generated randomly using uniform distribution, thus we must consider the variation caused by randomness. To reduce the randomness effect, for each $(n,m)$ pair, we generate N PMD matrices and compute all of their MAE. Consequently, we be able to get the average MAE of them and use it as our final MAE. We use the same scheme for TAE.
+Figure 1 lists all $(n,m)$ pairs we will test in this section and next section, every $(n,m)$ combination will be tested if it is covered in blue bars. The respecting bar height for $m=3,4,5,6,7,8$ is $100,83,43,25,16,17$. We use probability mass points computed by MD-DFT as true probabilities and compare those to the ones approximated by normal distribution(NA) to compute MAE and  TAE. Each PMD matrix is generated randomly using uniform distribution, thus we must consider the variation caused by randomness. To reduce the randomness effect, for each $(n,m)$ pair, we generate N PMD matrices and compute all of their MAE. Consequently, we be able to get the average MAE of them and use it as our final MAE. We use the same scheme for TAE.
 \begin{figure}%[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{nm_pairs.pdf}
     \caption{(n,m) pairs, y axis value represents n. For instance, when m=3, we test the pairs from $(n=1,m=3)$ to $(n=100,m=3)$, the second bar means we testing from $(n=1,m=4)$ to $(n=83,m=4)$}
 \end{figure}\\
-Figure 2 shows the accuracy test results for normal approximation(NA). The x axis is n and different colors represent different m values. As n increasing, MAE decreases for the same m value. We should also consider the effect of sparsity. As $n$ and $m$ raise, there will be a boost of number of density points. Hence every density point will be given less value averagely. Therefore, no matter what approximation method we apply here, the MAE will decrease as the number of density points grows.
+Figure 2 shows the accuracy test results for normal approximation(NA). The x axis is n and different colors represent different m values. As n increasing, MAE decreases for the same m value. We should also consider the effect of sparsity. As $n$ and $m$ raise, there will be a boost of number of probability mass points. Hence every probability mass point will be given less value averagely. Therefore, no matter what approximation method we apply here, the MAE will decrease as the number of probability mass points grows.
 
 \begin{figure}%[h!]
     \centering
@@ -391,7 +391,7 @@ Figure 2 shows the accuracy test results for normal approximation(NA). The x axi
 
 
 \subsubsection{Accuracy of Simulation Method}
-While NA and MD-DFT can cover most cases, we introduce an other method for approximating PMDs', the simulation approximation method(SA). The idea behind this method is simple, as we know a PMD is a generalized multinomial distribution. Suppose each row of PMD matrix is a probability vector of a multinomial distribution, thus a $n\times m$ PMD matrix can be seen as n multinomial distributions with respect to n m-category probability vectors. Then we can have the following algorithm to approximate each density point of PMD.
+While NA and MD-DFT can cover most cases, we introduce an other method for approximating PMDs', the simulation approximation method(SA). The idea behind this method is simple, as we know a PMD is a generalized multinomial distribution. Suppose each row of PMD matrix is a probability vector of a multinomial distribution, thus a $n\times m$ PMD matrix can be seen as n multinomial distributions with respect to n m-category probability vectors. Then we can have the following algorithm to approximate each probability mass point of PMD.
 
 \begin{algorithm}%[H]
 \SetAlgoLined
@@ -404,7 +404,7 @@ While NA and MD-DFT can cover most cases, we introduce an other method for appro
   sum up all samples generated in last loop and record the result as the $t^{th}$ row of matrix R.
  }
  \begin{itemize}
-     \item compute the frequency of every result that stored in R as our density point value.\\
+     \item compute the frequency of every result that stored in R as our probability mass point value.\\
      \item compare density calculated above and computed by MD-DFT to get MAE and TAE.
  \end{itemize}
  \caption{Simulation approximation algorithm (SA)}
@@ -441,7 +441,7 @@ Figure 3 illustrates the performance of SA method. For a fixed m and t, as n inc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Time Efficiency}
-In this section, we show computation efficiency of simulation method and MD-DFT for calculating all density points as $(n,m)$ gets large. We generate random matrices with respect to given $(n, m)$, record the calculating time of each method. As for normal approach, it is a asymptotic method, we only need to calculate the asymptotic normal distribution.
+In this section, we show computation efficiency of simulation method and MD-DFT for calculating all probability mass points as $(n,m)$ gets large. We generate random matrices with respect to given $(n, m)$, record the calculating time of each method. As for normal approach, it is a asymptotic method, we only need to calculate the asymptotic normal distribution.
 
 \begin{table}%[h!]
 \centering
