@@ -12,7 +12,7 @@ to 1.}
 
 \item{x}{Result vector(probability mass point) specified by user when 
 the selected method is "SIM" or "NA". The vector 
-\code{x = (x_{1}, x_{2}, \ldots)} is used for computing 
+\eqn{x = (x_{1}, x_{2}, \ldots)} is used for computing 
 \eqn{P(X_{1}=x_{1}, X_{2}=x_{2}, \ldots)}.}
 
 \item{method}{Character string stands for the method selected by user to 
