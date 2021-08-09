@@ -108,9 +108,12 @@
 
 %-------------------------------------------------------------------------
 \begin{document}
-	
-	%%%%%%%%%%%%TITLE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{The Computing of Probability Mass Functions for the Poisson-Multinomial Distribution}
+%%%%%%%%%%%%TITLE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\title{The Computing of Probability Mass Functions for the Poisson Multinomial Distribution}
+
+\title{The Poisson Multinomial Distribution and Its Applications in Voting Theory, Ecological Inference, and Machine Learning}
+
 
 %\iffalse
 \author{
@@ -136,20 +139,46 @@ The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicat
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}).  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it. Some former studies have uncover PMD's structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of PMD is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} shows us some interesting application of PMD and its sparsity property. Due to the huge practical value of PMD, computing its pmf is of great importance. However, there is no available algorithm for computing pmf for PMD. In this case, we are motivated to develop a thorough method to calculate its pmf. We design three methods to calculate it,
+\subsection{Motivation}
 
-\begin{enumerate}[Method 1]
-    \item MD-DFT(base on multi-dimensional discrete Fourier transform(MD-DFT)) method: we use Multidimensional Fast Discrete Fourier Transformation algorithm to calculate PMD's exact probability mass function.
-    \item Simulation based method: we use multinomial distributions to simulate the process of voting and use the frequency as our result to approximate true result.
-    \item Normal approximation based method: when $n$ is large, we apply CLT and use a approximated normal distribution as our result.
-\end{enumerate}
+The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}).  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it. 
+
+
+
+
+\subsection{Related Literature and Contribution of This Work}
+
+Ecological inference
+
+https://www.pnas.org/content/96/19/10578
+
+
+Some former studies have uncover PMD's structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of PMD is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} shows us some interesting application of PMD and its sparsity property. Due to the huge practical value of PMD, computing its pmf is of great importance. However, there is no available algorithm for computing pmf for PMD. In this case, we are motivated to develop a thorough method to calculate its pmf.
+
+
+We design three methods to calculate it,
+
+MD-DFT(base on multi-dimensional discrete Fourier transform(MD-DFT)) method: we use Multidimensional Fast Discrete Fourier Transformation algorithm to calculate PMD's exact probability mass function.
+
+Simulation based method: we use multinomial distributions to simulate the process of voting and use the frequency as our result to approximate true result.
+
+Normal approximation based method: when $n$ is large, we apply CLT and use a approximated normal distribution as our result.
+
 
 We also compare the time efficiency and accuracy of each method, and come up a guide of the best situation for each method. A R package is developed to implement these three methods, users can call certain function to calculate user given $(n,m)$ PMD pmf's.
 
 
+
+
+\subsection{Overview}
+The rest of the paper is organized as follows. 
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Poisson Multinomial Distribution}
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Definition of the Distribution}
 		
 Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \ldots, X_{m})' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_{m})'$. That is we will focus on the random vectors $I_i=(I_{i1}, \ldots, I_{im})'$ and $X=(X_1, \ldots, X_m)'$. The distribution of the $X$ is called the Poisson multinomial distribution (PMD), which is denoted by
 $$X  = \sum_{i = 1}^n I_i \sim \PMD(n,m,P_{n\times m}),$$
@@ -191,6 +220,30 @@ Note that when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \
 In related literature, \citeN{hong2013computing} consider the exact and approximate methods for computing the pmf of the Poisson binomial distribution. \citeN{zhang2018generalized} introduce the general Poisson binomial distribution and develop an algorithm to compute its distribution functions.
 
 
+\subsection{Properties of the Distribution}
+
+\begin{thm}
+The mean and variance-covariance matrix for the PMD is .
+
+The CF for the PMD is .
+
+\end{thm}
+
+
+\begin{thm}
+If the SPM $P$ can be written as a block diagonal matrix after row and column permutations. Then the pmf can computed as the product of the corresponding marginal pmf. Without loss of generality, let
+$P=\diag(P_1, \cdots, P_r)$, then,
+\begin{align*}
+p(x_1, \cdots, x_m)=\prod_{k=1}^rp_k(x).
+\end{align*}
+need a better way to define the notation here.
+
+Kind of independence property.
+
+\end{thm}
+
+
+
 \section{Computation of The Probability Mass Function}\label{sec:CA.driving.study}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 We introduce three methods for computing the pmf, which are the method based on multidimensional discrete Fourier transform (MD-DFT), the normal approximation (NA) method, and simulation based method.
@@ -201,14 +254,6 @@ We introduce three methods for computing the pmf, which are the method based on 
 In this section we provide an exact formula to compute the pmf of the PMD. The formula is based on the characteristic function (CF) of the PMD and the MD-DFT.
 
 Multidimensional Fourier Transform
-
-
-\begin{thm}
-The mean and variance-covariance matrix for the PMD is .
-
-The CF for the PMD is .
-
-\end{thm}
 
 
 The CF of $X=(X_1, \dots, X_{m-1})'$ is
@@ -245,17 +290,6 @@ Let $\ell = (l_1,\dots,l_{m-1})$, then we will have $(n
 To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \times (m-1)}$, we apply the fast Fourier transformation (FFT) algorithm  from GSL Scientific Library to make calculation efficient. This FFT algorithm is C language based, we implemented it and wrote a new MD-DFT algorithm. Our MD-DFT algorithm can calculate all values of distribution function as long as we input our $P_{n\times (m-1)}$ matrix, and it can be called from R.
 
 
-\begin{thm}
-If the SPM $P$ can be written as a block diagonal matrix after row and column permutations. Then the pmf can computed as the product of the corresponding marginal pmf. Without loss of generality, let
-$P=\diag(P_1, \cdots, P_r)$, then,
-\begin{align*}
-p(x_1, \cdots, x_m)=\prod_{k=1}^rp_k(x).
-\end{align*}
-need a better way to define the notation here.
-
-Kind of independence property.
-
-\end{thm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normal-Approximation Based Method}
