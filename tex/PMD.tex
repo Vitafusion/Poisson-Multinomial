@@ -141,7 +141,7 @@ The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicat
 \section{Introduction}
 \subsection{Motivation}
 
-The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}).  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it. 
+The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}).  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it.
 
 
 
@@ -171,7 +171,7 @@ We also compare the time efficiency and accuracy of each method, and come up a g
 
 
 \subsection{Overview}
-The rest of the paper is organized as follows. 
+The rest of the paper is organized as follows.
 
 
 
@@ -519,6 +519,11 @@ For large $n$, the NA-based method can be used.
 \subsection{Calculation of Voting Probability}
 
 
+Do some example like this:
+
+https://stats.stackexchange.com/questions/274211/calculating-the-probability-of-someone-winning-from-a-poll
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -561,11 +566,18 @@ Then we have the following $P_i$ matrix for each i by using softmax function,
 \begin{align*}
     p_{jk}^{(i)} = \frac{\exp(\betavec'_{k}X_j)}{\sum_{h=1}^{5}\exp(\betavec'_{h}X_j)}
 \end{align*}
-After we get our $P_i$ matrices, apply MD-DFT or simulation or normal method, we get our likelihoods $\ell_i$ for $i = 1,\dots, 61$.\\
-\\
-The total likelihood $L = \prod_{i=1}^{61}\ell_i$, we can use numerical methods eg. gradient descent, Newton method to find the $\betavec$ that maximized $L$, then we get our final $P_i$ matrices.\\
-\\
-There are 3 categories and 2 observations, thus the $P$ matrix is $2 \times 3$. We calculate the $P$ matrix by using softmax function. The weights should be $4 \times 5$ dimension if we set the last category as baseline. By using MD-DFT we get the likelihood for the group getting result $\left(2,0,0\right)$. As we have 61 groups, we will have 61 likelihoods $l_1,\dots,l_{61}$ so that we can get a total likelihood $L = \prod_{i=1}^{61}l_i$.\\
+After we get our $P_i$ matrices, apply MD-DFT or simulation or normal method, we get our likelihoods $\ell_i$ for $i = 1,\dots, 61$.
+
+
+The total likelihood 
+\begin{align}
+L = \prod_{i=1}^{61}\ell_i.  
+\end{align}
+we can use numerical methods e.g., gradient descent, Newton method to find the $\betavec$ that maximized $L$, then we get our final $P_i$ matrices.\\
+
+
+There are 3 categories and 2 observations, thus the $P$ matrix is $2 \times 3$. We calculate the $P$ matrix by using softmax function. The weights should be $4 \times 5$ dimension if we set the last category as baseline. By using MD-DFT we get the likelihood for the group getting result $\left(2,0,0\right)$. As we have 61 groups, we will have 61 likelihoods $l_1,\dots,l_{61}$ so that we can get a total likelihood $L = \prod_{i=1}^{61}l_i$.
+
 
 We estimated the 61 $P$ matrices of 61 groups by maximizing $L$. Two of the P matrices are
 \begin{align*}
@@ -588,11 +600,19 @@ Therefore we hereby using our MD-DFT method again to calculate $P(X_1=2,X_2=0, X
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Uncertainty Quantification in Soft Classfication}
+\subsection{Uncertainty Quantification in Classification}
 
 Confusion matrix
 
 Use Theorem for independent.
+
+In machine learning classification problem with multiple labels, for each unit in the test set, the probability of the unit belongs to each class is computed. Usually, the predicted class is assigned as the highest probability. In the classifiers (i.e., soft classification), the unit class is randomly assigned according to the predicted probabilities, leading to randomness in the confusion matrix. The PMD can be used to characterize the distribution of the counts in the confusion matrix. 
+
+
+
+Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms. 
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

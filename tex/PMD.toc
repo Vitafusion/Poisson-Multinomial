@@ -18,8 +18,8 @@
 \contentsline {section}{\numberline {5}Applications}{14}
 \contentsline {subsection}{\numberline {5.1}Calculation of Voting Probability}{14}
 \contentsline {subsection}{\numberline {5.2}Statistical Inference for Aggregated Data}{14}
-\contentsline {subsection}{\numberline {5.3}Uncertainty Quantification in Soft Classfication}{16}
-\contentsline {section}{\numberline {6}Illustrations of the R Package}{16}
-\contentsline {subsection}{\numberline {6.1}Examples}{16}
-\contentsline {subsection}{\numberline {6.2}Benchmark of R Packages for Poisson Binomial Distribution}{16}
-\contentsline {section}{\numberline {7}Conclusions and Areas for Future Research}{16}
+\contentsline {subsection}{\numberline {5.3}Uncertainty Quantification in Classification}{16}
+\contentsline {section}{\numberline {6}Illustrations of the R Package}{17}
+\contentsline {subsection}{\numberline {6.1}Examples}{17}
+\contentsline {subsection}{\numberline {6.2}Benchmark of R Packages for Poisson Binomial Distribution}{17}
+\contentsline {section}{\numberline {7}Conclusions and Areas for Future Research}{17}
