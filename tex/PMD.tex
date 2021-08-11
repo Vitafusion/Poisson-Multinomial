@@ -371,6 +371,8 @@ We design a C based algorithm to perform this simulation process. Our algorithm 
 In our package, as $n$ and $m$ get large, the total number of probability mass points $(n+1)^{m-1}$ will be extensively great. For time efficiency purpose, we only calculate the probability as customer demand. User will be asked to input the resulting vector, and the probability for the vector will be calculated.
 
 
+
+
 \begin{thm}
 Given repeating time \mbox{B} and $n \times m$ matrix \mbox{P}, there will be totally  $N=(n+1)^{m-1}$ different results, denote them as $r_{1},r_{2},\dots,r_{N}$. Let the probability for a specific result $r_{i}$ be $p_{r_{i}}$, $i=1,\dots,N$. The estimate of  $p_{r_{i}}$ using simulation method is $\hat{p}_{r_i}$. We have the following error bound,
 \begin{equation*}
