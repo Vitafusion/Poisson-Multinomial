@@ -309,10 +309,13 @@ To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \ti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $P$.
 
-\begin{thm}
-Central limit theorem with approximation bound.
 
-See Gotze (1991)
+\begin{thm}
+For a Poisson-Multinomial random variable $\boldsymbol{X}$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $r_i$, and its neighbourhood interval $\mathcal{N}_{r_i} = [r_i-0.5,r_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
+\begin{equation*}
+    |P(\boldsymbol{X} \in \mathcal{N}_{r_i}) - P(Z \in \mathcal{N}_{r_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{k}|^3
+\end{equation*}
+where $Z$ is normal with mean 0 and covariance matrix $\boldsymbol{\Sigma}_0$.
 \end{thm}
 
 
