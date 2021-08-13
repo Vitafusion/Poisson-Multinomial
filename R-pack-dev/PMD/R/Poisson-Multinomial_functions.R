@@ -196,7 +196,7 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
              mu = mu + pmat[i,]
            }
            mu = as.vector(mu)
-           res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
+           res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = n*sig)
            res = res[[1]]
          },
          "SIM" = {
@@ -355,10 +355,10 @@ ppmd = function(pmat,x,method="DFT-CF",B=10^3){
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 #' 
 #' 
-#' rpmd(n = 5, pmat = pp)
+#' rpmd(pmat = pp, n = 5)
 #' 
 #' @export
-rpmd = function(n,pmat){
+rpmd = function(pmat, n=1){
   if(is.matrix(pmat)==F){
     stop("pmat is not a matrix.")
   }

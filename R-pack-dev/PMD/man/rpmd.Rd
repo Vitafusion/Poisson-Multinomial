@@ -4,13 +4,13 @@
 \alias{rpmd}
 \title{Poisson-Multinomial Distribution Random Number Generator}
 \usage{
-rpmd(n, pmat)
+rpmd(pmat, n = 1)
 }
 \arguments{
-\item{n}{Number of samples to be generated.}
-
 \item{pmat}{A matrix of probabilities. Each row of pmat should add up 
 to 1.}
+
+\item{n}{Number of samples to be generated.}
 }
 \value{
 A matrix of samples, each row stands for one sample.
@@ -22,6 +22,6 @@ Generating random samples of given a Poisson-Multinomial distribution.
 pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
 
-rpmd(n = 5, pmat = pp)
+rpmd(pmat = pp, n = 5)
 
 }
