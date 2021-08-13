@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[12pt]{article}
-\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,undertilde,multirow,chicago,psfrag,paralist,dsfont,url}
+\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textwidth  6.6in \textheight 9.2in \topmargin -.0in \oddsidemargin
@@ -223,11 +223,24 @@ In related literature, \citeN{hong2013computing} consider the exact and approxim
 \subsection{Properties of the Distribution}
 
 \begin{thm}
-The mean and variance-covariance matrix for the PMD is .
+Given random variable $X$ that follows a Poisson-Multinomial distribution with $P_{n\times m}$, the mean of $X$ is 
+   $\boldsymbol{\mu} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$, where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$. \\
+The variance-covariance matrix of $X$ is a $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
+\begin{equation*}
+   \Sigma_{ij} = 
+           \begin{cases}
+             \sum_{k=1}^{n}p_{ki}(1-p_{ki}) & \quad \text{if } i=j\\
+             -\sum_{k=1}^{n}p_{ki}p_{kj} & \quad \text{if } i \neq j\\
+           \end{cases}
+\end{equation*}
 
-The CF for the PMD is .
-
+The CF for the PMD is 
+\begin{equation*}
+\phi(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
+\end{equation*}
+where  $\ivec=\sqrt{-1}$.
 \end{thm}
+The derivations of the above properties are trivial. One important thing is that we realize the covariance matrix $\boldsymbol{\Sigma}$ is singular, but we still can get a non-singular $n \times (m-1)$ matrix, say $\boldsymbol{\Sigma}_{0}$, to given $P_{n \times m}$ by deleting the last column of $\boldsymbol{\Sigma}$ due to the fact that the last column is linear dependent on the first $m-1$ columns. Similarly, the last element of the expectation vector of $X$ is also redundant since it equals to $n$ minus summation of the first $m-1$ elements. Therefore we can denote $\EE(X)$ by replacing $\boldsymbol{\mu}$ to $\boldsymbol{\mu}_0 = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$.
 
 
 \begin{thm}
@@ -296,10 +309,13 @@ To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \ti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $P$.
 
-\begin{thm}
-Central limit theorem with approximation bound.
 
-See Gotze (1991)
+\begin{thm}
+For a Poisson-Multinomial random variable $\boldsymbol{X}$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $r_i$, and its neighbourhood interval $\mathcal{N}_{r_i} = [r_i-0.5,r_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
+\begin{equation*}
+    |P(\boldsymbol{X} \in \mathcal{N}_{r_i}) - P(Z \in \mathcal{N}_{r_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{k}|^3
+\end{equation*}
+where $Z$ is normal with mean 0 and covariance matrix $\boldsymbol{\Sigma}_0$.
 \end{thm}
 
 
@@ -355,8 +371,17 @@ We design a C based algorithm to perform this simulation process. Our algorithm 
 In our package, as $n$ and $m$ get large, the total number of probability mass points $(n+1)^{m-1}$ will be extensively great. For time efficiency purpose, we only calculate the probability as customer demand. User will be asked to input the resulting vector, and the probability for the vector will be calculated.
 
 
+
+
 \begin{thm}
-Simulation error bounds.
+Given repeating time \mbox{B} and $n \times m$ matrix \mbox{P}, there will be totally  $N=(n+1)^{m-1}$ different results, denote them as $r_{1},r_{2},\dots,r_{N}$. Let the probability for a specific result $r_{i}$ be $p_{r_{i}}$, $i=1,\dots,N$. The estimate of  $p_{r_{i}}$ using simulation method is $\hat{p}_{r_i}$. We have the following error bound,
+\begin{equation*}
+    |p_{r_i} - \hat{p}_{r_i}| \leq \sqrt{\frac{p_{r_i}(1-p_{r_i})}{B}}
+\end{equation*}
+The total absolute error(\mbox{TAE}),
+\begin{equation*}
+    \mbox{TAE} \leq \sqrt{\frac{N-1}{B}}
+\end{equation*}
 
 \end{thm}
 
