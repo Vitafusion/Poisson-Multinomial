@@ -1,25 +1,25 @@
-\contentsline {section}{\numberline {1}Introduction}{3}{}%
-\contentsline {subsection}{\numberline {1.1}Motivation}{3}{}%
-\contentsline {subsection}{\numberline {1.2}Related Literature and Contribution of This Work}{3}{}%
-\contentsline {subsection}{\numberline {1.3}Overview}{4}{}%
-\contentsline {section}{\numberline {2}Poisson Multinomial Distribution}{4}{}%
-\contentsline {subsection}{\numberline {2.1}Definition of the Distribution}{4}{}%
-\contentsline {subsection}{\numberline {2.2}Properties of the Distribution}{5}{}%
-\contentsline {section}{\numberline {3}Computation of The Probability Mass Function}{6}{}%
-\contentsline {subsection}{\numberline {3.1}The MD-DFT Method}{6}{}%
-\contentsline {subsection}{\numberline {3.2}Normal-Approximation Based Method}{8}{}%
-\contentsline {subsection}{\numberline {3.3}Simulation-Based Method}{9}{}%
-\contentsline {section}{\numberline {4}Method Comparisons}{10}{}%
-\contentsline {subsection}{\numberline {4.1}Accuracy of MD-DFT Method}{10}{}%
-\contentsline {subsection}{\numberline {4.2}Accuracy of Normal Approximation}{11}{}%
-\contentsline {subsubsection}{\numberline {4.2.1}Accuracy of Simulation Method}{13}{}%
-\contentsline {subsection}{\numberline {4.3}Time Efficiency}{15}{}%
-\contentsline {subsection}{\numberline {4.4}Recommendations}{15}{}%
-\contentsline {section}{\numberline {5}Applications}{15}{}%
-\contentsline {subsection}{\numberline {5.1}Calculation of Voting Probability}{15}{}%
-\contentsline {subsection}{\numberline {5.2}Statistical Inference for Aggregated Data}{15}{}%
-\contentsline {subsection}{\numberline {5.3}Uncertainty Quantification in Classification}{17}{}%
-\contentsline {section}{\numberline {6}Illustrations of the R Package}{18}{}%
-\contentsline {subsection}{\numberline {6.1}Examples}{18}{}%
-\contentsline {subsection}{\numberline {6.2}Benchmark of R Packages for Poisson Binomial Distribution}{18}{}%
-\contentsline {section}{\numberline {7}Conclusions and Areas for Future Research}{18}{}%
+\contentsline {section}{\numberline {1}Introduction}{3}% 
+\contentsline {subsection}{\numberline {1.1}Motivation}{3}% 
+\contentsline {subsection}{\numberline {1.2}Related Literature and Contribution of This Work}{3}% 
+\contentsline {subsection}{\numberline {1.3}Overview}{4}% 
+\contentsline {section}{\numberline {2}Poisson Multinomial Distribution}{4}% 
+\contentsline {subsection}{\numberline {2.1}Definition of the Distribution}{4}% 
+\contentsline {subsection}{\numberline {2.2}Properties of the Distribution}{5}% 
+\contentsline {section}{\numberline {3}Computation of The Probability Mass Function}{6}% 
+\contentsline {subsection}{\numberline {3.1}The MD-DFT Method}{6}% 
+\contentsline {subsection}{\numberline {3.2}Normal-Approximation Based Method}{7}% 
+\contentsline {subsection}{\numberline {3.3}Simulation-Based Method}{8}% 
+\contentsline {section}{\numberline {4}Method Comparisons}{9}% 
+\contentsline {subsection}{\numberline {4.1}Accuracy of MD-DFT Method}{9}% 
+\contentsline {subsection}{\numberline {4.2}Accuracy of Normal Approximation}{10}% 
+\contentsline {subsubsection}{\numberline {4.2.1}Accuracy of Simulation Method}{11}% 
+\contentsline {subsection}{\numberline {4.3}Time Efficiency}{14}% 
+\contentsline {subsection}{\numberline {4.4}Recommendations}{14}% 
+\contentsline {section}{\numberline {5}Applications}{14}% 
+\contentsline {subsection}{\numberline {5.1}Calculation of Voting Probability}{14}% 
+\contentsline {subsection}{\numberline {5.2}Statistical Inference for Aggregated Data}{14}% 
+\contentsline {subsection}{\numberline {5.3}Uncertainty Quantification in Classification}{16}% 
+\contentsline {section}{\numberline {6}Illustrations of the R Package}{17}% 
+\contentsline {subsection}{\numberline {6.1}Examples}{17}% 
+\contentsline {subsection}{\numberline {6.2}Benchmark of R Packages for Poisson Binomial Distribution}{17}% 
+\contentsline {section}{\numberline {7}Conclusions and Areas for Future Research}{17}% 
