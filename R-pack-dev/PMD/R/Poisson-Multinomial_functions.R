@@ -78,7 +78,7 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
     stop("Invalid values in pmat.")
   }
   for(i in 1:nrow(pmat)){
-    if(sum(pmat[i,])!=1)
+    if(abs(sum(pmat[i,])-1)>10^(-16))
       stop("Existing a row that doesn't sum up to 1.")
   }
   
