@@ -4,10 +4,10 @@
 \alias{ppmd}
 \title{Cumulative Distribution Function of Poisson-Multinomial Distribution}
 \usage{
-ppmd(pmat, x, method = "DFT-CF", B = 10^3)
+ppmd(pmat, x, method = "DFT-CF", B = 1e3)
 }
 \arguments{
-\item{pmat}{A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+\item{pmat}{An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
 \eqn{m} is the number of categories.
 Each row of pmat describes the success probability for the corresponding
 trial and it should add up to 1.}
@@ -50,5 +50,5 @@ pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = T
 
 ppmd(pmat = pp, x = c(3,2,1,3))
 ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
-ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 10^3)
+ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 1e3)
 }

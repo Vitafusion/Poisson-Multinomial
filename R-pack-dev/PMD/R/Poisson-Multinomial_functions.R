@@ -5,7 +5,7 @@
 #' is capable for computation of the whole probability mass function as well as
 #' of one single probability mass point. 
 #' 
-#' @param pmat      A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+#' @param pmat      An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
 #'                  \eqn{m} is the number of categories. Also called success probability matrix.
 #'                  Each row of pmat describes the success probability for the corresponding
 #'                  trial and it should add up to 1.
@@ -33,8 +33,8 @@
 #' \code{"SIM-ALL"} is a simulation method using a naive simulation scheme to 
 #' calculate the whole probability mass function. Under this selection, the input 
 #' of \code{vec} will be ignored. Notice that the accuracy and running time will be
-#' affected by user choice of \code{B}. Usually \code{B}=10^5 or 10^6 will be 
-#' accurate enough. Increasing \code{B} to larger than 10^8 will heavily aggravate 
+#' affected by user choice of \code{B}. Usually \code{B}=1e5 or 1e6 will be 
+#' accurate enough. Increasing \code{B} to larger than 1e8 will heavily aggravate 
 #' computational burden of a CPU or GPU. 
 #' 
 #' When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} and 
@@ -42,7 +42,6 @@
 #' capability of a computer because both of the methods calculate all
 #' mass points of Poisson-Multinomial distributions.
 #' 
-#'  
 #' \code{"SIM"} is as same as \code{"SIM-ALL"} except that it only computes the
 #'  probability mass function at a single outcome specified by \code{vec}.
 #' 
@@ -61,14 +60,13 @@
 #' @examples
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 #' 
-#' 
 #' dpmd(pmat = pp)
-#' dpmd(pmat = pp, method = "SIM-ALL", B = 10^3)
+#' dpmd(pmat = pp, method = "SIM-ALL", B = 1e3)
 #' dpmd(pmat = pp, x = c(0,0,1,2), method = "NA" )
-#' dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 10^3)
+#' dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 1e3)
 #' 
 #' @export
-dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
+dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=1e3)
 {
   if(is.matrix(pmat)==F){
     stop("pmat is not a matrix.")
@@ -78,7 +76,7 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
     stop("Invalid values in pmat.")
   }
   for(i in 1:nrow(pmat)){
-    if(abs(sum(pmat[i,])-1)>1*10^(-10))
+    if(abs(sum(pmat[i,])-1)>1*1e-10)
       stop("Existing a row that doesn't sum up to 1.")
   }
   
@@ -223,7 +221,7 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
 #' Poisson-Multinomial distributions that specified by input probability matrix 
 #' via given method.
 #'  
-#' @param pmat      A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+#' @param pmat      An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
 #'                  \eqn{m} is the number of categories.
 #'                  Each row of pmat describes the success probability for the corresponding
 #'                  trial and it should add up to 1.
@@ -258,9 +256,9 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
 #' 
 #' ppmd(pmat = pp, x = c(3,2,1,3))
 #' ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
-#' ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 10^3)
+#' ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 1e3)
 #' @export
-ppmd = function(pmat,x,method="DFT-CF",B=10^3){
+ppmd = function(pmat,x,method="DFT-CF",B=1e3){
   if(is.matrix(pmat)==F){
     stop("pmat is not a matrix.")
   }
@@ -350,19 +348,18 @@ ppmd = function(pmat,x,method="DFT-CF",B=10^3){
 #' @title Poisson-Multinomial Distribution Random Number Generator
 #' @description Generating random samples of given a Poisson-Multinomial distribution.
 #'  
-#' @param pmat      A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+#' @param pmat      An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
 #'                  \eqn{m} is the number of categories.
 #'                  Each row of pmat describes the success probability for the corresponding
 #'                  trial and it should add up to 1.
-#' @param n          Number of samples to be generated.
+#' @param n         Number of samples to be generated.
 #' 
 #' @return 
-#' A \eqn{n \times m} matrix of samples, each row stands for one draw from PMD with success probability matrix \code{pmat}.
+#' An \eqn{n \times m} matrix of samples, each row stands for one draw from PMD with success probability matrix \code{pmat}.
 #' 
 #' @examples 
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
-#' 
-#' 
+#'  
 #' rpmd(pmat = pp, n = 5)
 #' 
 #' @export

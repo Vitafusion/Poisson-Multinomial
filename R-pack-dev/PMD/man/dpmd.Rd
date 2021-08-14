@@ -4,10 +4,10 @@
 \alias{dpmd}
 \title{Probability Mass Function of Poisson-Multinomial Distributions}
 \usage{
-dpmd(pmat, x = c(0, 0, 0, 0), method = "DFT-CF", B = 10^3)
+dpmd(pmat, x = c(0, 0, 0, 0), method = "DFT-CF", B = 1e3)
 }
 \arguments{
-\item{pmat}{A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+\item{pmat}{An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
 \eqn{m} is the number of categories. Also called success probability matrix.
 Each row of pmat describes the success probability for the corresponding
 trial and it should add up to 1.}
@@ -52,8 +52,8 @@ via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
 \code{"SIM-ALL"} is a simulation method using a naive simulation scheme to 
 calculate the whole probability mass function. Under this selection, the input 
 of \code{vec} will be ignored. Notice that the accuracy and running time will be
-affected by user choice of \code{B}. Usually \code{B}=10^5 or 10^6 will be 
-accurate enough. Increasing \code{B} to larger than 10^8 will heavily aggravate 
+affected by user choice of \code{B}. Usually \code{B}=1e5 or 1e6 will be 
+accurate enough. Increasing \code{B} to larger than 1e8 will heavily aggravate 
 computational burden of a CPU or GPU. 
 
 When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} and 
@@ -72,10 +72,9 @@ specified by user.
 \examples{
 pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
-
 dpmd(pmat = pp)
-dpmd(pmat = pp, method = "SIM-ALL", B = 10^3)
+dpmd(pmat = pp, method = "SIM-ALL", B = 1e3)
 dpmd(pmat = pp, x = c(0,0,1,2), method = "NA" )
-dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 10^3)
+dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 1e3)
 
 }
