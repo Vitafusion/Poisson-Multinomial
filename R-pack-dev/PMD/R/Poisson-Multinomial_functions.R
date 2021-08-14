@@ -5,8 +5,10 @@
 #' is capable for computation of the whole probability mass function as well as
 #' of one single probability mass point. 
 #' 
-#' @param pmat       A matrix of probabilities. Each row of pmat should add up 
-#'                   to 1.
+#' @param pmat      A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+#'                  \eqn{m} is the number of categories. Also called success probability matrix.
+#'                  Each row of pmat describes the success probability for the corresponding
+#'                  trial and it should add up to 1.
 #' @param method     Character string stands for the method selected by user to 
 #'                   compute the probability mass. The method can only be one of 
 #'                   the following four: 
@@ -14,46 +16,44 @@
 #'                   \code{"NA"},
 #'                   \code{"SIM"},
 #'                   \code{"SIM-ALL"}.
-#' @param x          Result vector(probability mass point) specified by user when 
+#' @param x          Result vector of length \eqn{m} (probability mass point) specified by user when 
 #'                   the selected method is "SIM" or "NA". The vector 
-#'                   \eqn{x = (x_{1}, x_{2}, \ldots)} is used for computing 
-#'                   \eqn{P(X_{1}=x_{1}, X_{2}=x_{2}, \ldots)}.
-#' @param B          Simulation repeating time. Will be ignored if users do not
-#'                   choose \code{"SIM-ALL"} or \code{"SIM"}
-#'                   as method.
+#'                   \eqn{x = (x_{1}, x_{2}, \ldots, x_{m})} is used for computing 
+#'                   \eqn{P(X_{1}=x_{1}, X_{2}=x_{2}, \ldots, X_{m} = x_{m})}.
+#' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
+#'                   choose \code{"SIM-ALL"} or \code{"SIM"} method.
 #'                   
 #' @details 
+#' Given \code{pmat} with dimension \eqn{n \times m}, the total number of outcomes is \eqn{(n+1)^{m-1}}. 
 #' For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method 
-#' to calculate all probability mass points of Poisson-Multinomial Distributions
+#' to calculate all mass points of Poisson-Multinomial Distributions
 #' via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
-#' \code{vec} and output the whole probability mass function.
+#' \code{vec} and return the probability mass function for all outcomes.
 #' 
-#' \code{"SIM-ALL"} is a simulation method using naive simulation scheme to 
-#' calculate the whole probability mass function, under this selection the input 
-#' of \code{vec} will be ignore. Notice the accuracy and running time will be
-#' effected by user choice of \code{B}. Usually \code{B}=10^5 or 10^6 will be 
+#' \code{"SIM-ALL"} is a simulation method using a naive simulation scheme to 
+#' calculate the whole probability mass function. Under this selection, the input 
+#' of \code{vec} will be ignored. Notice that the accuracy and running time will be
+#' affected by user choice of \code{B}. Usually \code{B}=10^5 or 10^6 will be 
 #' accurate enough. Increasing \code{B} to larger than 10^8 will heavily aggravate 
-#' computation burden of a CPU or GPU. 
+#' computational burden of a CPU or GPU. 
 #' 
-#' Given \code{pmat} with dimension \eqn{n \times m}, the number of total probability 
-#' mass points is \eqn{(n+1)^{m-1}}. Thus when the dimension of \code{pmat} 
-#' increases and the users selected method is one of \code{"DFT-CF"} and 
-#' \code{"SIM-ALL"}, the computation burden of \code{dpmd} might challenge the 
-#' capability of a computer because both of the methods calculate all probability 
+#' When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} and 
+#' \code{"SIM-ALL"} method might challenge the 
+#' capability of a computer because both of the methods calculate all
 #' mass points of Poisson-Multinomial distributions.
 #' 
 #'  
-#' \code{"SIM"} is as same as \code{"SIM-ALL"} except that it only computes a 
-#' single probability mass point specified by \code{vec}.
+#' \code{"SIM"} is as same as \code{"SIM-ALL"} except that it only computes the
+#'  probability mass function at a single outcome specified by \code{vec}.
 #' 
-#' \code{"NA"} specifies an approximation method using Normal approximation to 
-#' compute the probability mass point of the \code{vec} vector
-#' input by user.
+#' \code{"NA"} is an approximation method using Normal approximation to 
+#' compute the probability mass function of \code{vec} vector
+#' specified by user.
 #' 
 #' @return           
-#' For a single probability mass point, \code{dpmd} returns a probability value. 
+#' For a single mass point, \code{dpmd} returns the probability mass function at that point. 
 #' 
-#' For all probability mass points of a given \code{pmat}, it returns a 
+#' For all mass points of a given \code{pmat}, it returns a 
 #' multi-dimensional array. For instance, for the \code{pmat} matrix in the 
 #' following example, the value of the array element \eqn{a_{1,2,1}} = 0.90 means 
 #' the value of probability mass point (0,1,0,2) is 0.90. 
@@ -223,29 +223,35 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=10^3)
 #' Poisson-Multinomial distributions that specified by input probability matrix 
 #' via given method.
 #'  
-#' @param pmat       A matrix of probabilities. Each row of pmat should add up 
-#'                   to 1.
+#' @param pmat      A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+#'                  \eqn{m} is the number of categories.
+#'                  Each row of pmat describes the success probability for the corresponding
+#'                  trial and it should add up to 1.
 #' @param method     Character string stands for the method selected by user to 
 #'                   compute the probability mass. The method can only be one of 
 #'                   the following three: 
 #'                   \code{"DFT-CF"},
 #'                   \code{"NA"},
 #'                   \code{"SIM-ALL"}. 
-#' @param B          Simulation repeating time. Will be ignored if users do not
-#'                   choose \code{"SIM-ALL"} as method.
-#' @param x          Vector \eqn{x = (x_{1},x_{2},\ldots)} for computing 
-#'                   \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)}.
+#' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
+#'                   choose \code{"SIM-ALL"} method.
+#' @param x          A length \eqn{m} vector \eqn{x = (x_{1},x_{2},\ldots,x_{m})} for computing 
+#'                   \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})}.
 #' 
 #' @details 
-#' Three methods are same as listed in the details of \code{dpmd} but \code{"NA"}
-#' stands for normal approximation. 
-#' 
 #' \code{ppmd} computes the cumulative distribution function by adding all probability 
 #' mass points within hyper-dimensional space limited by \code{x}. 
 #' 
+#' \code{"DFT-CF"} is an exact method 
+#' to calculate all mass points of Poisson-Multinomial Distributions
+#' via FFT algorithm.
+#' \code{"SIM-ALL"} is a simulation method using a naive simulation scheme to 
+#' calculate the whole probability mass function.
+#' \code{"NA"} is an approximation method using Normal approximation method.
+#' 
 #' @return 
-#' The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)} of given 
-#' \eqn{x = (x_{1},x_{2},\ldots)}.
+#' The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})} of given 
+#' \eqn{x = (x_{1},x_{2},\ldots, x_{m})}.
 #' 
 #' @examples
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
@@ -344,12 +350,14 @@ ppmd = function(pmat,x,method="DFT-CF",B=10^3){
 #' @title Poisson-Multinomial Distribution Random Number Generator
 #' @description Generating random samples of given a Poisson-Multinomial distribution.
 #'  
-#' @param pmat       A matrix of probabilities. Each row of pmat should add up 
-#'                   to 1.
+#' @param pmat      A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+#'                  \eqn{m} is the number of categories.
+#'                  Each row of pmat describes the success probability for the corresponding
+#'                  trial and it should add up to 1.
 #' @param n          Number of samples to be generated.
 #' 
 #' @return 
-#' A matrix of samples, each row stands for one sample.
+#' A \eqn{n \times m} matrix of samples, each row stands for one draw from PMD with success probability matrix \code{pmat}.
 #' 
 #' @examples 
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)

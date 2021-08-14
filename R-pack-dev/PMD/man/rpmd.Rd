@@ -7,13 +7,15 @@
 rpmd(pmat, n = 1)
 }
 \arguments{
-\item{pmat}{A matrix of probabilities. Each row of pmat should add up 
-to 1.}
+\item{pmat}{A \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+\eqn{m} is the number of categories.
+Each row of pmat describes the success probability for the corresponding
+trial and it should add up to 1.}
 
 \item{n}{Number of samples to be generated.}
 }
 \value{
-A matrix of samples, each row stands for one sample.
+A \eqn{n \times m} matrix of samples, each row stands for one draw from PMD with success probability matrix \code{pmat}.
 }
 \description{
 Generating random samples of given a Poisson-Multinomial distribution.
