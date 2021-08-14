@@ -4,28 +4,30 @@
 \alias{ppmd}
 \title{Cumulative Distribution Function of Poisson-Multinomial Distribution}
 \usage{
-ppmd(pp, x, method = "DFT-CF", B = 1000)
+ppmd(pmat, x, method = "DFT-CF", B = 1e3)
 }
 \arguments{
-\item{pp}{A matrix of probabilities. Each row of pp should add up 
-to 1.}
+\item{pmat}{An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
+\eqn{m} is the number of categories.
+Each row of pmat describes the success probability for the corresponding
+trial and it should add up to 1.}
 
-\item{x}{Vector \eqn{x = (x_{1},x_{2},\ldots)} for computing 
-\eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)}.}
+\item{x}{A length \eqn{m} vector \eqn{x = (x_{1},x_{2},\ldots,x_{m})} for computing 
+\eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})}.}
 
 \item{method}{Character string stands for the method selected by user to 
 compute the probability mass. The method can only be one of 
-the following three,
-\code{"DFT-CF"}
-\code{"simulation"}
-\code{"NA"}}
+the following three: 
+\code{"DFT-CF"},
+\code{"NA"},
+\code{"SIM-ALL"}.}
 
-\item{B}{Simulation repeating time. Will be ignored if users do not
-choose \code{"simulation"} as method.}
+\item{B}{Number of repetitions in the simulation method. Will be ignored if users do not
+choose \code{"SIM-ALL"} method.}
 }
 \value{
-The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots)} of given 
-\eqn{x = (x_{1},x_{2},\ldots)}.
+The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})} of given 
+\eqn{x = (x_{1},x_{2},\ldots, x_{m})}.
 }
 \description{
 This function computes cumulative distribution function of 
@@ -33,17 +35,20 @@ Poisson-Multinomial distributions that specified by input probability matrix
 via given method.
 }
 \details{
-Three methods are same as listed in the details of \code{dpmd} but \code{"NA"}
-stands for normal approximation. 
-
 \code{ppmd} computes the cumulative distribution function by adding all probability 
-mass points within hyper-dimensional space limited by \code{x}.
+mass points within hyper-dimensional space limited by \code{x}. 
+
+\code{"DFT-CF"} is an exact method 
+to calculate all mass points of Poisson-Multinomial Distributions
+via FFT algorithm.
+\code{"SIM-ALL"} is a simulation method using a naive simulation scheme to 
+calculate the whole probability mass function.
+\code{"NA"} is an approximation method using Normal approximation method.
 }
 \examples{
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
-
-ppmd(pp, x = c(3,2,1,3))
-ppmd(pp, x = c(3,2,1,3), method = "simulation", B = 10^3)
-ppmd(pp, x = c(3,2,1,3), method = "NA")
+ppmd(pmat = pp, x = c(3,2,1,3))
+ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
+ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 1e3)
 }

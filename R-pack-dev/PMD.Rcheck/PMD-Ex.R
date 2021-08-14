@@ -18,13 +18,12 @@ flush(stderr()); flush(stdout())
 
 ### ** Examples
 
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
-
-dpmd(pp)
-dpmd(pp,"simulation",B=10^3)
-dpmd(pp,"NA by demands", vec = c(0,0,1,2))
-dpmd(pp,"simulation by demands", vec = c(0,0,1,2), B=10^3)
+dpmd(pmat = pp)
+dpmd(pmat = pp, method = "SIM-ALL", B = 1e3)
+dpmd(pmat = pp, x = c(0,0,1,2), method = "NA" )
+dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 1e3)
 
 
 
@@ -42,12 +41,11 @@ flush(stderr()); flush(stdout())
 
 ### ** Examples
 
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
-
-ppmd(pp, x = c(3,2,1,3))
-ppmd(pp, x = c(3,2,1,3), method = "simulation", B = 10^3)
-ppmd(pp, x = c(3,2,1,3), method = "NA")
+ppmd(pmat = pp, x = c(3,2,1,3))
+ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
+ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 1e3)
 
 
 
@@ -63,11 +61,9 @@ flush(stderr()); flush(stdout())
 
 ### ** Examples
 
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow=3, byrow=TRUE)
+pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 
-n=5
-
-rpmd(pp,5)
+rpmd(pmat = pp, n = 5)
 
 
 

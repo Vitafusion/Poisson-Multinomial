@@ -240,31 +240,20 @@ double pmd_simulation_singlepoint(arma::mat pp, arma::vec x_vec, int t)
     /*arma::vec res(nnt, arma::fill::zeros);*/
     double res=0;
     int mm=pp.n_cols;
-
-  int k, u;
-  double count;
+    int k;
+    double count=0;
   
-
-  arma::mat sim(t,mm,arma::fill::zeros);
+  arma::vec sim(mm,arma::fill::zeros);
   for(k=0;k<t;k++){
     //arma::mat tmp(nn, mm, arma::fill::zeros);
     //rpmd(pp).as_row().print();
-    sim.row(k)=rpmd_arma(pp).as_row();
-    //sim.row(k).print();
-  }
-
-
-
-    count=0;
-    for(u=0;u<t;u++){
-        if(all(sim.row(u)==x_vec.as_row())){
-          count++;
-          }
-    
-
+    sim=rpmd_arma(pp);
+    //sim.print();
+    if(all(sim==x_vec)){
+        count++;
     }
-
-    res=count/t;
+  }
+  res=count/t;
 
 
     return res;
