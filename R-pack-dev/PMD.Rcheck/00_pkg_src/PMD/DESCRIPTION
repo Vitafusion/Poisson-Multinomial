@@ -1,6 +1,6 @@
 Package: PMD
 Type: Package
-Title: Computation of Poisson-Multinomial Distribtuions
+Title: The Poisson-Multinomial Distribtuion
 Version: 1.0
 Date: 2021-08-06
 Authors@R: c(person("Yili Hong", role = c("aut", "ctb"),
@@ -17,7 +17,7 @@ LinkingTo: Rcpp, RcppArmadillo
 SystemRequirements: fftw3(>=3.3)
 RoxygenNote: 7.1.1
 NeedsCompilation: yes
-Packaged: 2021-08-14 21:17:26 UTC; yilih
+Packaged: 2021-08-15 13:55:45 UTC; yilih
 Author: Yili Hong [aut, ctb],
   Zhengzhi Lin [aut, cre],
   Yueyao Wang [aut, ctb]

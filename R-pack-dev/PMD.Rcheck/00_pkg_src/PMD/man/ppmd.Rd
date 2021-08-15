@@ -4,7 +4,7 @@
 \alias{ppmd}
 \title{Cumulative Distribution Function of Poisson-Multinomial Distribution}
 \usage{
-ppmd(pmat, x, method = "DFT-CF", B = 1e3)
+ppmd(pmat, x, method = "DFT-CF", B = 1000)
 }
 \arguments{
 \item{pmat}{An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
@@ -12,8 +12,8 @@ ppmd(pmat, x, method = "DFT-CF", B = 1e3)
 Each row of pmat describes the success probability for the corresponding
 trial and it should add up to 1.}
 
-\item{x}{A length \eqn{m} vector \eqn{x = (x_{1},x_{2},\ldots,x_{m})} for computing 
-\eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})}.}
+\item{x}{A length \eqn{m} vector \eqn{x = (x_{1},\ldots,x_{m})} for computing 
+\eqn{P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})}.}
 
 \item{method}{Character string stands for the method selected by user to 
 compute the probability mass. The method can only be one of 
@@ -26,8 +26,8 @@ the following three:
 choose \code{"SIM-ALL"} method.}
 }
 \value{
-The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})} of given 
-\eqn{x = (x_{1},x_{2},\ldots, x_{m})}.
+The value of \eqn{P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})} of given 
+\eqn{x = (x_{1},\ldots, x_{m})}.
 }
 \description{
 This function computes cumulative distribution function of 
@@ -35,6 +35,7 @@ Poisson-Multinomial distributions that specified by input probability matrix
 via given method.
 }
 \details{
+See Details in \code{dpmd} for the definition of the PMD and the introduction of notations.
 \code{ppmd} computes the cumulative distribution function by adding all probability 
 mass points within hyper-dimensional space limited by \code{x}. 
 

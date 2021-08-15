@@ -4,7 +4,7 @@
 \alias{dpmd}
 \title{Probability Mass Function of Poisson-Multinomial Distributions}
 \usage{
-dpmd(pmat, x = c(0, 0, 0, 0), method = "DFT-CF", B = 1e3)
+dpmd(pmat, x = c(0, 0, 0, 0), method = "DFT-CF", B = 1000)
 }
 \arguments{
 \item{pmat}{An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
@@ -14,8 +14,8 @@ trial and it should add up to 1.}
 
 \item{x}{Result vector of length \eqn{m} (probability mass point) specified by user when 
 the selected method is "SIM" or "NA". The vector 
-\eqn{x = (x_{1}, x_{2}, \ldots, x_{m})} is used for computing 
-\eqn{P(X_{1}=x_{1}, X_{2}=x_{2}, \ldots, X_{m} = x_{m})}.}
+\eqn{x = (x_{1}, \ldots, x_{m})} is used for computing 
+\eqn{P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}.}
 
 \item{method}{Character string stands for the method selected by user to 
 compute the probability mass. The method can only be one of 
@@ -43,7 +43,8 @@ is capable for computation of the whole probability mass function as well as
 of one single probability mass point.
 }
 \details{
-Given \code{pmat} with dimension \eqn{n \times m}, the total number of outcomes is \eqn{(n+1)^{m-1}}. 
+Consider \eqn{n} independent trials and each trial leads to a success for exactly one of \eqn{m} categories. Each category has varying success probabilities from different trials. The Poisson multinomial distribution (PMD) gives the probability of any particular combination of numbers of successes for the \eqn{m} categories. The success probabilities form an \eqn{n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}. 
+The total number of outcomes is \eqn{(n+1)^{m-1}}. 
 For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method 
 to calculate all mass points of Poisson-Multinomial Distributions
 via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
@@ -61,7 +62,6 @@ When the dimension of \code{pmat} increases, the computation burden of \code{"DF
 capability of a computer because both of the methods calculate all
 mass points of Poisson-Multinomial distributions.
 
- 
 \code{"SIM"} is as same as \code{"SIM-ALL"} except that it only computes the
  probability mass function at a single outcome specified by \code{vec}.
 

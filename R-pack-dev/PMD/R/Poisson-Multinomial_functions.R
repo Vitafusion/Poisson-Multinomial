@@ -18,13 +18,14 @@
 #'                   \code{"SIM-ALL"}.
 #' @param x          Result vector of length \eqn{m} (probability mass point) specified by user when 
 #'                   the selected method is "SIM" or "NA". The vector 
-#'                   \eqn{x = (x_{1}, x_{2}, \ldots, x_{m})} is used for computing 
-#'                   \eqn{P(X_{1}=x_{1}, X_{2}=x_{2}, \ldots, X_{m} = x_{m})}.
+#'                   \eqn{x = (x_{1}, \ldots, x_{m})} is used for computing 
+#'                   \eqn{P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}.
 #' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
 #'                   choose \code{"SIM-ALL"} or \code{"SIM"} method.
 #'                   
-#' @details 
-#' Given \code{pmat} with dimension \eqn{n \times m}, the total number of outcomes is \eqn{(n+1)^{m-1}}. 
+#' @details
+#' Consider \eqn{n} independent trials and each trial leads to a success for exactly one of \eqn{m} categories. Each category has varying success probabilities from different trials. The Poisson multinomial distribution (PMD) gives the probability of any particular combination of numbers of successes for the \eqn{m} categories. The success probabilities form an \eqn{n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}. 
+#' The total number of outcomes is \eqn{(n+1)^{m-1}}. 
 #' For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method 
 #' to calculate all mass points of Poisson-Multinomial Distributions
 #' via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
@@ -233,10 +234,11 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=1e3)
 #'                   \code{"SIM-ALL"}. 
 #' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
 #'                   choose \code{"SIM-ALL"} method.
-#' @param x          A length \eqn{m} vector \eqn{x = (x_{1},x_{2},\ldots,x_{m})} for computing 
-#'                   \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})}.
+#' @param x          A length \eqn{m} vector \eqn{x = (x_{1},\ldots,x_{m})} for computing 
+#'                   \eqn{P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})}.
 #' 
 #' @details 
+#' See Details in \code{dpmd} for the definition of the PMD and the introduction of notations.
 #' \code{ppmd} computes the cumulative distribution function by adding all probability 
 #' mass points within hyper-dimensional space limited by \code{x}. 
 #' 
@@ -248,8 +250,8 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=1e3)
 #' \code{"NA"} is an approximation method using Normal approximation method.
 #' 
 #' @return 
-#' The value of \eqn{P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots, X_{m} \leq x_{m})} of given 
-#' \eqn{x = (x_{1},x_{2},\ldots, x_{m})}.
+#' The value of \eqn{P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})} of given 
+#' \eqn{x = (x_{1},\ldots, x_{m})}.
 #' 
 #' @examples
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
@@ -346,24 +348,23 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
 }
 ########################################################################################
 #' @title Poisson-Multinomial Distribution Random Number Generator
-#' @description Generating random samples of given a Poisson-Multinomial distribution.
+#' @description Generating random samples from Poisson-Multinomial distribution based on a given success probability matrix.
 #'  
-#' @param pmat      An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
-#'                  \eqn{m} is the number of categories.
+#' @param pmat      The \eqn{n \times m} success probability matrix, where \eqn{n} is the number of independent trials and \eqn{m} is the number of categories.
 #'                  Each row of pmat describes the success probability for the corresponding
-#'                  trial and it should add up to 1.
-#' @param n         Number of samples to be generated.
+#'                  trial, which adds up to 1.
+#' @param s         The number of samples to be generated.
 #' 
 #' @return 
-#' An \eqn{n \times m} matrix of samples, each row stands for one draw from PMD with success probability matrix \code{pmat}.
+#' An \eqn{s \times m} matrix of samples, each row stands for one sample from the PMD with success probability matrix \code{pmat}.
 #' 
 #' @examples 
 #' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 #'  
-#' rpmd(pmat = pp, n = 5)
+#' rpmd(pmat = pp, s = 5)
 #' 
 #' @export
-rpmd = function(pmat, n=1){
+rpmd = function(pmat, s=1){
   if(is.matrix(pmat)==F){
     stop("pmat is not a matrix.")
   }
@@ -371,8 +372,8 @@ rpmd = function(pmat, n=1){
     stop("Invalid values in pmat.")
   }
   mm = ncol(pmat)
-  rnd = matrix(NA,nrow = n,ncol = mm)
-  for(i in 1:n){
+  rnd = matrix(NA,nrow = s,ncol = mm)
+  for(i in 1:s){
     rnd[i,] = t(rpmd_arma(pmat))
   }
   return(rnd)

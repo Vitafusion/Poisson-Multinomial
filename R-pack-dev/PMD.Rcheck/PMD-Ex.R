@@ -62,8 +62,8 @@ flush(stderr()); flush(stdout())
 ### ** Examples
 
 pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
-
-rpmd(pmat = pp, n = 5)
+ 
+rpmd(pmat = pp, s = 5)
 
 
 
