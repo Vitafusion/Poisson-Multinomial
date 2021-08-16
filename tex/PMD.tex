@@ -193,7 +193,7 @@ p_{n1} &  \dots & p_{nm} \\
 \end{equation*}
 Let vector $\boldsymbol{x} = (x_1,\dots,x_m)'$, the probability mass function (pmf) of PMD,
 $$p(\boldsymbol{X}=\boldsymbol{x}) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,\X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,\X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the 3$\textbf{rd}$ part of this paper.\\
+is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,\X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the 3$\textbf{rd}$ part of this paper.\\
 \\
 Let's see a simple example, we have three candidates and four voters, and we have
 \begin{equation*}
@@ -311,7 +311,7 @@ Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$
 \begin{thm}
 For a Poisson-Multinomial random variable $\boldsymbol{X} = (X_1,\dots,X_{m-1})'$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $\boldsymbol{r}_i$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{r}_i} = [\boldsymbol{r}_i-0.5,\boldsymbol{r}_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
 \begin{equation*}
-    |P(\boldsymbol{X} \in \mathcal{N}_{r_i}) - P(\boldsymbol{Z} \in \mathcal{N}_{r_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{k}|^3
+    |P(\boldsymbol{X} \in \mathcal{N}_{r_i}) - P(\boldsymbol{Z} \in \mathcal{N}_{r_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
 \end{equation*}
 where $\boldsymbol{Z}$ is normal with mean 0 and covariance matrix $\boldsymbol{\Sigma}_0$.
 \end{thm}
@@ -348,7 +348,7 @@ Easy to get $\boldsymbol{I}_i - \EE \boldsymbol{I}_i$ has mean 0. Hereby $\bolds
 By extended $\textbf{Berry-Esseen theory}$ (V. Yu. Bentkus, A Lyapunov-type bound in Rd
 ), there existing  a constant $b$ such that 
 \begin{equation*}
-    |P\left(\boldsymbol{X} \in \mathcal{N}_{\boldsymbol{r}_i}\right) - P\left(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{r}_i-\boldsymbol{\mu}_0} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|C^{-1}\boldsymbol{I}_k\right|^3
+    |P\left(\boldsymbol{X} \in \mathcal{N}_{\boldsymbol{r}_i}\right) - P\left(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{r}_i-\boldsymbol{\mu}_0} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|C^{-1}\boldsymbol{I}_i\right|^3
 \end{equation*}
 Where $\boldsymbol{Z}$ is $\textbf{CLT}$ multivariate normal distribution of with 0 mean and covariance $\boldsymbol{\Sigma}_0$. 
 
