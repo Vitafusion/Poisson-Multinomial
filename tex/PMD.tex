@@ -1,11 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[12pt]{article}
-\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,multirow,chicago,psfrag,paralist,dsfont,url}
+\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,pifont, multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textwidth  6.6in \textheight 9.2in \topmargin -.0in \oddsidemargin
 -0.0in \evensidemargin -0.0in \pagestyle{plain}
-
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
 \newcommand{\thetavec}{{\boldsymbol{\theta}}}
 \newcommand{\veps}{\varepsilon}
 \newcommand{\vepsvec}{{\boldsymbol{\varepsilon}}}
@@ -638,8 +639,44 @@ In machine learning classification problem with multiple labels, for each unit i
 Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms. 
 
 
+A public dataset (\url{https://github.com/zae-bayern/elpv-dataset}) of solar cells extracted from high resolution EI images of monocrystalline and polycrystalline PV modules.
 
 
+All images are normalized with respect to size and perspective. Additionally, any distortion induced by the camera lens used to capture the EL images was eliminated prior to solar cell extraction.
+
+Then we will talk about how to process these data. They hired some evaluators and ask them two questions. The first is how do they think the function of the solar cells, functional or defective; the second is how they are confident about their assessments. Then we can get four different situations as Table \ref{tt}
+
+\begin{table}[h!]
+	\centering
+	\caption{Partitioning of solar cells into functional and defective, with an additional self-assessment on the rater's confidence after visual inspection. Non-confident decisions obtain a weight lower than 100\% for the evaluation of the classifier performance }
+	\begin{tabular}{c|c|c|c}
+		\hline
+		\hline
+		Condition  & Confident?  &  Label $p$ & Weight $w$ \\
+		\hline
+		\multirow{2}{*}{functional} & \cmark & functional & 100\% \\
+		& \xmark& defective  & 33\% \\
+		\hline
+		\multirow{2}{*}{defective} & \cmark & defective & 100\%  \\
+		& \xmark & defective & 67\% \\
+		\hline
+		\hline
+	\end{tabular}
+	
+	
+	
+	\label{tt}
+	
+\end{table}
+According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
+
+We split our data to training data (80\%) and test data (20\%), then fitting a CNN model. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. We also allow our model to pad. After ten epochs, the model converges.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=1.0]{figures/ConfusionHistogram.pdf}
+	\caption{The histogram of each prediction cells.}
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Illustrations of the R Package}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
