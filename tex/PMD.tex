@@ -1,11 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[12pt]{article}
-\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,multirow,chicago,psfrag,paralist,dsfont,url}
+\usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,pifont, multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textwidth  6.6in \textheight 9.2in \topmargin -.0in \oddsidemargin
 -0.0in \evensidemargin -0.0in \pagestyle{plain}
-
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
 \newcommand{\thetavec}{{\boldsymbol{\theta}}}
 \newcommand{\veps}{\varepsilon}
 \newcommand{\vepsvec}{{\boldsymbol{\varepsilon}}}
@@ -171,7 +172,13 @@ We also compare the time efficiency and accuracy of each method, and come up a g
 
 
 \subsection{Overview}
-The rest of the paper is organized as follows.
+The rest of the paper is organized as follows. \\
+\\
+In the coming part, we describe the definition of Poisson Multinomial distribution as well as demonstrate some useful properties. In the third part, we explain three ways of computing the probability mass function by details.\\
+\\
+The fourth part of this article compare the accuracy and time efficiency of the listed three methods. \\
+\\
+In the application part, we begin with a simple scenario of committee voting where small dimensional PMDs can be applied. Later we show a way of implementing medium size PMDs to AI4I 2020 Predictive Maintenance Dataset which is a large scale aggregated dataet(large $n$). We also place PMD in a classification scenario using the solar cells EI image data.
 
 
 
@@ -180,36 +187,36 @@ The rest of the paper is organized as follows.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
 		
-Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \ldots, X_{m})' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_{m})'$. That is we will focus on the random vectors $I_i=(I_{i1}, \ldots, I_{im})'$ and $X=(X_1, \ldots, X_m)'$. The distribution of the $X$ is called the Poisson multinomial distribution (PMD), which is denoted by
-$$X  = \sum_{i = 1}^n I_i \sim \PMD(n,m,P_{n\times m}),$$
+Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_m)'$. That is we will focus on the random vectors $\boldsymbol{I}_i=(I_{i1}, \ldots, I_{im})'$ and $\boldsymbol{X}=(X_1, \ldots, X_m)'$. The distribution of the $\boldsymbol{X}$ is called the Poisson multinomial distribution (PMD), which is denoted by
+$$\boldsymbol{X}  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,\boldsymbol{P}_{n\times m}),$$
 where the success probability matrix (SPM) is
 \begin{equation*}
-P_{n \times m} = \begin{pmatrix}
+\boldsymbol{P}_{n \times m} = \begin{pmatrix}
 p_{11} &  \dots & p_{1m} \\
 \vdots & \ddots & \vdots \\
 p_{n1} &  \dots & p_{nm} \\
 \end{pmatrix}.
 \end{equation*}
-The probability mass function (pmf) of PMD,
-$$p(x_1, \dots, x_{m-1},x_{m}) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $.\\
+Let vector $\boldsymbol{x} = (x_1,\dots,x_m)'$, the probability mass function (pmf) of PMD,
+$$p(\boldsymbol{X}=\boldsymbol{x}) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
+is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,\X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the $3^{\textbf{rd}}$ part of this paper.\\
 \\
 Let's see a simple example, we have three candidates and four voters, and we have
 \begin{equation*}
-P_{4 \times 2} = \begin{pmatrix}
-0.1 &  0.2 \\
-0.5 & 0.2\\
-0.4 &  0.5 \\
-0.8 & 0.1
+\boldsymbol{P}_{4 \times 3} = \begin{pmatrix}
+0.1 &  0.2 & 0.7\\
+0.5 & 0.2 & 0.3\\
+0.4 &  0.5 & 0.1\\
+0.8 & 0.1 & 0.1
 \end{pmatrix}.
 \end{equation*}
-We want to know the probability of a result that candidate 1 gets 4 votes and others  gets 0 vote.
+We want to know the probability of a result that candidate 1 gets 4 votes and others  gets 0 vote that is, $\boldsymbol{x} =  (4,0,0)'$. 
 \begin{equation*}
-P\{X = (4,0,0)\} = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016
+P\{\boldsymbol{X} = \boldsymbol{x}\} = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016
 \end{equation*}
-The probability of $X=(1,3,0)$ is
+The probability of $\boldsymbol{X}=(1,3,0)'$ is
  \begin{multline*}
- P\{X = (1,3,0)\} = 0.1\times 0.2 \times 0.5 \times 0.1\\ +
+ P\{\boldsymbol{X} = (1,3,0)\} = 0.1\times 0.2 \times 0.5 \times 0.1\\ +
  0.5\times0.2\times0.5 \times 0.1 + 0.4\times0.2\times0.2\times0.1 + 0.8\times0.2\times0.2\times0.5 = 0.0236
  \end{multline*}
  Keep doing this we can calculate all possible outcomes.\\
@@ -223,9 +230,9 @@ In related literature, \citeN{hong2013computing} consider the exact and approxim
 \subsection{Properties of the Distribution}
 
 \begin{thm}
-Given random variable $X$ that follows a Poisson-Multinomial distribution with $P_{n\times m}$, the mean of $X$ is 
+Given random variable $\boldsymbol{X}$ that follows a Poisson-Multinomial distribution with $\boldsymbol{P}_{n\times m}$, the mean of $\boldsymbol{X}$ is 
    $\boldsymbol{\mu} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$, where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$. \\
-The variance-covariance matrix of $X$ is a $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
+The variance-covariance matrix of $\boldsymbol{X}$ is a $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
 \begin{equation*}
    \Sigma_{ij} = 
            \begin{cases}
@@ -236,7 +243,7 @@ The variance-covariance matrix of $X$ is a $m \times m$ matrix $\boldsymbol{\Sig
 
 The CF for the PMD is 
 \begin{equation*}
-\phi(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
+\phi_{\boldsymbol{X}}(t_1, \dots, t_{m-1}) = \phi_{(X_1,\dots,X_m)'}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
 \end{equation*}
 where  $\ivec=\sqrt{-1}$.
 \end{thm}
@@ -244,16 +251,13 @@ The derivations of the above properties are trivial. One important thing is that
 
 
 \begin{thm}
-If the SPM $P$ can be written as a block diagonal matrix after row and column permutations. Then the pmf can computed as the product of the corresponding marginal pmf. Without loss of generality, let
-$P=\diag(P_1, \cdots, P_r)$, then,
+If the SPM $\boldsymbol{P}$ can be written as a combination of diagonal matrices $\boldsymbol{P}_1, \boldsymbol{P}_2, \dots, \boldsymbol{P}_{K}$, $\boldsymbol{P} = \textbf{\diag}(\boldsymbol{P}_{k}), k=1,\dots,K$. Then the outcome of $\boldsymbol{P}$, $\boldsymbol{x}$ can hereby be decomposed in to  outcomes of the diagonal matrices, $\boldsymbol{x} = (\boldsymbol{x}_{1},\dots,\boldsymbol{x}_{K})$. The pmf can computed as the product of the corresponding marginal pmfs. That is
 \begin{align*}
-p(x_1, \cdots, x_m)=\prod_{k=1}^rp_k(x).
+p(\boldsymbol{x}|\boldsymbol{P})= p(\boldsymbol{x}_{1} \cap \dots \cap \boldsymbol{x}_{K}|\boldsymbol{P}_1,\dots,\boldsymbol{P}_{K} )= \prod_{k=1}^K p(\boldsymbol{x}_{k}|\boldsymbol{P}_{k}).
 \end{align*}
-need a better way to define the notation here.
-
-Kind of independence property.
-
 \end{thm}
+To show this, we assume $\boldsymbol{P}$ is $n \times m$ and $\boldsymbol{P}_{k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. To demonstrate the situation here, suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates 
+described by probability matrix $\boldsymbol{P}_k$. Strict proof can be done by decomposition of characteristic function of $\boldsymbol{P}$ into characteristic functions of $\boldsymbol{P}_{k}$s.
 
 
 
@@ -269,7 +273,7 @@ In this section we provide an exact formula to compute the pmf of the PMD. The f
 Multidimensional Fourier Transform
 
 
-The CF of $X=(X_1, \dots, X_{m-1})'$ is
+The CF of $\boldsymbol{X}=(X_1, \dots, X_{m-1})'$ is
 \begin{align*}
 \phi(t_1, \dots, t_{m-1}) & = \EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right]=\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right].
 \end{align*}
@@ -307,22 +311,19 @@ To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \ti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normal-Approximation Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $P$.
+Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $\boldsymbol{P}$.
 
 
 \begin{thm}
-For a Poisson-Multinomial random variable $\boldsymbol{X}$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $r_i$, and its neighbourhood interval $\mathcal{N}_{r_i} = [r_i-0.5,r_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
+For a Poisson-Multinomial random variable $\boldsymbol{X} = (X_1,\dots,X_{m-1})'$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $\boldsymbol{r}_i$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{r}_i} = [\boldsymbol{r}_i-0.5,\boldsymbol{r}_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
 \begin{equation*}
-    |P(\boldsymbol{X} \in \mathcal{N}_{r_i}) - P(Z \in \mathcal{N}_{r_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{k}|^3
+    |P(\boldsymbol{X} \in \mathcal{N}_{r_i}) - P(\boldsymbol{Z} \in \mathcal{N}_{r_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
 \end{equation*}
-where $Z$ is normal with mean 0 and covariance matrix $\boldsymbol{\Sigma}_0$.
+where $\boldsymbol{Z}$ is normal with mean 0 and covariance matrix $\boldsymbol{\Sigma}_0$.
 \end{thm}
-
-
-
 We first show that CLT can be applied to
 \begin{equation*}
-\frac{X}{n} - \pvec = \frac{(X_1,\dots,X_{m-1})}{n} - \pvec = \frac{(X_1 - \sum_{i=1}^{n}p_{i1},\dots,X_{m-1} - \sum_{i=1}^{n}p_{i,m-1})}{n}
+\frac{\boldsymbol{X}}{n} - \pvec = \frac{(X_1,\dots,X_{m-1})}{n} - \pvec = \frac{(X_1 - \sum_{i=1}^{n}p_{i1},\dots,X_{m-1} - \sum_{i=1}^{n}p_{i,m-1})}{n}
 \end{equation*}
 We just need to show that for any $j = 1,\dots,m-1$, $X_j - \sum_{i=1}^{n}p_{ij}$ satisfies conditions of CLT. Where $X_{j} = \sum_i I_{ij}$ \\
 Notice that for any $\delta > 0$
@@ -333,16 +334,22 @@ Therefore, let $s_n^2 = \sum_{i=1}^{n}\Var(I_{ij})$, we have
 \begin{equation*}
     \frac{1}{s_n^{2+\delta}}\sum_{i=1}^{n}E|I_{ij}|^{2 + \delta} \leq  \frac{1}{s_n^{2+\delta}}\sum_{i=1}^{n}\Var(I_{ij}) = \frac{1}{s_n^\delta}
 \end{equation*}
-As $n \rightarrow \infty$, $s_n \rightarrow \infty$, so the above equation converges to 0. Therefore $X_j$ satisfies Lyapunov condition, thus CLT can be applied to $X_j$. \\
-And we have to figure out the covariance matrix for X.
-Observe for any fix i, $I_{ij}$ and $I_{ik}$ has covariance $-p_{ij}p_{ik}$. \\
-
-
-Therefore, it is trivial to get the covariance matrix $$\Sigma=\frac{1}{n}\sum_{i=1}^n[\diag(\pvec_i)-\pvec_i\pvec_i']$$
+As $n \rightarrow \infty$, $s_n \rightarrow \infty$, so the above equation converges to 0. Therefore $X_j$ satisfies Lyapunov condition, thus CLT can be applied to $X_j$.\\
+To compute the covariance matrix for $\boldsymbol{X}$,
+observe that for any fix $i$, $I_{ij}$ and $I_{ik}$ has covariance $-p_{ij}p_{ik}$. Therefore, it is trivial to get the covariance matrix $$\boldsymbol{\Sigma}=\sum_{i=1}^n[\diag(\pvec_i)-\pvec_i\pvec_i']$$
 By central limit theorem (CLT),
-$$\left(\frac{X}{n}-\pvec\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\Sigma\right).$$\\
-
-When n is sufficiently large, our R package use the normal distribution to calculate our probability by demand of users.
+$$\left(\frac{\boldsymbol{X}}{n}-\pvec\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\boldsymbol{\Sigma}\right).$$\\
+To show $\mathbf{Theorem 3}$, we notice
+\begin{align*}
+    \boldsymbol{X} = (X_1,\dots,X_{m-1})' = \sum_{i=1}^{n} \boldsymbol{I}_{i} 
+\end{align*}
+Easy to get $\boldsymbol{I}_i - \EE \boldsymbol{I}_i$ has mean 0. Hereby $\boldsymbol{X} - \EE \boldsymbol{X} = \sum (\boldsymbol{I}_i - \EE \boldsymbol{I}_i)$ also has mean 0. The covariance of $\boldsymbol{X}$ is $\boldsymbol{\Sigma} = CC'$.\\ 
+By extended $\textbf{Berry-Esseen theory}$ (V. Yu. Bentkus, A Lyapunov-type bound in Rd
+), there existing  a constant $b$ such that 
+\begin{equation*}
+    |P\left(\boldsymbol{X} \in \mathcal{N}_{\boldsymbol{r}_i}\right) - P\left(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{r}_i-\boldsymbol{\mu}_0} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|C^{-1}\boldsymbol{I}_i\right|^3
+\end{equation*}
+Where $\boldsymbol{Z}$ is $\textbf{CLT}$ multivariate normal distribution of with 0 mean and covariance $\boldsymbol{\Sigma}_0$.\\ When $n$ is sufficiently large, our R package use the normal distribution to calculate our probability by demand of users.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -374,16 +381,28 @@ In our package, as $n$ and $m$ get large, the total number of probability mass p
 
 
 \begin{thm}
-Given repeating time \mbox{B} and $n \times m$ matrix \mbox{P}, there will be totally  $N=(n+1)^{m-1}$ different results, denote them as $r_{1},r_{2},\dots,r_{N}$. Let the probability for a specific result $r_{i}$ be $p_{r_{i}}$, $i=1,\dots,N$. The estimate of  $p_{r_{i}}$ using simulation method is $\hat{p}_{r_i}$. We have the following error bound,
+Given repeating time \mbox{B} and $n \times m$ matrix $\boldsymbol{P}$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_m$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\hat{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
 \begin{equation*}
-    |p_{r_i} - \hat{p}_{r_i}| \leq \sqrt{\frac{p_{r_i}(1-p_{r_i})}{B}}
+    \EE|p_{\boldsymbol{x}_i} - \hat{p}_{\boldsymbol{x}_i}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{\pi B}}
 \end{equation*}
-The total absolute error(\mbox{TAE}),
-\begin{equation*}
-    \mbox{TAE} \leq \sqrt{\frac{N-1}{B}}
-\end{equation*}
-
+The expected total absolute error(expected \mbox{TAE}) will be smaller or equal to 
+$\sqrt{\frac{2(N-1)}{\pi B}}$.
 \end{thm}
+For any result $\boldsymbol{x}_i,i=1,\dots,N$. Consider a Bernoulli $\textbf{r.v}$ $Y_i$ with probability $p_{\boldsymbol{x}_i}$ to be 1, and $1-p_{\boldsymbol{x}_i}$ to be 0. By repeating the trail for $B$ times, we get $\textbf{i.i.d}$ random variables $Y_1,\dots,Y_{B}$. By $\textbf{WLLN}$
+\begin{equation*}
+    \Bar{Y}-p_{\boldsymbol{x}_i} \xrightarrow{d} N(0,\sigma^2)
+\end{equation*}
+where $\sigma^2 = \frac{p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{B}$. Trivally, we get the expectation of absolute error for a single $\boldsymbol{x}_i$
+\begin{equation*}
+    \EE |\Bar{Y}-p_{\boldsymbol{x}_i}| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi B}p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}
+\end{equation*}
+Let $c = \sqrt{\frac{2}{\pi B}}$ for simplicity, then
+\begin{align*}
+    & \sum_{i=1}^{N}\EE |\Bar{Y}-p_{\boldsymbol{x}_i}| = c \sum_{i=1}^{N} \sqrt{p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}  = c N \sum_{i=1}^{N}\frac{\sqrt{p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}}{N} \\
+    & \leq c N \sqrt{\sum_{i}p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})/N} = c \sqrt{N} \sqrt{1-\sum p_{\boldsymbol{x}_{i}}^2}\\ &\leq c \sqrt{N} \sqrt{1-1/N} = c\sqrt{N-1}\\
+    & = \sqrt{\frac{2(N-1)}{\pi B}}
+\end{align*}
+The equality will be achieved if $p_{\boldsymbol{x}_1} = \dots = p_{\boldsymbol{x}_N}$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
@@ -553,77 +572,62 @@ https://stats.stackexchange.com/questions/274211/calculating-the-probability-of-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Statistical Inference for Aggregated Data}\label{sec:model.est.inf}	
-
-Ecological inference
-
-Examples of Using PMD in Heart Disease Data
-
-Here we illustrate how to apply PMD in real data analysis by using hear disease data from UCI machine learning repository. The data was collected from multiple locations and here we only use the data from Cleveland.
-
-
-The data contains 14 variables and 297 observations after removal of missing values, our response variable is the diagnosis of heart disease, it has 5 levels coded with 0, 1, 2, 3, 4. There are other 13 variables such as age, sex, exang(exercise induced angina) etc. In order to apply our methods of calculating PMD, we first divided the data into 61 smaller groups by 5 variables(chest pain type, sex, exercise induced angina, resting electrocardiographic results and the slope of the peak exercise ST segment), reader can also divide the data in other reasoning. We use 5 variables as our covariates as shown in the following table. Among the groups, $n$ varies from 2 to 62, which are affordable for MD-DFT method. A group of data is shown in Table 7.
-
-\begin{table}%[h!]
-    \centering
-\begin{tabular}{|c|c|c|c|c|c|}
-
-\hline
-     age & trestbps & chol & thalach & oldpeak\\
-\hline
-      69 &  140 & 239  &  151  & 1.8\\
-\hline
-    60  & 150 & 24 & 171 & 0.9\\
-\hline
-\end{tabular}
-    \caption{Selected Group of Heart Disease Data from Cleveland}
-    \label{tab:my_label}
-\end{table}
-
-The total number for each level of our response variable in each group is known. WWe have 5 levels of response refer to 5 categories. In the example group shown in Table 7, the outcome vector is $\left(2,0,0,0,0\right)$ because both observations has response of level 0.
-
-The first step is to estimate $P$ matrix for each group. Suppose the likelihood of each group is $\ell_1 ,\dots, \ell_{61}$, where $\ell_i = \text{the probability of getting the result of group i}$. We use softmax function to find 61 $P_i$ matrices for each one of the 61 groups. Then we can calculate $\ell_i$ via $P_i$, details are following.
-
-
-Initiate values for parameters $\betavec = \left[\betavec_1,\dots,\betavec_5 \right]'$, where $\betavec_i = \left[\beta_{i1},\dots,\beta_{i5} \right]$ for our 5 categories and 5 covariates. Suppose we have $n_i$ observations in group $i$, the respecting $P_i$ matrix should be of dimension $n_i \times 5$, $P_i = \left(p_{jk}^{(i)}\right), j=1,\dots, n_i, k = 1, 2, 3, 4, 5$. Our observations are $X_i$, $i= 1, \dots, n_i$, each $X_i = \left[x_{i1},x_{i2},\dots, x_{i5}\right]$, where $x_{i1}, \dots, x_{i5}$ representing the covariates information.
-
-
-Then we have the following $P_i$ matrix for each i by using softmax function,
+First introduce the out "Logistic-like" model to fit a given aggregated dataset with selected features and a categorical response variable that has $m$ categories. By dividing the rows of our data into $H$ groups $G_1,\dots,G_{S}$, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily to be equal. Let the quantity for each category of group $G_i$ be $\boldsymbol{x}^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\boldsymbol{H}^{(i)}$ to be the covariate matrix of $G_i$, then $\boldsymbol{H}^{(i)} = (\boldsymbol{1}, \boldsymbol{h}_{1}^{(i)},\dots,\boldsymbol{h}_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\boldsymbol{1}$, where $v$ equals to the number of covariates plus one. Let $\boldsymbol{P}^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\boldsymbol{x}^{(i)}$ for group $G_i$ be $p(\boldsymbol{x}^{(i)})$. The total log-likelihood for all groups can be computed as
+\begin{equation*}
+    \ell = \sum_{i=1}^{S}\ell_i = \sum_{i=1}^{S}\log p(\boldsymbol{x}^{(i)})
+\end{equation*}
+Where $p(\boldsymbol{x}^{(i)})$ can be computed via Poisson Multinomial distribution with SPM $\boldsymbol{P}^{(i)}$.\\
+Set category $m$ as baseline and use softmax function to form the $\boldsymbol{P}^{(i)}$ for each group through parameter $\boldsymbol{\beta} = (\boldsymbol{\beta}_1, \dots, \boldsymbol{\beta}_{m-1})$ as
 \begin{align*}
-    p_{jk}^{(i)} = \frac{\exp(\betavec'_{k}X_j)}{\sum_{h=1}^{5}\exp(\betavec'_{h}X_j)}
+    p_{j k}^{(i)} = \frac{\exp{\left(\boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k}\right)}}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}} 
+    \quad k \neq m \quad \text{and } \quad
+    p_{i,m}^{(i)} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}}
 \end{align*}
-After we get our $P_i$ matrices, apply MD-DFT or simulation or normal method, we get our likelihoods $\ell_i$ for $i = 1,\dots, 61$.
+Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\hat{\boldsymbol{P}}^{(i)}$. \\
 
+In the rest of this part, we apply the model to the dataset "ai4i". The dataset "ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products(rows) and 14 features(columns) including Product type, Air temperature, Process temperature, Rotational speed and others. \\
 
-The total likelihood 
-\begin{align}
-L = \prod_{i=1}^{61}\ell_i.  
-\end{align}
-we can use numerical methods e.g., gradient descent, Newton method to find the $\betavec$ that maximized $L$, then we get our final $P_i$ matrices.\\
-
-
-There are 3 categories and 2 observations, thus the $P$ matrix is $2 \times 3$. We calculate the $P$ matrix by using softmax function. The weights should be $4 \times 5$ dimension if we set the last category as baseline. By using MD-DFT we get the likelihood for the group getting result $\left(2,0,0\right)$. As we have 61 groups, we will have 61 likelihoods $l_1,\dots,l_{61}$ so that we can get a total likelihood $L = \prod_{i=1}^{61}l_i$.
-
-
-We estimated the 61 $P$ matrices of 61 groups by maximizing $L$. Two of the P matrices are
-\begin{align*}
-    &P_1 =  \left[ \begin{array}{ccccc}
-0.29725 &0.23646 &0.236462 &0.236462 &0.00058
- \\ 0.29749 & 0.23401& 0.23401& 0.23401 & 0.00047
- \end{array} \right]\\
+For demonstration purpose, here we only use the first 1000 rows and Product type as response variable, Air temperature and Process temperature as covariates. The feature Product type is categorical and has three levels, "M", "L", "H", we denote them as category 1, 2, 3 for simplicity. The number of products that fall in category 1, 2, and 3 are 285, 601, and 114. The other two features are continuous.
 \\
-&P_{61} = \left[ \begin{array}{ccccc}
-   0.28968 &  0.23646 &  0.23646 & 0.23646 & 0.00093
-  \\
-    0.31585 & 0.22798 & 0.22798 & 0.22798 & 0.00021
- \\
-     0.29853 & 0.23343 & 0.23343 & 0.23343 & 0.00119
- \\
-     0.30647 & 0.23093 & 0.23093 &  0.23093 &  0.00075
-\end{array} \right]
-\end{align*}
-Therefore we hereby using our MD-DFT method again to calculate $P(X_1=2,X_2=0, X_3=0, X_4 = 0, X_5 = 0) =   0.08842$ and $P(X_1=0,X_2=1,X_3=2, X_4 - 1, X_5 = 0)=0.03487$
+We randomly divide the dataset into 100 groups $G_1,\dots,G_{100}$, the smallest group has size of three rows and the largest one has 18 rows. Note that readers can use other criterion to divide the dataset by their own. Notice the covariate number is three including intercept and the response has three categories, thus the dimension of our parameter matrix $\boldsymbol{\beta}$ will be $3 \times 2$ if we set category 3 as baseline.
 
+The estimates of the parameters are
+\begin{equation*}
+\hat{\boldsymbol{\beta}} = 
+\begin{pmatrix}
+ 1.07484986 & 2.2820922 \\
+ 1.62342045 & 1.9108976 \\
+ -0.06277732 &-0.8455964
+\end{pmatrix}
+\end{equation*}
+The corresponding $\hat{\boldsymbol{P}}^{(1)}$ and $\hat{\boldsymbol{P}}^{(5)}$ for group 1 and group 5 are
+\begin{equation*}
+    \hat{\boldsymbol{P}}^{(1)} = \begin{pmatrix}
 
+ 0.11914 & 0.63310 & 0.24776\\
+ 0.12326 & 0.57268 & 0.30406\\
+ 0.14809 & 0.47560 & 0.37631\\
+ 0.14504 & 0.56971 & 0.28525\\
+ 0.12451 & 0.54095 & 0.33454\\
+ 0.04170 & 0.55944 & 0.39886\\
+ 0.03559 & 0.53568 & 0.42873\\
+ 0.04890 & 0.54668 & 0.40442
+    \end{pmatrix} \quad \text{, }
+    \hat{\boldsymbol{P}}^{(5)} = \begin{pmatrix}
+ 0.15604 & 0.70766 & 0.13630\\
+ 0.14469 & 0.73976 & 0.11555\\
+ 0.11246 & 0.67372 & 0.21382\\
+ 0.12036 & 0.64885 & 0.23079\\
+ 0.11263 & 0.61304 & 0.27433\\
+ 0.11563 & 0.55029 & 0.33408\\
+ 0.11774 & 0.61672 & 0.26554\\
+ 0.15071 & 0.52510 & 0.32419\\
+ 0.13878 & 0.56645 & 0.29477\\
+ 0.08194 & 0.54561 & 0.37245\\
+ 0.06307 & 0.58191 & 0.35502
+    \end{pmatrix}
+\end{equation*}
+For group 1 and 5, $\boldsymbol{x}^{(1)} = (1,5,2)'$ and $\boldsymbol{x}^{(5)} = (2,6,3)'$, so $p(\boldsymbol{x}^{(1)}) = 0.070$, $p(\boldsymbol{x}^{(5)}) = 0.067$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Uncertainty Quantification in Classification}
 
@@ -638,8 +642,44 @@ In machine learning classification problem with multiple labels, for each unit i
 Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms. 
 
 
+A public dataset (\url{https://github.com/zae-bayern/elpv-dataset}) of solar cells extracted from high resolution EI images of monocrystalline and polycrystalline PV modules.
 
 
+All images are normalized with respect to size and perspective. Additionally, any distortion induced by the camera lens used to capture the EL images was eliminated prior to solar cell extraction.
+
+Then we will talk about how to process these data. They hired some evaluators and ask them two questions. The first is how do they think the function of the solar cells, functional or defective; the second is how they are confident about their assessments. Then we can get four different situations as Table \ref{tt}
+
+\begin{table}[h!]
+	\centering
+	\caption{Partitioning of solar cells into functional and defective, with an additional self-assessment on the rater's confidence after visual inspection. Non-confident decisions obtain a weight lower than 100\% for the evaluation of the classifier performance }
+	\begin{tabular}{c|c|c|c}
+		\hline
+		\hline
+		Condition  & Confident?  &  Label $p$ & Weight $w$ \\
+		\hline
+		\multirow{2}{*}{functional} & \cmark & functional & 100\% \\
+		& \xmark& defective  & 33\% \\
+		\hline
+		\multirow{2}{*}{defective} & \cmark & defective & 100\%  \\
+		& \xmark & defective & 67\% \\
+		\hline
+		\hline
+	\end{tabular}
+	
+	
+	
+	\label{tt}
+	
+\end{table}
+According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
+
+We split our data to training data (80\%) and test data (20\%), then fitting a CNN model. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. We also allow our model to pad. After ten epochs, the model converges.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=1.0]{figures/ConfusionHistogram.pdf}
+	\caption{The histogram of each prediction cells.}
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Illustrations of the R Package}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
