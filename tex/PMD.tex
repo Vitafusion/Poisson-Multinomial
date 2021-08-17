@@ -381,7 +381,7 @@ In our package, as $n$ and $m$ get large, the total number of probability mass p
 
 
 \begin{thm}
-Given repeating time \mbox{B} and $n \times m$ matrix $\boldsymbol{P}$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_m$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\hat{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
+Given repeating time \mbox{B} and $n \times m$ matrix $\boldsymbol{P}$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_N$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\hat{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
 \begin{equation*}
     \EE|p_{\boldsymbol{x}_i} - \hat{p}_{\boldsymbol{x}_i}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{\pi B}}
 \end{equation*}
@@ -568,6 +568,27 @@ Do some example like this:
 https://stats.stackexchange.com/questions/274211/calculating-the-probability-of-someone-winning-from-a-poll
 
 
+In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson Multinomial distribution can fit the situation perfectly under some assumptions.\\
+
+Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ different results $\boldsymbol{x}_1,\dots, \boldsymbol{x}_N$, respectively. Assume we know the $\boldsymbol{P}$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.\\
+
+To demonstrate that, suppose we have ten electoral voters and three candidates with $\boldsymbol{P}$ matrix with means of column one, two and three are $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
+\begin{equation*}
+    \boldsymbol{P} = \begin{pmatrix}
+0.071 & 0.589 & 0.340\\
+0.365 & 0.195 & 0.440\\
+0.445 & 0.505 & 0.050\\
+0.353 & 0.382 & 0.265\\
+0.620 & 0.111 & 0.269
+    \end{pmatrix}
+\end{equation*}
+To compute the probability of each candidate winning the election, just need to introduce constraints. For instance, under the constraint $\chi_1 = \left\{x_1>x_2\right\} \cap \left\{x_1>x_3\right\}$, we are able to compute the winning rate of the first candidate is 
+\begin{equation*}
+    p(\text{the 1st candidate wins}) = \sum_{\boldsymbol{x} \in \chi_{1}} p(\boldsymbol{x}) = 0.3429
+\end{equation*}
+Similarly, the probabilities for the second candidate and the third candidate to win are $0.2745$ and $0.2001$. Additionally, the most possible result is $\boldsymbol{x} = (4,3,3)$, which has probability 0.08546. 
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -584,9 +605,7 @@ Set category $m$ as baseline and use softmax function to form the $\boldsymbol{P
     p_{i,m}^{(i)} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}}
 \end{align*}
 Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\hat{\boldsymbol{P}}^{(i)}$. \\
-
-In the rest of this part, we apply the model to the dataset "ai4i". The dataset "ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products(rows) and 14 features(columns) including Product type, Air temperature, Process temperature, Rotational speed and others. \\
-
+In the rest of this part, we apply the model to the dataset "ai4i". The dataset "ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products(rows) and 14 features(columns) including Product type, Air temperature, Process temperature, Rotational speed and others.\\
 For demonstration purpose, here we only use the first 1000 rows and Product type as response variable, Air temperature and Process temperature as covariates. The feature Product type is categorical and has three levels, "M", "L", "H", we denote them as category 1, 2, 3 for simplicity. The number of products that fall in category 1, 2, and 3 are 285, 601, and 114. The other two features are continuous.
 \\
 We randomly divide the dataset into 100 groups $G_1,\dots,G_{100}$, the smallest group has size of three rows and the largest one has 18 rows. Note that readers can use other criterion to divide the dataset by their own. Notice the covariate number is three including intercept and the response has three categories, thus the dimension of our parameter matrix $\boldsymbol{\beta}$ will be $3 \times 2$ if we set category 3 as baseline.
