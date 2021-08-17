@@ -188,10 +188,10 @@ In the application part, we begin with a simple scenario of committee voting whe
 \subsection{Definition of the Distribution}
 		
 Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_m)'$. That is we will focus on the random vectors $\boldsymbol{I}_i=(I_{i1}, \ldots, I_{im})'$ and $\boldsymbol{X}=(X_1, \ldots, X_m)'$. The distribution of the $\boldsymbol{X}$ is called the Poisson multinomial distribution (PMD), which is denoted by
-$$\boldsymbol{X}  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,P_{n\times m}),$$
+$$\boldsymbol{X}  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,\boldsymbol{P}_{n\times m}),$$
 where the success probability matrix (SPM) is
 \begin{equation*}
-P_{n \times m} = \begin{pmatrix}
+\boldsymbol{P}_{n \times m} = \begin{pmatrix}
 p_{11} &  \dots & p_{1m} \\
 \vdots & \ddots & \vdots \\
 p_{n1} &  \dots & p_{nm} \\
@@ -199,7 +199,7 @@ p_{n1} &  \dots & p_{nm} \\
 \end{equation*}
 Let vector $\boldsymbol{x} = (x_1,\dots,x_m)'$, the probability mass function (pmf) of PMD,
 $$p(\boldsymbol{X}=\boldsymbol{x}) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,\X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the 3$\textbf{rd}$ part of this paper.\\
+is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,\X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the $3^{\textbf{rd}}$ part of this paper.\\
 \\
 Let's see a simple example, we have three candidates and four voters, and we have
 \begin{equation*}
@@ -230,7 +230,7 @@ In related literature, \citeN{hong2013computing} consider the exact and approxim
 \subsection{Properties of the Distribution}
 
 \begin{thm}
-Given random variable $\boldsymbol{X}$ that follows a Poisson-Multinomial distribution with $P_{n\times m}$, the mean of $\boldsymbol{X}$ is 
+Given random variable $\boldsymbol{X}$ that follows a Poisson-Multinomial distribution with $\boldsymbol{P}_{n\times m}$, the mean of $\boldsymbol{X}$ is 
    $\boldsymbol{\mu} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$, where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$. \\
 The variance-covariance matrix of $\boldsymbol{X}$ is a $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
 \begin{equation*}
@@ -251,9 +251,9 @@ The derivations of the above properties are trivial. One important thing is that
 
 
 \begin{thm}
-If the SPM $\boldsymbol{P}$ can be written as a combination of diagonal matrices $\boldsymbol{P}_1, \boldsymbol{P}_2, \dots, \boldsymbol{P}_{K}$, $\boldsymbol{P} = \textbf{\diag}(\boldsymbol{P}_{k}), k=1,\dots,K$. Then the outcome of $\boldsymbol{P}$: $\boldsymbol{r}$ can hereby be decomposed in to  outcomes of the diagonal matrices: $\boldsymbol{r} = (\boldsymbol{r}_{1},\dots,\boldsymbol{r}_{K})$. The pmf can computed as the product of the corresponding marginal pmfs. That is
+If the SPM $\boldsymbol{P}$ can be written as a combination of diagonal matrices $\boldsymbol{P}_1, \boldsymbol{P}_2, \dots, \boldsymbol{P}_{K}$, $\boldsymbol{P} = \textbf{\diag}(\boldsymbol{P}_{k}), k=1,\dots,K$. Then the outcome of $\boldsymbol{P}$, $\boldsymbol{x}$ can hereby be decomposed in to  outcomes of the diagonal matrices, $\boldsymbol{x} = (\boldsymbol{x}_{1},\dots,\boldsymbol{x}_{K})$. The pmf can computed as the product of the corresponding marginal pmfs. That is
 \begin{align*}
-p(\boldsymbol{r}|\boldsymbol{P})= p(\boldsymbol{r}_{1} \cap \dots \cap \boldsymbol{r}_{K}|\boldsymbol{P}_1,\dots,\boldsymbol{P}_{K} )= \prod_{k=1}^K p(\boldsymbol{r}_{k}|\boldsymbol{P}_{k}).
+p(\boldsymbol{x}|\boldsymbol{P})= p(\boldsymbol{x}_{1} \cap \dots \cap \boldsymbol{x}_{K}|\boldsymbol{P}_1,\dots,\boldsymbol{P}_{K} )= \prod_{k=1}^K p(\boldsymbol{x}_{k}|\boldsymbol{P}_{k}).
 \end{align*}
 \end{thm}
 To show this, we assume $\boldsymbol{P}$ is $n \times m$ and $\boldsymbol{P}_{k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. To demonstrate the situation here, suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates 
@@ -273,7 +273,7 @@ In this section we provide an exact formula to compute the pmf of the PMD. The f
 Multidimensional Fourier Transform
 
 
-The CF of $X=(X_1, \dots, X_{m-1})'$ is
+The CF of $\boldsymbol{X}=(X_1, \dots, X_{m-1})'$ is
 \begin{align*}
 \phi(t_1, \dots, t_{m-1}) & = \EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right]=\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right].
 \end{align*}
