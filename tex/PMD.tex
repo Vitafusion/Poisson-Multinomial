@@ -199,7 +199,7 @@ p_{n1} &  \dots & p_{nm} \\
 \end{equation*}
 Let vector $\boldsymbol{x} = (x_1,\dots,x_m)'$, the probability mass function (pmf) of PMD,
 $$p(\boldsymbol{X}=\boldsymbol{x}) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,\X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the $3^{\textbf{rd}}$ part of this paper.\\
+is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the $3^{\textbf{rd}}$ part of this paper.\\
 \\
 Let's see a simple example, we have three candidates and four voters, and we have
 \begin{equation*}
@@ -659,42 +659,38 @@ Use Theorem for independent.
 In machine learning classification problem with multiple labels, for each unit in the test set, the probability of the unit belongs to each class is computed. Usually, the predicted class is assigned as the highest probability. In the classifiers (i.e., soft classification), the unit class is randomly assigned according to the predicted probabilities, leading to randomness in the confusion matrix. The PMD can be used to characterize the distribution of the counts in the confusion matrix. 
 
 
+%
+%Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms. 
 
-Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms. 
+In this section, we consider an Electroluminescence (EL) image classification example to illustrate the usage of PMD in machine learning classification problems. In the photovoltaic (PV) reliability study, the EL image is an important data type that reveal information about the PV health status. The EL imaging provide visual inspection of solar panels and is a non-destructive technology for failure analysis of PV modules. Because disconnected parts do not irradiate, the darker areas in EL images indicate defective cells \shortcite{Deitsch2019}.
 
-
-A public dataset (\url{https://github.com/zae-bayern/elpv-dataset}) of solar cells extracted from high resolution EI images of monocrystalline and polycrystalline PV modules.
-
-
-All images are normalized with respect to size and perspective. Additionally, any distortion induced by the camera lens used to capture the EL images was eliminated prior to solar cell extraction.
-
-Then we will talk about how to process these data. They hired some evaluators and ask them two questions. The first is how do they think the function of the solar cells, functional or defective; the second is how they are confident about their assessments. Then we can get four different situations as Table \ref{tt}
+The work of \shortciteN{Deitsch2019},\shortciteN{Buerhop2018}, and \shortciteN{Deitsch2021} provide a public dataset of solar cells extracted from high resolution EI images of PV modules (\url{https://github.com/zae-bayern/elpv-dataset}). All images are preprocessed with respect to size and are eliminated distortion induced by the camera lens used to capture the EL images. Each image is manually labeled  with its degree of defectiveness. The degree of defectiveness is determined by two questions. The first is how do evaluators think the status of the solar cells, functional or defective; the second is how they are confident about their assessments. In total there are four labels as shown in Table \ref{tbl:el.label} and we marked them as Class A-D.
 
 \begin{table}[h!]
 	\centering
 	\caption{Partitioning of solar cells into functional and defective, with an additional self-assessment on the rater's confidence after visual inspection. Non-confident decisions obtain a weight lower than 100\% for the evaluation of the classifier performance }
-	\begin{tabular}{c|c|c|c}
+	\begin{tabular}{c|c|c|c|c}
 		\hline
 		\hline
-		Condition  & Confident?  &  Label $p$ & Weight $w$ \\
+		Condition  & Confident?  &  Label $p$ & Weight $w$ & Class \\
 		\hline
-		\multirow{2}{*}{functional} & \cmark & functional & 100\% \\
-		& \xmark& defective  & 33\% \\
+		\multirow{2}{*}{functional} & \cmark & functional & 0\% & A\\
+		& \xmark& defective  & 33\% & B\\
 		\hline
-		\multirow{2}{*}{defective} & \cmark & defective & 100\%  \\
-		& \xmark & defective & 67\% \\
+		\multirow{2}{*}{defective} & \xmark & defective & 67\% & C\\
+		& \cmark & defective & 100\%  &D\\
 		\hline
 		\hline
 	\end{tabular}
 	
 	
 	
-	\label{tt}
+	\label{tbl:el.label}
 	
 \end{table}
-According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
+%According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
 
-We split our data to training data (80\%) and test data (20\%), then fitting a CNN model. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. We also allow our model to pad. After ten epochs, the model converges.
+We split our data to training data (80\%) and test data (20\%), then fitting a CNN model. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. We also allow our model to pad.
 
 \begin{figure}
 	\centering
