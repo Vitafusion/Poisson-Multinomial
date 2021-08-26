@@ -666,9 +666,9 @@ In machine learning classification problem with multiple labels, for each unit i
 %
 %Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms.
 
-In this section, we consider an Electroluminescence (EL) image classification example to illustrate the usage of PMD in machine learning classification problems. In the photovoltaic (PV) reliability study, the EL image is an important data type that reveal information about the PV health status. The EL imaging provide visual inspection of solar panels and is a non-destructive technology for failure analysis of PV modules. Because disconnected parts do not irradiate, the darker areas in EL images indicate defective cells \shortcite{Deitsch2019}.
+In this section, we consider an Electroluminescence (EL) image classification example to illustrate the usage of PMD in machine learning classification problems. In the photovoltaic (PV) reliability study, the EL image is an important data type that reveal information about the PV health status. Because disconnected parts do not irradiate, the darker areas in EL images indicate defective cells. The EL imaging provide visual inspection of solar panels and is a non-destructive technology for failure analysis of PV modules \shortcite{Deitsch2019}.
 
-The work of \shortciteN{Deitsch2019},\shortciteN{Buerhop2018}, and \shortciteN{Deitsch2021} provide a public dataset of solar cells extracted from high resolution EI images of PV modules (\url{https://github.com/zae-bayern/elpv-dataset}). All images are preprocessed with respect to size and are eliminated distortion induced by the camera lens used to capture the EL images. Each image is manually labeled  with its degree of defectiveness. The degree of defectiveness is determined by two questions. The first is how do evaluators think the status of the solar cells, functional or defective; the second is how they are confident about their assessments. In total there are four labels as shown in Table \ref{tbl:el.label} and we marked them as Class A-D.
+The work of \shortciteN{Deitsch2019},\shortciteN{Buerhop2018}, and \shortciteN{Deitsch2021} provide a public dataset of solar cells extracted from high resolution EI images of PV modules (\url{https://github.com/zae-bayern/elpv-dataset}). In total there are 2624 images. All images are preprocessed with respect to size and are eliminated distortion induced by the camera lens used to capture the EL images. Each image is manually labeled  with its degree of defectiveness. The degree of defectiveness is determined by two questions. The first is how do evaluators think the status of the solar cells, functional or defective; the second is how they are confident about their assessments. In total there are four labels as shown in Table \ref{tbl:el.label} and we marked them as Class A-D.
 
 \begin{table}[h!]
 	\centering
@@ -694,12 +694,15 @@ The work of \shortciteN{Deitsch2019},\shortciteN{Buerhop2018}, and \shortciteN{D
 \end{table}
 %According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
 
-We split our data to training data (80\%) and test data (20\%), then train a CNN model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class.
+We split our data to training data (80\%) and test data (20\%), then train a CNN model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class. Table~\ref{tbl:elpmat} provides a subset of the CNN model output. For true class for the first sample in Table~\ref{tbl:elpmat} is A. If we predict the class of the first sample using the highest probability, then the prediction is A and there's no randomness. If we allow the model to make predictions based on the probability vector as shown in the first row then there are randomness in the confusion matrix. We can consider the confusion matrix to follow a PMD distribution then we can quantify the uncertainty in confusion matrix using PMD.
+
+Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. 
 
 
 \begin{table}[ht]
 \centering
 \caption{An example of the probability vectors of a subset in testing set from the trained CNN model.}
+\label{tbl:elpmat}
 \begin{tabular}{rrrrr}
   \hline
  & A & B & C & D \\
@@ -717,8 +720,9 @@ We split our data to training data (80\%) and test data (20\%), then train a CNN
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=1.0]{figures/ConfusionHistogram.pdf}
+	\includegraphics[scale=1.0]{figures/Confusionbar.pdf}
 	\caption{The histogram of each prediction cells.}
+	\label{fig:confusion.hist}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Illustrations of the R Package}
