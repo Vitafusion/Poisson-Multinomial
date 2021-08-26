@@ -2,6 +2,8 @@
 \documentclass[12pt]{article}
 \usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,pifont, multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
+%\usepackage{bm}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textwidth  6.6in \textheight 9.2in \topmargin -.0in \oddsidemargin
 -0.0in \evensidemargin -0.0in \pagestyle{plain}
@@ -22,9 +24,11 @@
 \newcommand{\thetavecT}{{\boldsymbol{\theta}_T}}
 \newcommand{\thetaveca}{\thetavec_{1}}
 \newcommand{\thetavecb}{\thetavec_{2}}
-\newcommand{\EE}{\mathbf{E}}
+\newcommand{\EE}{\mathbb{E}}
 \newcommand{\Bset}{\mathbf{B}}
 \newcommand{\Xset}{\mathbf{X}}
+\newcommand{\Xmat}{\mathbf{X}}
+\newcommand{\Pmat}{\mathbf{P}}
 \newcommand{\Sset}{\mathbf{S}}
 \newcommand{\cp}{{\rm CP}}
 \newcommand{\pr}{{\rm Pr}}
@@ -59,7 +63,7 @@
 \newcommand{\sev}{\textrm{sev}}
 \newcommand{\nor}{\textrm{nor}}
 \newcommand{\N}{\textrm{N}}
-\newcommand{\diag}{\textrm{diag}}
+\newcommand{\diag}{\textrm{Diag}}
 \newcommand{\PMD}{\textrm{PMD}}
 \newcommand{\wh}{\widehat}
 \newcommand{\sigmaR}{\sigma_{R}}
@@ -187,40 +191,40 @@ In the application part, we begin with a simple scenario of committee voting whe
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
 		
-Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_m)'$. That is we will focus on the random vectors $\boldsymbol{I}_i=(I_{i1}, \ldots, I_{im})'$ and $\boldsymbol{X}=(X_1, \ldots, X_m)'$. The distribution of the $\boldsymbol{X}$ is called the Poisson multinomial distribution (PMD), which is denoted by
-$$\boldsymbol{X}  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,\boldsymbol{P}_{n\times m}),$$
+Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $\Xvec_m = (X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $\boldsymbol{I}_i = (I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $\Xvec_m = (X_1, \ldots, X_m)'$. That is, the random vectors $\Xvec_m$ and $\Xvec_{m-1}$ are equivalent. The distribution of the $\Xvec_m$ is called the Poisson multinomial distribution (PMD), which is denoted by
+$$\Xvec_m  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,\Pmat_{n\times m}),$$
 where the success probability matrix (SPM) is
 \begin{equation*}
-\boldsymbol{P}_{n \times m} = \begin{pmatrix}
+\Pmat_{n \times m} = \begin{pmatrix}
 p_{11} &  \dots & p_{1m} \\
 \vdots & \ddots & \vdots \\
 p_{n1} &  \dots & p_{nm} \\
 \end{pmatrix}.
 \end{equation*}
-Let vector $\boldsymbol{x} = (x_1,\dots,x_m)'$, the probability mass function (pmf) of PMD,
-$$p(\boldsymbol{X}=\boldsymbol{x}) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,\X_{m-1})$ as $\boldsymbol{X}$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the $3^{\textbf{rd}}$ part of this paper.\\
+Let vector $\xvec_m = (x_1,\dots,x_m)'$ be the realization of $\Xvec_m$, the probability mass function (pmf) of PMD,
+$$p(\Xvec_m=\xvec_m) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
+is of interest. Also $p(\Xvec_m=\xvec_m)=p(\Xvec_{m-1}=\xvec_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $\xvec_m=(x_{1},\dots, x_m)'$, and $\xvec_{m-1} = (x_{1},\dots, x_{m-1})'$ are equivalent\\
 \\
 Let's see a simple example, we have three candidates and four voters, and we have
 \begin{equation*}
-\boldsymbol{P}_{4 \times 3} = \begin{pmatrix}
+\Pmat_{4 \times 3} = \begin{pmatrix}
 0.1 &  0.2 & 0.7\\
 0.5 & 0.2 & 0.3\\
 0.4 &  0.5 & 0.1\\
 0.8 & 0.1 & 0.1
 \end{pmatrix}.
 \end{equation*}
-We want to know the probability of a result that candidate 1 gets 4 votes and others  gets 0 vote that is, $\boldsymbol{x} =  (4,0,0)'$. 
+We want to know the probability of a result that candidate 1 gets 4 votes and others  gets 0 vote that is, $\xvec_3 =  (4,0,0)'$.
 \begin{equation*}
-P\{\boldsymbol{X} = \boldsymbol{x}\} = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016
+P\{\Xvec_3 = \xvec_3\} = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016
 \end{equation*}
-The probability of $\boldsymbol{X}=(1,3,0)'$ is
+The probability of $\Xvec_3=(1,3,0)'$ is
  \begin{multline*}
- P\{\boldsymbol{X} = (1,3,0)\} = 0.1\times 0.2 \times 0.5 \times 0.1\\ +
+ P\{\Xvec_3 = (1,3,0)\} = 0.1\times 0.2 \times 0.5 \times 0.1\\ +
  0.5\times0.2\times0.5 \times 0.1 + 0.4\times0.2\times0.2\times0.1 + 0.8\times0.2\times0.2\times0.5 = 0.0236
  \end{multline*}
- Keep doing this we can calculate all possible outcomes.\\
- \\
+Keep doing this we can calculate all possible outcomes.
+
 
 Note that when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the PMD is a generalization of the multinomial distribution. When $m=1$, the PMD is reduced to the Poisson binomial distribution as in \citeN{hong2013computing}.
 
@@ -230,20 +234,20 @@ In related literature, \citeN{hong2013computing} consider the exact and approxim
 \subsection{Properties of the Distribution}
 
 \begin{thm}
-Given random variable $\boldsymbol{X}$ that follows a Poisson-Multinomial distribution with $\boldsymbol{P}_{n\times m}$, the mean of $\boldsymbol{X}$ is 
+Given random variable $\Xmat$ that follows a Poisson-Multinomial distribution with $\Pmat_{n\times m}$, the mean of $\Xmat$ is
    $\boldsymbol{\mu} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$, where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$. \\
-The variance-covariance matrix of $\boldsymbol{X}$ is a $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
+The variance-covariance matrix of $\Xmat$ is a $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
 \begin{equation*}
-   \Sigma_{ij} = 
+   \Sigma_{ij} =
            \begin{cases}
              \sum_{k=1}^{n}p_{ki}(1-p_{ki}) & \quad \text{if } i=j\\
              -\sum_{k=1}^{n}p_{ki}p_{kj} & \quad \text{if } i \neq j\\
            \end{cases}
 \end{equation*}
 
-The CF for the PMD is 
+The CF for the PMD is
 \begin{equation*}
-\phi_{\boldsymbol{X}}(t_1, \dots, t_{m-1}) = \phi_{(X_1,\dots,X_m)'}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
+\phi_{\Xmat}(t_1, \dots, t_{m-1}) = \phi_{(X_1,\dots,X_m)'}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
 \end{equation*}
 where  $\ivec=\sqrt{-1}$.
 \end{thm}
@@ -251,13 +255,13 @@ The derivations of the above properties are trivial. One important thing is that
 
 
 \begin{thm}
-If the SPM $\boldsymbol{P}$ can be written as a combination of diagonal matrices $\boldsymbol{P}_1, \boldsymbol{P}_2, \dots, \boldsymbol{P}_{K}$, $\boldsymbol{P} = \textbf{\diag}(\boldsymbol{P}_{k}), k=1,\dots,K$. Then the outcome of $\boldsymbol{P}$, $\boldsymbol{x}$ can hereby be decomposed in to  outcomes of the diagonal matrices, $\boldsymbol{x} = (\boldsymbol{x}_{1},\dots,\boldsymbol{x}_{K})$. The pmf can computed as the product of the corresponding marginal pmfs. That is
+If the SPM $\Pmat$ can be written as a combination of diagonal matrices $\Pmat_1, \Pmat_2, \dots, \Pmat_{K}$, $\Pmat = \diag(\Pmat_{k}), k=1,\dots,K$. Then the outcome of $\Pmat$, $\boldsymbol{x}$ can hereby be decomposed in to  outcomes of the diagonal matrices, $\boldsymbol{x} = (\boldsymbol{x}_{1},\dots,\boldsymbol{x}_{K})$. The pmf can computed as the product of the corresponding marginal pmfs. That is
 \begin{align*}
-p(\boldsymbol{x}|\boldsymbol{P})= p(\boldsymbol{x}_{1} \cap \dots \cap \boldsymbol{x}_{K}|\boldsymbol{P}_1,\dots,\boldsymbol{P}_{K} )= \prod_{k=1}^K p(\boldsymbol{x}_{k}|\boldsymbol{P}_{k}).
+p(\boldsymbol{x}|\Pmat)= p(\boldsymbol{x}_{1} \cap \dots \cap \boldsymbol{x}_{K}|\Pmat_1,\dots,\Pmat_{K} )= \prod_{k=1}^K p(\boldsymbol{x}_{k}|\Pmat_{k}).
 \end{align*}
 \end{thm}
-To show this, we assume $\boldsymbol{P}$ is $n \times m$ and $\boldsymbol{P}_{k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. To demonstrate the situation here, suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates 
-described by probability matrix $\boldsymbol{P}_k$. Strict proof can be done by decomposition of characteristic function of $\boldsymbol{P}$ into characteristic functions of $\boldsymbol{P}_{k}$s.
+To show this, we assume $\Pmat$ is $n \times m$ and $\Pmat_{k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. To demonstrate the situation here, suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates
+described by probability matrix $\Pmat_k$. Strict proof can be done by decomposition of characteristic function of $\Pmat$ into characteristic functions of $\Pmat_{k}$s.
 
 
 
@@ -273,11 +277,11 @@ In this section we provide an exact formula to compute the pmf of the PMD. The f
 Multidimensional Fourier Transform
 
 
-The CF of $\boldsymbol{X}=(X_1, \dots, X_{m-1})'$ is
+The CF of $\Xmat=(X_1, \dots, X_{m-1})'$ is
 \begin{align*}
 \phi(t_1, \dots, t_{m-1}) & = \EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right]=\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right].
 \end{align*}
-Here $\ivec=\sqrt{-1}$. We notice\\
+Here $\ivec=\sqrt{-1}$. We notice
 \begin{equation*}
 \begin{split}
   &\EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right] = \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).\\
@@ -311,19 +315,19 @@ To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \ti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normal-Approximation Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $\boldsymbol{P}$.
+Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $\Pmat$.
 
 
 \begin{thm}
-For a Poisson-Multinomial random variable $\boldsymbol{X} = (X_1,\dots,X_{m-1})'$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $\boldsymbol{\boldsymbol{x}}_i$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{\boldsymbol{x}}_i} = [\boldsymbol{\boldsymbol{x}}_i-0.5,\boldsymbol{\boldsymbol{x}}_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
+For a Poisson-Multinomial random variable $\Xmat = (X_1,\dots,X_{m-1})'$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $\boldsymbol{\boldsymbol{x}}_i$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{\boldsymbol{x}}_i} = [\boldsymbol{\boldsymbol{x}}_i-0.5,\boldsymbol{\boldsymbol{x}}_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
 \begin{equation*}
-    |P(\boldsymbol{X} \in \mathcal{N}_{\boldsymbol{x}_i}) - P(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
+    |P(\Xmat \in \mathcal{N}_{\boldsymbol{x}_i}) - P(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
 \end{equation*}
 where $\boldsymbol{Z}$ is normal with mean 0 and covariance matrix $\boldsymbol{\Sigma}_0$.
 \end{thm}
 We first show that CLT can be applied to
 \begin{equation*}
-\frac{\boldsymbol{X}}{n} - \pvec = \frac{(X_1,\dots,X_{m-1})}{n} - \pvec = \frac{(X_1 - \sum_{i=1}^{n}p_{i1},\dots,X_{m-1} - \sum_{i=1}^{n}p_{i,m-1})}{n}
+\frac{\Xmat}{n} - \pvec = \frac{(X_1,\dots,X_{m-1})}{n} - \pvec = \frac{(X_1 - \sum_{i=1}^{n}p_{i1},\dots,X_{m-1} - \sum_{i=1}^{n}p_{i,m-1})}{n}
 \end{equation*}
 We just need to show that for any $j = 1,\dots,m-1$, $X_j - \sum_{i=1}^{n}p_{ij}$ satisfies conditions of CLT. Where $X_{j} = \sum_i I_{ij}$ \\
 Notice that for any $\delta > 0$
@@ -335,19 +339,19 @@ Therefore, let $s_n^2 = \sum_{i=1}^{n}\Var(I_{ij})$, we have
     \frac{1}{s_n^{2+\delta}}\sum_{i=1}^{n}E|I_{ij}|^{2 + \delta} \leq  \frac{1}{s_n^{2+\delta}}\sum_{i=1}^{n}\Var(I_{ij}) = \frac{1}{s_n^\delta}
 \end{equation*}
 As $n \rightarrow \infty$, $s_n \rightarrow \infty$, so the above equation converges to 0. Therefore $X_j$ satisfies Lyapunov condition, thus CLT can be applied to $X_j$.\\
-To compute the covariance matrix for $\boldsymbol{X}$,
+To compute the covariance matrix for $\Xmat$,
 observe that for any fix $i$, $I_{ij}$ and $I_{ik}$ has covariance $-p_{ij}p_{ik}$. Therefore, it is trivial to get the covariance matrix $$\boldsymbol{\Sigma}=\sum_{i=1}^n[\diag(\pvec_i)-\pvec_i\pvec_i']$$
 By central limit theorem (CLT),
-$$\left(\frac{\boldsymbol{X}}{n}-\pvec\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\boldsymbol{\Sigma}\right).$$\\
+$$\left(\frac{\Xmat}{n}-\pvec\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\boldsymbol{\Sigma}\right).$$\\
 To show $\mathbf{Theorem 3}$, we notice
 \begin{align*}
-    \boldsymbol{X} = (X_1,\dots,X_{m-1})' = \sum_{i=1}^{n} \boldsymbol{I}_{i} 
+    \Xmat = (X_1,\dots,X_{m-1})' = \sum_{i=1}^{n} \boldsymbol{I}_{i}
 \end{align*}
-Easy to get $\boldsymbol{I}_i - \EE \boldsymbol{I}_i$ has mean 0. Hereby $\boldsymbol{X} - \EE \boldsymbol{X} = \sum (\boldsymbol{I}_i - \EE \boldsymbol{I}_i)$ also has mean 0. The covariance of $\boldsymbol{X}$ is $\boldsymbol{\Sigma} = CC'$.\\ 
+Easy to get $\boldsymbol{I}_i - \EE \boldsymbol{I}_i$ has mean 0. Hereby $\Xmat - \EE \Xmat = \sum (\boldsymbol{I}_i - \EE \boldsymbol{I}_i)$ also has mean 0. The covariance of $\Xmat$ is $\boldsymbol{\Sigma} = CC'$.\\
 By extended $\textbf{Berry-Esseen theory}$ (V. Yu. Bentkus, A Lyapunov-type bound in Rd
-), there existing  a constant $b$ such that 
+), there existing  a constant $b$ such that
 \begin{equation*}
-    |P\left(\boldsymbol{X} \in \mathcal{N}_{\boldsymbol{x}_i}\right) - P\left(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_i-\boldsymbol{\mu}_0} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|C^{-1}\boldsymbol{I}_i\right|^3
+    |P\left(\Xmat \in \mathcal{N}_{\boldsymbol{x}_i}\right) - P\left(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_i-\boldsymbol{\mu}_0} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|C^{-1}\boldsymbol{I}_i\right|^3
 \end{equation*}
 Where $\boldsymbol{Z}$ is $\textbf{CLT}$ multivariate normal distribution of with 0 mean and covariance $\boldsymbol{\Sigma}_0$.\\ When $n$ is sufficiently large, our R package use the normal distribution to calculate our probability by demand of users.
 
@@ -381,11 +385,11 @@ In our package, as $n$ and $m$ get large, the total number of probability mass p
 
 
 \begin{thm}
-Given repeating time \mbox{B} and $n \times m$ matrix $\boldsymbol{P}$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_N$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\hat{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
+Given repeating time \mbox{B} and $n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_N$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\wh{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
 \begin{equation*}
-    \EE|p_{\boldsymbol{x}_i} - \hat{p}_{\boldsymbol{x}_i}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{\pi B}}
+    \EE|p_{\boldsymbol{x}_i} - \wh{p}_{\boldsymbol{x}_i}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{\pi B}}
 \end{equation*}
-The expected total absolute error(expected \mbox{TAE}) will be smaller or equal to 
+The expected total absolute error(expected \mbox{TAE}) will be smaller or equal to
 $\sqrt{\frac{2(N-1)}{\pi B}}$.
 \end{thm}
 For any result $\boldsymbol{x}_i,i=1,\dots,N$. Consider a Bernoulli $\textbf{r.v}$ $Y_i$ with probability $p_{\boldsymbol{x}_i}$ to be 1, and $1-p_{\boldsymbol{x}_i}$ to be 0. By repeating the trail for $B$ times, we get $\textbf{i.i.d}$ random variables $Y_1,\dots,Y_{B}$. By $\textbf{WLLN}$
@@ -402,7 +406,7 @@ Let $c = \sqrt{\frac{2}{\pi B}}$ for simplicity, then
     & \leq c N \sqrt{\sum_{i}p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})/N} = c \sqrt{N} \sqrt{1-\sum p_{\boldsymbol{x}_{i}}^2}\\ &\leq c \sqrt{N} \sqrt{1-1/N} = c\sqrt{N-1}\\
     & = \sqrt{\frac{2(N-1)}{\pi B}}
 \end{align*}
-The equality will be achieved if $p_{\boldsymbol{x}_1} = \dots = p_{\boldsymbol{x}_N}$. 
+The equality will be achieved if $p_{\boldsymbol{x}_1} = \dots = p_{\boldsymbol{x}_N}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
@@ -424,7 +428,7 @@ For MD-DFT method, we test its accuracy by using small PMD matrix with given inp
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Accuracy of MD-DFT Method}
-As we know already, MD-DFT is a analytic proved method. For large $n$ and $m=2$, which is the Binomial Possion Distribution, the accuracy is justified by \citeN{HONG201341}. Thus for convenience and incapability of calculating the true density of large $m$, here we show the accuracy of MD-DFT by using given small $(n,m)$ pairs. For those pairs, we can work out their probability densities by hand, and compare them with the results computed by MD-DFT method.
+As we know already, MD-DFT is an analytic proved method. For large $n$ and $m=2$, which is the Binomial Possion Distribution, the accuracy is justified by \citeN{HONG201341}. Thus for convenience and incapability of calculating the true density of large $m$, here we show the accuracy of MD-DFT by using given small $(n,m)$ pairs. For those pairs, we can work out their probability densities by hand, and compare them with the results computed by MD-DFT method.
 \begin{table}%[h!]
 \centering
 \caption{Accuracy of MD-DFT method.}\label{tab:my_label}
@@ -450,99 +454,48 @@ As we know already, MD-DFT is a analytic proved method. For large $n$ and $m=2$,
 \end{tabular}
 
 \end{table}
-As we see from Table 1, the $\mathrm{MAE}$ are all less or equal to machine epsilon. This shows us that MD-DFT is accurate enough and the error is only due to the computation limit of devices. Therefore, it is convincing to use MD-DFT as true probability densities in the following subsections.
-
-\subsection{Accuracy of Normal Approximation}
-Figure 1 lists all $(n,m)$ pairs we will test in this section and next section, every $(n,m)$ combination will be tested if it is covered in blue bars. The respecting bar height for $m=3,4,5,6,7,8$ is $100,83,43,25,16,17$. We use probability mass points computed by MD-DFT as true probabilities and compare those to the ones approximated by normal distribution(NA) to compute MAE and  TAE. Each PMD matrix is generated randomly using uniform distribution, thus we must consider the variation caused by randomness. To reduce the randomness effect, for each $(n,m)$ pair, we generate N PMD matrices and compute all of their MAE. Consequently, we be able to get the average MAE of them and use it as our final MAE. We use the same scheme for TAE.
-\begin{figure}%[h!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{nm_pairs.pdf}
-    \caption{(n,m) pairs, y axis value represents n. For instance, when m=3, we test the pairs from $(n=1,m=3)$ to $(n=100,m=3)$, the second bar means we testing from $(n=1,m=4)$ to $(n=83,m=4)$}
-\end{figure}\\
-Figure 2 shows the accuracy test results for normal approximation(NA). The x axis is n and different colors represent different m values. As n increasing, MAE decreases for the same m value. We should also consider the effect of sparsity. As $n$ and $m$ raise, there will be a boost of number of probability mass points. Hence every probability mass point will be given less value averagely. Therefore, no matter what approximation method we apply here, the MAE will decrease as the number of probability mass points grows.
-
-\begin{figure}%[h!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{normal_accuracy.pdf}
-    \caption{Different colors and types of lines representing different $m$. The TAE is under log transformation}
-\end{figure}
-
-
-\subsubsection{Accuracy of Simulation Method}
-While NA and MD-DFT can cover most cases, we introduce an other method for approximating PMDs', the simulation approximation method(SA). The idea behind this method is simple, as we know a PMD is a generalized multinomial distribution. Suppose each row of PMD matrix is a probability vector of a multinomial distribution, thus a $n\times m$ PMD matrix can be seen as n multinomial distributions with respect to n m-category probability vectors. Then we can have the following algorithm to approximate each probability mass point of PMD.
-
-\begin{algorithm}%[H]
-\SetAlgoLined
-\KwResult{Write here the result }
- Set the repeating time equals to $N$\;
- \For{$t=1$ \KwTo $N$}{
-  \For{$i=1$ \KwTo $n$}{
-    generate 1 multinomial sample wrt probability vector = $i^{th}$ row of $P_{n \times m}$
-  }
-  sum up all samples generated in last loop and record the result as the $t^{th}$ row of matrix R.
- }
- \begin{itemize}
-     \item compute the frequency of every result that stored in R as our probability mass point value.\\
-     \item compare density calculated above and computed by MD-DFT to get MAE and TAE.
- \end{itemize}
- \caption{Simulation approximation algorithm (SA)}
-\end{algorithm}
-
-We also calculated the error bound of the simulation method.
-Suppose for $i$th repeat, we consider random variable matrix $[X_{1i},X_{2i},\dots,X_{n i}]'$, each $X$ is a vector of length $m$ representing a voter's voting result. We repeat $R$ times to simulate the voting process to get $X_{j1},\dots,X_{j R}$ for each $j=1,\dots, n$, then
-\begin{align*}
-        &U_1 = \frac{\sum_{i=1}^{R} X_{1i}}{R} \longrightarrow N\left(p_1,\frac{1}{R}\left(Diag(p_1) - p_1 p_1'\right)\right)\\
-        &U_2 = \frac{\sum_{i=1}^{R} X_{2i}}{R} \longrightarrow N\left(p_2,\frac{1}{R}\left(Diag(p_2) - p_2 p_2'\right)\right)\\
-        & \vdots\\
-        &U_n = \frac{\sum_{i=1}^{R} X_{ni}}{R} \longrightarrow N\left(p_n,\frac{1}{R}\left(Diag(p_n) - p_n p_n'\right)\right)
-\end{align*}
-Therefore
-\begin{align*}
-    U_1 + \dots + U_n \longrightarrow N\left(\sum_{i=1}^{n}p_i, \frac{1}{R}\sum_{i=1}^{n}\left(Diag(p_i) - p_i p_i'\right) \right)
-\end{align*}
-For each element in the vector $p_i$, say $p_{ij}$\\
-\begin{equation*}
-    p_{ij} - p_{ij}^2 \leq \frac{1}{4}
-\end{equation*}
-So the error of simulation will be controlled within
-\begin{equation*}
-    \frac{1}{R} \times \frac{n}{4} = \frac{n}{4R}
-\end{equation*}
-
-\begin{figure}%[h!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{simu_accuracy.pdf}
-    \caption{Simulation accuracy test result, the repeating time set as $10^4$}
-\end{figure}
-
-Figure 3 illustrates the performance of SA method. For a fixed m and t, as n increases MAE decreases. Due to sparsity effect if we fix $n$, we could find MAE also drops while m increasing.
-
+As we see from Table 1, the $\mathrm{MAE}$ are all less or equal to machine epsilon. This shows us that MD-DFT is accurate enough and the error is only due to the computation limit of devices. 
+\subsection{Accuracy of Normal Approximation and Simulation Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Among the three computing algorithms we proposed, one of them is able to calculate the exact probability while the other two are approximation methods. Therefore, it is necessary to explore accuracy of the approximation methods under different circumstances. The metric here we use is $\MAE$ and $\TAE$. Probability mass points computed by MD-DFT are considered as true probabilities, denote it as $p_{true}$.
+$\MAE$ and $\TAE$ for normal approximation are given by
+\begin{equation*}
+    \MAE = \max_{\xvec}|p_{\rm NA}(\xvec)-p_{\rm true}(\xvec)| \quad, \quad  \TAE = \sum_{\xvec}|p_{\rm NA}(\xvec)-p_{\rm true}(\xvec)|
+\end{equation*}
+For simulation method $\MAE$ and $\TAE$ are given via
+\begin{equation*}
+    \MAE = \max_{\xvec}|p_{\rm SIM}(\xvec)-p_{\rm true}(\xvec)| \quad, \quad  \TAE = \sum_{\xvec}|p_{\rm SIM
+    }(\xvec)-p_{\rm true}(\xvec)|
+\end{equation*}
+To test the accuracy, we need to generate $\boldsymbol{\rm P}_{\rm n \times \rm m}$ randomly for different settings of $(n,m)$. Also for a fixed $(n,m)$ we repeat the random generation of $\boldsymbol{\rm P}_{\rm n \times \rm m}$ for 5000 times to eliminate the noise effect. As the dimension of $\boldsymbol{\rm P}$ increases, the distribution gets sparse. As a result, $\MAE$ would become smaller no matter what computation method we use. To include the effect of sparsity, we introduce another method called origin. Origin is a method just as simple as estimating all probability mass point with value 0. Thus the $\TAE$ will always be 1 and $\MAE$ will be the $\max |p_{\rm true}(\xvec)|$. The $\MAE$ of origin will show us a good picture for sparsity of $\PMD$ distribution as its dimension growth. Comparison between origin and other methods as shown in Figure 1 will illustrate how effective normal approximation and simulation method are regardless of sparsity.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[angle=-90,origin=c,scale=0.5]{tex/figures/mae_plot.pdf}
+	\caption{$\MAE$ given different $(n,m)$ settings}
+\end{figure}
+
+
+Figure 1 and Figure 2 exhibit the accuracy test results for different $(n,m)$ pairs. Our computations are done on Linux server with AMD EPYC 7702 chips(128 cores, 2GHz) and 256GB RAM. For simulation method, the repeating time are set to be $10^4$ and it is easy to anticipate that with the growth of repeating  time the accuracy of the method will be better. Also it is not necessary to test with large repeating time because of the computation capacity limits. Due to the computation limits of device, we are able to test $(n,m)$ pairs with $(n+1)^{m-1}$ less than $2^{31}$. 
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[angle=-90,origin=c,scale=0.5]{tex/figures/tae_plot.pdf}
+	\caption{$\MAE$ and giving different $(n,m)$ settings}
+\end{figure}
+
+
+Figure 1 shows accuracy comparisons in a perspective of $\MAE$. It can be seen that when $m$ is small(less than 5), normal approximation is barely better than origin method as their curves are almost overlapped, it means the accuracy of normal approximation method is no much better than estimating all probability mass points with 0. While $m$ is larger or equal to 5, normal approximation is sufficiently better than simulation method regardless of sparsity. Simulation method under this situation is slightly exceeding origin.
+
+In Figure 2, when $m$ is smaller than 5 and using $\TAE$ as y axis metric, the dashed line that represents simulation method is beneath the red line which stands for normal approximation. The gap between two curves are significant. When $m$ is larger than 4. Normal approximation outperforms simulation method. As $n$ grows, the differences between two methods get larger.
+
+To conclude, in the concern of accuracy simulation method is a much better choice for user when $m$ is less than 5. Conversely, normal approximation method is considerably more accurate than simulation method if $m$ is larger than 4.
+
+
 \subsection{Time Efficiency}
 In this section, we show computation efficiency of simulation method and MD-DFT for calculating all probability mass points as $(n,m)$ gets large. We generate random matrices with respect to given $(n, m)$, record the calculating time of each method. As for normal approach, it is a asymptotic method, we only need to calculate the asymptotic normal distribution.
 
-\begin{table}%[h!]
-\centering
-\caption{Accuracy of simulation method.}\label{tab:my_label}
-\begin{tabular}{c|c|c}
-\hline
-\hline
-     $(n, m)$ & MD-DFT & Simulation based $(10^6)$  \\
-\hline
-    (4, 3) & 0.023 & 0.542 \\
-\hline
-    (6, 3) & 0.002 & 0.852\\
-\hline
-    (8, 3) & 0.003 & 1.177\\
-    (10, 3) & 0.003 & 1.634\\
-    (20, 3) & 0.014 & 4.532\\
-    (50, 3) & 0.098 & 22.349\\
-    (100, 3) & 0.49 & 80.243\\
-    (200, 3) & 2.834 & 307.350\\
-    (1000, 3) & 249.449  & 7992.507 \\
-\hline\hline
-\end{tabular}
-\end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Study the computing of the three methods.
 
@@ -570,11 +523,11 @@ https://stats.stackexchange.com/questions/274211/calculating-the-probability-of-
 
 In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson Multinomial distribution can fit the situation perfectly under some assumptions.\\
 
-Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ different results $\boldsymbol{x}_1,\dots, \boldsymbol{x}_N$, respectively. Assume we know the $\boldsymbol{P}$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.\\
+Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ different results $\boldsymbol{x}_1,\dots, \boldsymbol{x}_N$, respectively. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.\\
 
-To demonstrate that, suppose we have ten electoral voters and three candidates with $\boldsymbol{P}$ matrix with means of column one, two and three are $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
+To demonstrate that, suppose we have ten electoral voters and three candidates with $\Pmat$ matrix with means of column one, two and three are $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
 \begin{equation*}
-    \boldsymbol{P} = \begin{pmatrix}
+    \Pmat = \begin{pmatrix}
 0.071 & 0.589 & 0.340\\
 0.365 & 0.195 & 0.440\\
 0.445 & 0.505 & 0.050\\
@@ -582,29 +535,29 @@ To demonstrate that, suppose we have ten electoral voters and three candidates w
 0.620 & 0.111 & 0.269
     \end{pmatrix}
 \end{equation*}
-To compute the probability of each candidate winning the election, just need to introduce constraints. For instance, under the constraint $\chi_1 = \left\{x_1>x_2\right\} \cap \left\{x_1>x_3\right\}$, we are able to compute the winning rate of the first candidate is 
+To compute the probability of each candidate winning the election, just need to introduce constraints. For instance, under the constraint $\chi_1 = \left\{x_1>x_2\right\} \cap \left\{x_1>x_3\right\}$, we are able to compute the winning rate of the first candidate is
 \begin{equation*}
     p(\text{the 1st candidate wins}) = \sum_{\boldsymbol{x} \in \chi_{1}} p(\boldsymbol{x}) = 0.3429
 \end{equation*}
-Similarly, the probabilities for the second candidate and the third candidate to win are $0.2745$ and $0.2001$. Additionally, the most possible result is $\boldsymbol{x} = (4,3,3)$, which has probability 0.08546. 
+Similarly, the probabilities for the second candidate and the third candidate to win are $0.2745$ and $0.2001$. Additionally, the most possible result is $\boldsymbol{x} = (4,3,3)$, which has probability 0.08546.
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Statistical Inference for Aggregated Data}\label{sec:model.est.inf}	
-First introduce the out "Logistic-like" model to fit a given aggregated dataset with selected features and a categorical response variable that has $m$ categories. By dividing the rows of our data into $H$ groups $G_1,\dots,G_{S}$, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily to be equal. Let the quantity for each category of group $G_i$ be $\boldsymbol{x}^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\boldsymbol{H}^{(i)}$ to be the covariate matrix of $G_i$, then $\boldsymbol{H}^{(i)} = (\boldsymbol{1}, \boldsymbol{h}_{1}^{(i)},\dots,\boldsymbol{h}_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\boldsymbol{1}$, where $v$ equals to the number of covariates plus one. Let $\boldsymbol{P}^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\boldsymbol{x}^{(i)}$ for group $G_i$ be $p(\boldsymbol{x}^{(i)})$. The total log-likelihood for all groups can be computed as
+First introduce the out "Logistic-like" model to fit a given aggregated dataset with selected features and a categorical response variable that has $m$ categories. By dividing the rows of our data into $H$ groups $G_1,\dots,G_{S}$, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily to be equal. Let the quantity for each category of group $G_i$ be $\boldsymbol{x}^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\boldsymbol{H}^{(i)}$ to be the covariate matrix of $G_i$, then $\boldsymbol{H}^{(i)} = (\boldsymbol{1}, \boldsymbol{h}_{1}^{(i)},\dots,\boldsymbol{h}_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\boldsymbol{1}$, where $v$ equals to the number of covariates plus one. Let $\Pmat^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\boldsymbol{x}^{(i)}$ for group $G_i$ be $p(\boldsymbol{x}^{(i)})$. The total log-likelihood for all groups can be computed as
 \begin{equation*}
     \ell = \sum_{i=1}^{S}\ell_i = \sum_{i=1}^{S}\log p(\boldsymbol{x}^{(i)})
 \end{equation*}
-Where $p(\boldsymbol{x}^{(i)})$ can be computed via Poisson Multinomial distribution with SPM $\boldsymbol{P}^{(i)}$.\\
-Set category $m$ as baseline and use softmax function to form the $\boldsymbol{P}^{(i)}$ for each group through parameter $\boldsymbol{\beta} = (\boldsymbol{\beta}_1, \dots, \boldsymbol{\beta}_{m-1})$ as
+Where $p(\boldsymbol{x}^{(i)})$ can be computed via Poisson Multinomial distribution with SPM $\Pmat^{(i)}$.\\
+Set category $m$ as baseline and use softmax function to form the $\Pmat^{(i)}$ for each group through parameter $\boldsymbol{\beta} = (\boldsymbol{\beta}_1, \dots, \boldsymbol{\beta}_{m-1})$ as
 \begin{align*}
-    p_{j k}^{(i)} = \frac{\exp{\left(\boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k}\right)}}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}} 
+    p_{j k}^{(i)} = \frac{\exp{\left(\boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k}\right)}}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}}
     \quad k \neq m \quad \text{and } \quad
     p_{i,m}^{(i)} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}}
 \end{align*}
-Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\hat{\boldsymbol{P}}^{(i)}$. \\
+Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}^{(i)}$. \\
 In the rest of this part, we apply the model to the dataset "ai4i". The dataset "ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products(rows) and 14 features(columns) including Product type, Air temperature, Process temperature, Rotational speed and others.\\
 For demonstration purpose, here we only use the first 1000 rows and Product type as response variable, Air temperature and Process temperature as covariates. The feature Product type is categorical and has three levels, "M", "L", "H", we denote them as category 1, 2, 3 for simplicity. The number of products that fall in category 1, 2, and 3 are 285, 601, and 114. The other two features are continuous.
 \\
@@ -612,17 +565,16 @@ We randomly divide the dataset into 100 groups $G_1,\dots,G_{100}$, the smallest
 
 The estimates of the parameters are
 \begin{equation*}
-\hat{\boldsymbol{\beta}} = 
+\wh{\boldsymbol{\beta}} =
 \begin{pmatrix}
  1.07484986 & 2.2820922 \\
  1.62342045 & 1.9108976 \\
  -0.06277732 &-0.8455964
 \end{pmatrix}
 \end{equation*}
-The corresponding $\hat{\boldsymbol{P}}^{(1)}$ and $\hat{\boldsymbol{P}}^{(5)}$ for group 1 and group 5 are
+The corresponding $\wh{\Pmat}^{(1)}$ and $\wh{\Pmat}^{(5)}$ for group 1 and group 5 are
 \begin{equation*}
-    \hat{\boldsymbol{P}}^{(1)} = \begin{pmatrix}
-
+    \wh{\Pmat}^{(1)} = \begin{pmatrix}
  0.11914 & 0.63310 & 0.24776\\
  0.12326 & 0.57268 & 0.30406\\
  0.14809 & 0.47560 & 0.37631\\
@@ -632,7 +584,7 @@ The corresponding $\hat{\boldsymbol{P}}^{(1)}$ and $\hat{\boldsymbol{P}}^{(5)}$ 
  0.03559 & 0.53568 & 0.42873\\
  0.04890 & 0.54668 & 0.40442
     \end{pmatrix} \quad \text{, }
-    \hat{\boldsymbol{P}}^{(5)} = \begin{pmatrix}
+    \wh{\Pmat}^{(5)} = \begin{pmatrix}
  0.15604 & 0.70766 & 0.13630\\
  0.14469 & 0.73976 & 0.11555\\
  0.11246 & 0.67372 & 0.21382\\
@@ -656,45 +608,60 @@ Confusion matrix
 
 Use Theorem for independent.
 
-In machine learning classification problem with multiple labels, for each unit in the test set, the probability of the unit belongs to each class is computed. Usually, the predicted class is assigned as the highest probability. In the classifiers (i.e., soft classification), the unit class is randomly assigned according to the predicted probabilities, leading to randomness in the confusion matrix. The PMD can be used to characterize the distribution of the counts in the confusion matrix. 
+In machine learning classification problem with multiple labels, for each unit in the test set, the probability of the unit belongs to each class is computed. Usually, the predicted class is assigned as the highest probability. In the classifiers (i.e., soft classification), the unit class is randomly assigned according to the predicted probabilities, leading to randomness in the confusion matrix. The PMD can be used to characterize the distribution of the counts in the confusion matrix.
 
 
+%
+%Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms.
 
-Yueyao: reliability course project used EL images for classification. The confusion matrix is obtained (Table 4 of the course report). In some senses, Table 4 only provide the point estimates, with PMD the distribution of the counts in each cell can be found, and can be displayed by an array of histograms. 
+In this section, we consider an Electroluminescence (EL) image classification example to illustrate the usage of PMD in machine learning classification problems. In the photovoltaic (PV) reliability study, the EL image is an important data type that reveal information about the PV health status. The EL imaging provide visual inspection of solar panels and is a non-destructive technology for failure analysis of PV modules. Because disconnected parts do not irradiate, the darker areas in EL images indicate defective cells \shortcite{Deitsch2019}.
 
-
-A public dataset (\url{https://github.com/zae-bayern/elpv-dataset}) of solar cells extracted from high resolution EI images of monocrystalline and polycrystalline PV modules.
-
-
-All images are normalized with respect to size and perspective. Additionally, any distortion induced by the camera lens used to capture the EL images was eliminated prior to solar cell extraction.
-
-Then we will talk about how to process these data. They hired some evaluators and ask them two questions. The first is how do they think the function of the solar cells, functional or defective; the second is how they are confident about their assessments. Then we can get four different situations as Table \ref{tt}
+The work of \shortciteN{Deitsch2019},\shortciteN{Buerhop2018}, and \shortciteN{Deitsch2021} provide a public dataset of solar cells extracted from high resolution EI images of PV modules (\url{https://github.com/zae-bayern/elpv-dataset}). All images are preprocessed with respect to size and are eliminated distortion induced by the camera lens used to capture the EL images. Each image is manually labeled  with its degree of defectiveness. The degree of defectiveness is determined by two questions. The first is how do evaluators think the status of the solar cells, functional or defective; the second is how they are confident about their assessments. In total there are four labels as shown in Table \ref{tbl:el.label} and we marked them as Class A-D.
 
 \begin{table}[h!]
 	\centering
 	\caption{Partitioning of solar cells into functional and defective, with an additional self-assessment on the rater's confidence after visual inspection. Non-confident decisions obtain a weight lower than 100\% for the evaluation of the classifier performance }
-	\begin{tabular}{c|c|c|c}
+	\begin{tabular}{c|c|c|c|c}
 		\hline
 		\hline
-		Condition  & Confident?  &  Label $p$ & Weight $w$ \\
+		Condition  & Confident?  &  Label $p$ & Weight $w$ & Class \\
 		\hline
-		\multirow{2}{*}{functional} & \cmark & functional & 100\% \\
-		& \xmark& defective  & 33\% \\
+		\multirow{2}{*}{functional} & \cmark & functional & 0\% & A\\
+		& \xmark& defective  & 33\% & B\\
 		\hline
-		\multirow{2}{*}{defective} & \cmark & defective & 100\%  \\
-		& \xmark & defective & 67\% \\
+		\multirow{2}{*}{defective} & \xmark & defective & 67\% & C\\
+		& \cmark & defective & 100\%  &D\\
 		\hline
 		\hline
 	\end{tabular}
 	
 	
 	
-	\label{tt}
+	\label{tbl:el.label}
 	
 \end{table}
-According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
+%According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
 
-We split our data to training data (80\%) and test data (20\%), then fitting a CNN model. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. We also allow our model to pad. After ten epochs, the model converges.
+We split our data to training data (80\%) and test data (20\%), then train a CNN model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class.
+
+
+\begin{table}[ht]
+\centering
+\caption{An example of the probability vectors of a subset in testing set from the trained CNN model.}
+\begin{tabular}{rrrrr}
+  \hline
+ & A & B & C & D \\
+  \hline
+1 & 0.9230 & 0.0366 & 0.0107 & 0.0297 \\
+  2 & 0.0736 & 0.0802 & 0.0513 & 0.7950 \\
+  3 & 0.0000 & 0.0016 & 0.0006 & 0.9978 \\
+  4 & 0.9170 & 0.0537 & 0.0062 & 0.0231 \\
+  5 & 0.9579 & 0.0239 & 0.0070 & 0.0112 \\
+  6 & 0.8991 & 0.0347 & 0.0132 & 0.0530 \\
+   \hline
+\end{tabular}
+\end{table}
+
 
 \begin{figure}
 	\centering
@@ -739,4 +706,3 @@ We develop algorithm that can be useful for computing the pmf of the PMD distrib
 \end{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
