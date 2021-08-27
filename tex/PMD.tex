@@ -191,8 +191,8 @@ In the application part, we begin with a simple scenario of committee voting whe
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
 		
-Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $m$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_{m-1})'$. That is we can focus on the random vectors $\boldsymbol{\rm I}_i=(I_{i1}, \ldots, I_{i,m-1})'$ and $\Xmat=(X_1, \ldots, X_{m-1})'$ without the loss of generality. In this section let's still consider $\Xmat = (X_1, \ldots, X_{m})'$ and $\boldsymbol{\rm I}_i=(I_{i1}, \ldots, I_{im})'$  for the purpose of introduction. The distribution of the $\Xmat$ is called the Poisson multinomial distribution (PMD), which is denoted by
-$$\Xmat  = \sum_{i = 1}^n \boldsymbol{\rm I}_i \sim \PMD(n,m,\Pmat_{\rm n\times m}),$$
+Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $m$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_{m-1})'$. That is we can focus on the random vectors $\boldsymbol{\rm I}_i=(I_{i1}, \ldots, I_{i,m-1})'$ and $\Xmat=(X_1, \ldots, X_{m-1})'$ without the loss of generality. In this section let's still consider $\Xmat = (X_1, \ldots, X_{m})'$ and $\boldsymbol{\rm I}_i=(I_{i1}, \ldots, I_{im})'$  for the purpose of introduction. The distribution of the $\Xmat$ is called the Poisson multinomial distribution ($\PMD$), which is denoted by
+$$\Xmat  = \sum_{i = 1}^n \boldsymbol{\rm I}_i \sim \PMD(\Pmat_{\rm n\times m}),$$
 where the success probability matrix (SPM) is
 \begin{equation*}
 \Pmat_{\rm n \times m} = \begin{pmatrix}
@@ -203,8 +203,8 @@ p_{n1} &  \dots & p_{nm} \\
 \end{equation*}
 Let vector $\xvec = (x_1,\dots,x_m)'$ be a realization of a $\PMD$ random variable $\Xmat$, the probability mass function (pmf) of PMD,
 $$p(\Xmat=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. Moreover, in the next section, we will focus on $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. \\
-Let's see a simple example, we have three candidates and four voters, and we have
+is of interest. Moreover, in the next section, we will focus on $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $ for development of our computation methods. \\
+Let's see a simple example, we have three candidates and four voters, the result of voting is a random variable $\Xmat \sim \PMD(\Pmat)$ where
 \begin{equation*}
 \Pmat_{4 \times 3} = \begin{pmatrix}
 0.1 &  0.2 & 0.7\\
@@ -213,27 +213,27 @@ Let's see a simple example, we have three candidates and four voters, and we hav
 0.8 & 0.1 & 0.1
 \end{pmatrix}.
 \end{equation*}
-We want to know the probability of a result that candidate 1 gets 4 votes and others  gets 0 vote that is, $\boldsymbol{x} =  (4,0,0)'$.
+It is trivial to compute the probability mass function of $\Xmat$ through enumeration. For instance, the probability of a result that candidate 1 gets 4 votes and others  gets 0 vote, that is, $\xvec =  (4,0,0)'$. 
 \begin{equation*}
 P\{\Xmat = \xvec \} = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016
 \end{equation*}
-The probability of $\Xmat=(1,3,0)'$ is
+Also, the probability of $\Xmat=(1,3,0)'$ is
  \begin{multline*}
  P\{\Xmat = (1,3,0)\} = 0.1\times 0.2 \times 0.5 \times 0.1\\ +
  0.5\times0.2\times0.5 \times 0.1 + 0.4\times0.2\times0.2\times0.1 + 0.8\times0.2\times0.2\times0.5 = 0.0236
  \end{multline*}
-Keep doing this we can calculate all possible outcomes.
+When dimension of $\Pmat$ is small, enumeration is an exact way to calculate the probability mass function. However, as $\rm n \times m$ gets larger enumeration becomes impossible since we will have to compute $\binom{n+m-1}{m-1}$ possible outcomes. 
 
 
-Note that when the SPM is identical across all rows, that is, $\rm I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the PMD is a generalization of the multinomial distribution. When $m=1$, the PMD is reduced to the Poisson binomial distribution as in \citeN{hong2013computing}.
+Note that when the SPM is identical across all rows, that is, $\rm I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the $\PMD$ is a generalization of the multinomial distribution. When $m=1$, the $\PMD$ is reduced to the Poisson binomial distribution as in \citeN{hong2013computing}.
 
 In related literature, \citeN{hong2013computing} consider the exact and approximate methods for computing the pmf of the Poisson binomial distribution. \citeN{zhang2018generalized} introduce the general Poisson binomial distribution and develop an algorithm to compute its distribution functions.
 
-
+Now let's take a look of some basic properties of Poisson Multinomial distributions
 \subsection{Properties of the Distribution}
 
 \begin{thm}
-Given random variable $\Xmat$ that follows a Poisson-Multinomial distribution with $\Pmat_{n\times m}$, the mean of $\Xmat$ is
+Given random variable $\Xmat$ that follows a Poisson Multinomial distribution with $\Pmat_{\rm n\times m}$, the mean of $\Xmat$ is
    $\boldsymbol{\mu} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$, where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$. \\
 The variance-covariance matrix of $\Xmat$ is a $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
 \begin{equation*}
