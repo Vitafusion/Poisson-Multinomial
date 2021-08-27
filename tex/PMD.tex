@@ -191,20 +191,19 @@ In the application part, we begin with a simple scenario of committee voting whe
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
 		
-Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_m)'$. That is we will focus on the random vectors $\boldsymbol{I}_i=(I_{i1}, \ldots, I_{im})'$ and $\Xmat=(X_1, \ldots, X_m)'$. The distribution of the $\Xmat$ is called the Poisson multinomial distribution (PMD), which is denoted by
-$$\Xmat  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,\Pmat_{n\times m}),$$
+Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $m$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $(X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $(I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $(X_1, \ldots, X_{m-1})'$. That is we can focus on the random vectors $\boldsymbol{\rm I}_i=(I_{i1}, \ldots, I_{i,m-1})'$ and $\Xmat=(X_1, \ldots, X_{m-1})'$ without the loss of generality. In this section let's still consider $\Xmat = (X_1, \ldots, X_{m})'$ and $\boldsymbol{\rm I}_i=(I_{i1}, \ldots, I_{im})'$  for the purpose of introduction. The distribution of the $\Xmat$ is called the Poisson multinomial distribution (PMD), which is denoted by
+$$\Xmat  = \sum_{i = 1}^n \boldsymbol{\rm I}_i \sim \PMD(n,m,\Pmat_{\rm n\times m}),$$
 where the success probability matrix (SPM) is
 \begin{equation*}
-\Pmat_{n \times m} = \begin{pmatrix}
+\Pmat_{\rm n \times m} = \begin{pmatrix}
 p_{11} &  \dots & p_{1m} \\
 \vdots & \ddots & \vdots \\
 p_{n1} &  \dots & p_{nm} \\
 \end{pmatrix}.
 \end{equation*}
-Let vector $\boldsymbol{x} = (x_1,\dots,x_m)'$, the probability mass function (pmf) of PMD,
-$$p(\Xmat=\boldsymbol{x}) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. Moreover, in the next section, we only concern $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. Consequently , $(x_{1},\dots,x_m)'$, and $(x_{1},\dots,x_{m-1})'$ are equivalent, we can also denote the latter as $\boldsymbol{x}$ for convenience. Correspondingly, we can also denote $(X_1,\dots,X_{m-1})$ as $\Xmat$ due to the equivalence of  $(X_1,\dots,X_m)$ and $(X_1,\dots,X_{m-1})$. Note this will be  important in the $3^{\textbf{rd}}$ part of this paper.\\
-\\
+Let vector $\xvec = (x_1,\dots,x_m)'$ be a realization of a $\PMD$ random variable $\Xmat$, the probability mass function (pmf) of PMD,
+$$p(\Xmat=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
+is of interest. Moreover, in the next section, we will focus on $p(x_1, \dots, x_{m-1})$ because $x_{m} = n-\sum_{i=1}^{m-1}x_i $. \\
 Let's see a simple example, we have three candidates and four voters, and we have
 \begin{equation*}
 \Pmat_{4 \times 3} = \begin{pmatrix}
@@ -216,7 +215,7 @@ Let's see a simple example, we have three candidates and four voters, and we hav
 \end{equation*}
 We want to know the probability of a result that candidate 1 gets 4 votes and others  gets 0 vote that is, $\boldsymbol{x} =  (4,0,0)'$.
 \begin{equation*}
-P\{\Xmat = \boldsymbol{x}\} = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016
+P\{\Xmat = \xvec \} = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016
 \end{equation*}
 The probability of $\Xmat=(1,3,0)'$ is
  \begin{multline*}
@@ -226,7 +225,7 @@ The probability of $\Xmat=(1,3,0)'$ is
 Keep doing this we can calculate all possible outcomes.
 
 
-Note that when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the PMD is a generalization of the multinomial distribution. When $m=1$, the PMD is reduced to the Poisson binomial distribution as in \citeN{hong2013computing}.
+Note that when the SPM is identical across all rows, that is, $\rm I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the PMD is a generalization of the multinomial distribution. When $m=1$, the PMD is reduced to the Poisson binomial distribution as in \citeN{hong2013computing}.
 
 In related literature, \citeN{hong2013computing} consider the exact and approximate methods for computing the pmf of the Poisson binomial distribution. \citeN{zhang2018generalized} introduce the general Poisson binomial distribution and develop an algorithm to compute its distribution functions.
 
@@ -251,17 +250,17 @@ The CF for the PMD is
 \end{equation*}
 where  $\ivec=\sqrt{-1}$.
 \end{thm}
-The derivations of the above properties are trivial. One important thing is that we realize the covariance matrix $\boldsymbol{\Sigma}$ is singular, but we still can get a non-singular $n \times (m-1)$ matrix, say $\boldsymbol{\Sigma}_{0}$, to given $P_{n \times m}$ by deleting the last column of $\boldsymbol{\Sigma}$ due to the fact that the last column is linear dependent on the first $m-1$ columns. Similarly, the last element of the expectation vector of $X$ is also redundant since it equals to $n$ minus summation of the first $m-1$ elements. Therefore we can denote $\EE(X)$ by replacing $\boldsymbol{\mu}$ to $\boldsymbol{\mu}_0 = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$.
+The derivations of the above properties are trivial. One important thing is that we realize the covariance matrix $\boldsymbol{\Sigma}$ is singular, but we still can get a non-singular $n \times (m-1)$ matrix, say $\boldsymbol{\Sigma}_{0}$, to given $\Pmat_{\rm n \times m}$ by deleting the last column of $\boldsymbol{\Sigma}$ due to the fact that the last column is linear dependent on the first $m-1$ columns. Similarly, the last element of the expectation vector of $X$ is also redundant since it equals to $n$ minus summation of the first $m-1$ elements. Therefore we can denote $\EE(X)$ by replacing $\boldsymbol{\mu}$ to $\boldsymbol{\mu}_0 = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$.
 
 
 \begin{thm}
-If the SPM $\Pmat$ can be written as a combination of diagonal matrices $\Pmat_1, \Pmat_2, \dots, \Pmat_{K}$, $\Pmat = \diag(\Pmat_{k}), k=1,\dots,K$. Then the outcome of $\Pmat$, $\boldsymbol{x}$ can hereby be decomposed in to  outcomes of the diagonal matrices, $\boldsymbol{x} = (\boldsymbol{x}_{1},\dots,\boldsymbol{x}_{K})$. The pmf can computed as the product of the corresponding marginal pmfs. That is
+If the SPM, $\Pmat$ can be written as a combination of diagonal matrices $\Pmat_1, \Pmat_2, \dots, \Pmat_{K}$, $\Pmat = \diag(\Pmat_{\rm k}), k=1,\dots,K$. Then the outcome of $\Pmat$, $\boldsymbol{x}$ can hereby be decomposed in to  outcomes of the diagonal matrices, $\xvec= (\xvec_{1},\dots,\xvec_{\rm K})$. The pmf can computed as the product of the corresponding marginal pmfs. That is
 \begin{align*}
-p(\boldsymbol{x}|\Pmat)= p(\boldsymbol{x}_{1} \cap \dots \cap \boldsymbol{x}_{K}|\Pmat_1,\dots,\Pmat_{K} )= \prod_{k=1}^K p(\boldsymbol{x}_{k}|\Pmat_{k}).
+p(\xvec|\Pmat)= p(\xvec_{1} \cap \dots \cap \xvec_{\rm K}|\Pmat_1,\dots,\Pmat_{K} )= \prod_{k=1}^K p(\xvec_{k}|\Pmat_{\rm k}).
 \end{align*}
 \end{thm}
-To show this, we assume $\Pmat$ is $n \times m$ and $\Pmat_{k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. To demonstrate the situation here, suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates
-described by probability matrix $\Pmat_k$. Strict proof can be done by decomposition of characteristic function of $\Pmat$ into characteristic functions of $\Pmat_{k}$s.
+To show this, we assume $\Pmat$ is $\rm n \times m$ and $\Pmat_{\rm k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. To demonstrate the situation here, suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates
+described by probability matrix $\Pmat_{\rm k}$. Strict proof can be done by decomposition of characteristic function of $\Pmat$ into characteristic functions of $\Pmat_{\rm k}$s.
 
 
 
@@ -369,7 +368,7 @@ To be specific,
 \begin{example}
 Suppose we are given $n=3$, $m=2$
 \begin{equation*}
-P_{n \times m} = P_{3 \times 1} = \begin{pmatrix}
+P_{\rm n \times m} = P_{3 \times 1} = \begin{pmatrix}
 0.1 & 0.9\\
 0.5 & 0.5\\
 0.3 & 0.7\\
@@ -385,7 +384,7 @@ In our package, as $n$ and $m$ get large, the total number of probability mass p
 
 
 \begin{thm}
-Given repeating time \mbox{B} and $n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_N$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\wh{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
+Given repeating time \mbox{B} and $\rm n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_N$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\wh{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
 \begin{equation*}
     \EE|p_{\boldsymbol{x}_i} - \wh{p}_{\boldsymbol{x}_i}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{\pi B}}
 \end{equation*}
