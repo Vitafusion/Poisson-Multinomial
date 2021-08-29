@@ -4,7 +4,7 @@
 \alias{dpmd}
 \title{Probability Mass Function of Poisson-Multinomial Distributions}
 \usage{
-dpmd(pmat, x = c(0, 0, 0, 0), method = "DFT-CF", B = 1000)
+dpmd(pmat, x = NULL, method = "DFT-CF", B = 1000)
 }
 \arguments{
 \item{pmat}{An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.

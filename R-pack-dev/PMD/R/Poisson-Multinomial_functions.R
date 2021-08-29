@@ -67,20 +67,10 @@
 #' dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 1e3)
 #' 
 #' @export
-dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=1e3)
+dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
 {
-  if(is.matrix(pmat)==F){
-    stop("pmat is not a matrix.")
-  }
-  if(any(pmat<0)|any(pmat>1))
-  {
-    stop("Invalid values in pmat.")
-  }
-  for(i in 1:nrow(pmat)){
-    if(abs(sum(pmat[i,])-1)>1*1e-10)
-      stop("Existing a row that doesn't sum up to 1.")
-  }
-  
+  chck = pmat.check(pmat,x)
+  if(chck!=1){stop(chck)}
   
   switch(method,
          "DFT-CF"={
@@ -201,11 +191,7 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=1e3)
          "SIM" = {
            mm=ncol(pmat) # m categories
            nn=nrow(pmat) # n people
-           if(sum(x)>nn|any(x<0)|length(x)!=mm)
-           {
-             stop("Invalid value or length of x.")
-           }
-             res = pmd.by.demands(x,pmat,B)
+           res = pmd.by.demands(x,pmat,B)
          }
          
   )
@@ -261,18 +247,11 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=1e3)
 #' ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 1e3)
 #' @export
 ppmd = function(pmat,x,method="DFT-CF",B=1e3){
-  if(is.matrix(pmat)==F){
-    stop("pmat is not a matrix.")
-  }
-  if(any(pmat<0)|any(pmat>1)){
-    stop("Invalid values in pmat.")
-  }
+  chck = pmat.check(pmat,x)
+  if(chck!=1){stop(chck)}
+  
   nn = nrow(pmat)
   mm = ncol(pmat)
-  if(any(x<0)|length(x)!=mm)
-  {
-    stop("Invalid value or length of x.")
-  }
   #idx formed
   nn.vec=rep(nn+1, mm-1)
   l.vec=rep(0, mm-1)
@@ -365,12 +344,8 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
 #' 
 #' @export
 rpmd = function(pmat, s=1){
-  if(is.matrix(pmat)==F){
-    stop("pmat is not a matrix.")
-  }
-  if(any(pmat<0)|any(pmat>1)){
-    stop("Invalid values in pmat.")
-  }
+  chck = pmat.check(pmat)
+  if(chck!=1){stop(chck)}
   mm = ncol(pmat)
   rnd = matrix(NA,nrow = s,ncol = mm)
   for(i in 1:s){
