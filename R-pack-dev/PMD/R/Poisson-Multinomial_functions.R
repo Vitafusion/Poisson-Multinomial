@@ -195,7 +195,7 @@ dpmd <-function(pmat, x = c(0,0,0,0), method="DFT-CF", B=1e3)
              mu = mu + pmat[i,]
            }
            mu = as.vector(mu)
-           res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = n*sig)
+           res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
            res = res[[1]]
          },
          "SIM" = {
