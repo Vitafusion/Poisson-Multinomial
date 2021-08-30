@@ -665,7 +665,7 @@ The work of \shortciteN{Deitsch2019},\shortciteN{Buerhop2018}, and \shortciteN{D
 
 We split our data to training data (80\%) and test data (20\%), then train a CNN model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class. Table~\ref{tbl:elpmat} provides a subset of the CNN model output. For true class for the first sample in Table~\ref{tbl:elpmat} is A. If we predict the class of the first sample using the highest probability, then the prediction is A and there's no randomness. If we allow the model to make predictions based on the probability vector as shown in the first row then there are randomness in the confusion matrix. We can consider the confusion matrix to follow a PMD distribution then we can quantify the uncertainty in confusion matrix using PMD.
 
-Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. 
+Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. For example, in the first row first column panel cell in Figure~\ref{fig:confusion.hist}, we know the possible counts that the model correctly predict class A as well as the corresponding probability. In this way, we have a uncertainty quantification in the confusion matrix.
 
 
 \begin{table}[ht]
@@ -689,8 +689,8 @@ Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell.
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=1.0]{figures/Confusionbar.pdf}
-	\caption{The histogram of each prediction cells.}
+	\includegraphics[width=\linewidth]{figures/Confusionbar.pdf}
+	\caption{The barplot shows the confusion matrix prediction. For each panel cell, the plot shows the corresponding prediction counts fall in this cell as well as their probability.}
 	\label{fig:confusion.hist}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
