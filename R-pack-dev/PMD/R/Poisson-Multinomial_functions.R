@@ -59,19 +59,26 @@
 #' the value of probability mass point (0,1,0,2) is 0.90. 
 #'                    
 #' @examples
-#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
-#' 
+#' pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+#' x <- matrix(c(0,0,1,2), nrow=1) 
+#' x1 <- matrix(c(0,0,1,2,2,1,0,0),nrow=2,byrow=TRUE)
+#'
 #' dpmd(pmat = pp)
-#' dpmd(pmat = pp, method = "SIM-ALL", B = 1e3)
-#' dpmd(pmat = pp, x = c(0,0,1,2), method = "NA" )
-#' dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 1e3)
+#' dpmd(pmat = pp, x = x1)
+#' dpmd(pmat = pp, x = x)
+#'
+#' dpmd(pmat = pp, x = x, method = "NA" )
+#' dpmd(pmat = pp, x = x1, method = "NA" )
+#'
+#' dpmd(pmat = pp, x = x, method = "SIM", B = 1e3)
+#' dpmd(pmat = pp, x = x1, method = "SIM", B = 1e3)
 #' 
 #' @export
 dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
 {
   chck = pmat.check(pmat,x)
   if(chck!=1){stop(chck)}
-  
+  # x should be matrix
   switch(method,
          "DFT-CF"={
            mm=ncol(pmat) # ncol of pmat
@@ -117,58 +124,125 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
            }
            
            res=round(res, 10)
+
+           if(!is.null(x))
+           {
+            nrow.x=nrow(x)
+            res.x=rep(NA,nrow.x)
+            if(nrow.x!=1)
+            {
+              for(j in 1:nrow.x)
+              {
+                idx.x=x[j,1:(mm-1)]+1
+                res.x.expr="res.x[j]=res[idx.x[1]"
+                if(mm>=3)
+                {
+                  for(i in 2:(mm-1))
+                  {
+                    res.x.expr=paste0(res.x.expr, ", idx.x[", i, "]")
+                  }
+                }
+                res.x.expr=paste0(res.x.expr, "]")
+                eval(parse(text=res.x.expr))
+              }
+              res=matrix(res.x,ncol=1)
+            }
+            else
+            {
+              res.x.expr="res.x=res[idx.x[1]"
+              idx.x=x[1:(mm-1)]+1
+                if(mm>=3)
+                {
+                  for(i in 2:(mm-1))
+                  {
+                    res.x.expr=paste0(res.x.expr, ", idx.x[", i, "]")
+                  }
+                }
+                res.x.expr=paste0(res.x.expr, "]")
+                eval(parse(text=res.x.expr))
+                res=res.x
+            }
+           }
+           
            
          },
-         "SIM-ALL"={
-             mm=ncol(pmat) # ncol of pmat
-             nn=nrow(pmat) # nrow of pmat
-             nn.vec=rep(nn+1, mm-1)
-             l.vec=rep(0, mm-1)
-             cn.vec=cumprod(nn.vec)
-             cn.vec=c(1, cn.vec[-(mm-1)])
-             cn.vec=cn.vec[length(cn.vec):1]
-             cn.vec=as.integer(cn.vec) #((n+1)^(m-2),...,(n+1)^2,(n+1),1)
-             nnt=prod(nn.vec) # (n+1)^(m-1) probability mass points
+         "SIM"={
+            if(is.null(x))
+            {
+              mm=ncol(pmat) # ncol of pmat
+              nn=nrow(pmat) # nrow of pmat
+              nn.vec=rep(nn+1, mm-1)
+              l.vec=rep(0, mm-1)
+              cn.vec=cumprod(nn.vec)
+              cn.vec=c(1, cn.vec[-(mm-1)])
+              cn.vec=cn.vec[length(cn.vec):1]
+              cn.vec=as.integer(cn.vec) #((n+1)^(m-2),...,(n+1)^2,(n+1),1)
+              nnt=prod(nn.vec) # (n+1)^(m-1) probability mass points
              
-             res0 = pmd_simulation_allpoints(pmat, nnt, l.vec, cn.vec, B)
+              res0 = pmd_simulation_allpoints(pmat, nnt, l.vec, cn.vec, B)
              
-             res=array(0, nn.vec)
+              res=array(0, nn.vec)
              
-             res.expr="res[idx[1]"
-             if(mm>=3)
-             {
-               for(i in 2:(mm-1))
-               {
-                 res.expr=paste0(res.expr, ", idx[", i, "]")
-               }
-             }
-             res.expr=paste0(res.expr, "]=res0[i]")
+              res.expr="res[idx[1]"
+              if(mm>=3)
+              {
+                for(i in 2:(mm-1))
+                {
+                  res.expr=paste0(res.expr, ", idx[", i, "]")
+                }
+              }
+              res.expr=paste0(res.expr, "]=res0[i]")
              
-             #browser()
+              #browser()
              
-             #print(nnt)
+              #print(nnt)
              
-             for(i in 1:nnt)
-             {
-               idx=l.vec.compute(k=i, cn.vec=cn.vec, m=mm)
-               #print(idx)
-               eval(parse(text=res.expr))
-             }
+              for(i in 1:nnt)
+              {
+                idx=l.vec.compute(k=i, cn.vec=cn.vec, m=mm)
+                #print(idx)
+                eval(parse(text=res.expr))
+              }
              
-             res=round(res, 10)
+              res=round(res, 10)
+            }
+            else
+            {
+              nrow.x = nrow(x)
+              res = rep(NA,nrow.x)
+              if(nrow.x!=1)
+              {
+                for (i in 1:nrow.x) {
+                  res[i] = pmd.by.demands(x[i,],pmat,B)
+                }
+                res=matrix(res,ncol=1)
+              }
+              else
+              {
+                res = pmd.by.demands(x,pmat,B)
+              }
+            }
          },
          "NA"=   {
            mm=ncol(pmat) # m categories
            nn=nrow(pmat) # n people
-           if(sum(x)>nn|any(x<0)|length(x)!=mm)
+           
+           if(is.null(x))
            {
-             stop("Invalid value or length of x.")
+            stop("Value of x is not assigned.")
            }
+           
+           nrow.x = nrow(x)
+           
+           for (i in 1:nrow.x) 
+           {
+            if(sum(x[i,])>nn)
+            {
+              stop("Sum of a row of x greater than n.")
+            }
+           }
+           
            mm = mm - 1
-           x_vec = x[1:(length(x)-1)]
-           lb = as.numeric(x_vec - 0.5)
-           ub = as.numeric(x_vec+0.5)
-           res = 0
            
            # asymptotic sigma
            n = nn
@@ -185,14 +259,35 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
              mu = mu + pmat[i,]
            }
            mu = as.vector(mu)
-           res = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
-           res = res[[1]]
+
+
+           res = rep(NA,nrow.x)
+
+
+           if(nrow.x!=1)
+           {
+            for (i in 1:nrow.x) 
+            {
+              x_vec = x[i,1:mm]
+              lb = as.numeric(x_vec - 0.5)
+              ub = as.numeric(x_vec+0.5)
+              res0 = 0
+           
+              res0 = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
+              res[i] = res0[[1]]
+            }
+              res=matrix(res,ncol=1)
+            }
+            else
+            {
+              x_vec = x[1:mm]
+              lb = as.numeric(x_vec - 0.5)
+              ub = as.numeric(x_vec+0.5)
+              res0 = 0
+              res0 = mvtnorm::pmvnorm(lower=lb,upper = ub, mean = mu, sigma = sig)
+              res = res0[[1]]
+            }
          },
-         "SIM" = {
-           mm=ncol(pmat) # m categories
-           nn=nrow(pmat) # n people
-           res = pmd.by.demands(x,pmat,B)
-         }
          
   )
   
@@ -240,11 +335,12 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
 #' \eqn{x = (x_{1},\ldots, x_{m})}.
 #' 
 #' @examples
-#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
-#' 
-#' ppmd(pmat = pp, x = c(3,2,1,3))
-#' ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
-#' ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 1e3)
+#' pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+#' x <- matrix(c(3,2,1,3),nrow=1)
+#'
+#' ppmd(pmat = pp, x = x)
+#' ppmd(pmat = pp, x = x, method = "NA")
+#' ppmd(pmat = pp, x = x, method = "SIM-ALL", B = 1e3)
 #' @export
 ppmd = function(pmat,x,method="DFT-CF",B=1e3){
   chck = pmat.check(pmat,x)
@@ -320,7 +416,7 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
            prob = 0
            points.pos = points[which(points[,mm]>=0),]
            for(i in 1:nrow(points.pos)){
-             prob = prob + dpmd(pmat, x = points.pos[i,], method="NA")
+             prob = prob + dpmd(pmat, x = as.matrix(points.pos[i,]), method="NA")
            }
          })
   return(prob)

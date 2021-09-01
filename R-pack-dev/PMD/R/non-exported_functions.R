@@ -43,12 +43,16 @@ pmat.check = function(pmat,x=NULL){
         return("Existing a row in pmat that doesn't sum up to 1.")
     }
     if(!is.null(x)){
-        nn = nrow(pmat)
-        mm = ncol(pmat)
-        if(any(x<0)|length(x)!=mm)
-        {
-          return("Invalid value or length of x.")
-        }
+      if(!is.matrix(x))
+      {
+        return("x is not a matrix.")
+      }
+      nn = nrow(pmat)
+      mm = ncol(pmat)
+      if(any(x<0)|ncol(x)!=mm)
+      {
+        return("Invalid value or length of x.")
+      }
     }
     return(1)
 }

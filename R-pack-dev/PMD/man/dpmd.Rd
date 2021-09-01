@@ -70,11 +70,18 @@ compute the probability mass function of \code{vec} vector
 specified by user.
 }
 \examples{
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+x <- matrix(c(0,0,1,2), nrow=1) 
+x1 <- matrix(c(0,0,1,2,2,1,0,0),nrow=2,byrow=TRUE)
 
 dpmd(pmat = pp)
-dpmd(pmat = pp, method = "SIM-ALL", B = 1e3)
-dpmd(pmat = pp, x = c(0,0,1,2), method = "NA" )
-dpmd(pmat = pp, x = c(0,0,1,2), method = "SIM", B = 1e3)
+dpmd(pmat = pp, x = x1)
+dpmd(pmat = pp, x = x)
+
+dpmd(pmat = pp, x = x, method = "NA" )
+dpmd(pmat = pp, x = x1, method = "NA" )
+
+dpmd(pmat = pp, x = x, method = "SIM", B = 1e3)
+dpmd(pmat = pp, x = x1, method = "SIM", B = 1e3)
 
 }

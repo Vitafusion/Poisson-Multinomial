@@ -47,9 +47,10 @@ calculate the whole probability mass function.
 \code{"NA"} is an approximation method using Normal approximation method.
 }
 \examples{
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+x <- matrix(c(3,2,1,3),nrow=1)
 
-ppmd(pmat = pp, x = c(3,2,1,3))
-ppmd(pmat = pp, x = c(3,2,1,3), method = "NA")
-ppmd(pmat = pp, x = c(3,2,1,3), method = "SIM-ALL", B = 1e3)
+ppmd(pmat = pp, x = x)
+ppmd(pmat = pp, x = x, method = "NA")
+ppmd(pmat = pp, x = x, method = "SIM-ALL", B = 1e3)
 }
