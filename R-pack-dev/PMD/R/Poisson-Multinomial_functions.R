@@ -16,12 +16,11 @@
 #'                   \code{"NA"},
 #'                   \code{"SIM"},
 #'                   \code{"SIM-ALL"}.
-#' @param x          Result vector of length \eqn{m} (probability mass point) specified by user when 
-#'                   the selected method is "SIM" or "NA". The vector 
-#'                   \eqn{x = (x_{1}, \ldots, x_{m})} is used for computing 
+#' @param xmat       Result matrix of length \eqn{m} (probability mass point) specified by user. Each row of the matrix should has the form
+#'                   \eqn{x = (x_{1}, \ldots, x_{m})} which is used for computing 
 #'                   \eqn{P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}.
 #' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
-#'                   choose \code{"SIM-ALL"} or \code{"SIM"} method.
+#'                   choose \code{"SIM"} method.
 #'                   
 #' @details
 #' Consider \eqn{n} independent trials and each trial leads to a success for exactly one of \eqn{m} categories. Each category has varying success probabilities from different trials. The Poisson multinomial distribution (PMD) gives the probability of any particular combination of numbers of successes for the \eqn{m} categories. The success probabilities form an \eqn{n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}. 
@@ -31,15 +30,14 @@
 #' via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
 #' \code{vec} and return the probability mass function for all outcomes.
 #' 
-#' \code{"SIM-ALL"} is a simulation method using a naive simulation scheme to 
-#' calculate the whole probability mass function. Under this selection, the input 
-#' of \code{vec} will be ignored. Notice that the accuracy and running time will be
+#' \code{"SIM"} is a simulation method using a naive simulation scheme to 
+#' calculate the whole probability mass function if the input of \eqn{xmat} is not specified. Notice that the accuracy and running time will be
 #' affected by user choice of \code{B}. Usually \code{B}=1e5 or 1e6 will be 
 #' accurate enough. Increasing \code{B} to larger than 1e8 will heavily aggravate 
 #' computational burden of a CPU or GPU. 
 #' 
-#' When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} and 
-#' \code{"SIM-ALL"} method might challenge the 
+#' When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} as well as 
+#' \code{"SIM"}  method might challenge the 
 #' capability of a computer because both of the methods calculate all
 #' mass points of Poisson-Multinomial distributions.
 #' 
@@ -415,8 +413,10 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
          "NA" = {
            prob = 0
            points.pos = points[which(points[,mm]>=0),]
-           for(i in 1:nrow(points.pos)){
-             prob = prob + dpmd(pmat, x = as.matrix(points.pos[i,]), method="NA")
+           if(nrow(points.pos)!=0){
+            for(i in 1:nrow(points.pos)){
+              prob = prob + dpmd(pmat, x = as.matrix(points.pos[i,]), method="NA")
+            }
            }
          })
   return(prob)
