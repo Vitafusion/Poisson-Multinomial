@@ -5,8 +5,8 @@
 #' is capable for computation of the whole probability mass function as well as
 #' of one single probability mass point. 
 #' 
-#' @param pmat      An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
-#'                  \eqn{m} is the number of categories. Also called success probability matrix.
+#' @param pmat      An \eqn{\rm n \times m} matrix of probabilities. \eqn{\rm n} is the number of independent trials.
+#'                  \eqn{\rm m} is the number of categories. Also called success probability matrix.
 #'                  Each row of pmat describes the success probability for the corresponding
 #'                  trial and it should add up to 1.
 #' @param method     Character string stands for the method selected by user to 
@@ -15,17 +15,17 @@
 #'                   \code{"DFT-CF"},
 #'                   \code{"NA"},
 #'                   \code{"SIM"},
-#' @param xmat       Result matrix of column dimension \eqn{m} (probability mass point) specified by user. Each row of the matrix should has the form
-#'                   \eqn{x = (x_{1}, \ldots, x_{m})} which is used for computing 
-#'                   \eqn{P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}, the values of \eqn{x} should sum up to \eqn{n}.
+#' @param xmat       Result matrix of column dimension \eqn{\rm m} (probability mass point) specified by user. Each row of the matrix should has the form
+#'                   \eqn{\rm x = (x_{1}, \ldots, x_{m})} which is used for computing 
+#'                   \eqn{\rm P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}, the values of \eqn{\rm x} should sum up to \eqn{\rm n}.
 #' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
 #'                   choose \code{"SIM"} method.
 #'                   
 #' @details
-#' Consider \eqn{n} independent trials and each trial leads to a success for exactly one of \eqn{m} categories. 
+#' Consider \eqn{\rm n} independent trials and each trial leads to a success for exactly one of \eqn{\rm m} categories. 
 #' Each category has varying success probabilities from different trials. The Poisson multinomial distribution (PMD) gives the probability 
-#' of any particular combination of numbers of successes for the \eqn{m} categories. 
-#' The success probabilities form an \eqn{n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}.  
+#' of any particular combination of numbers of successes for the \eqn{\rm m} categories. 
+#' The success probabilities form an \eqn{\rm n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}.  
 #' For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method to calculate all mass points of Poisson-Multinomial Distributions
 #' via FFT algorithm. When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} might challenge the capability 
 #' of a computer because the method automatically compute all probability mass points regardless the input of \code{xmat}.
@@ -38,16 +38,19 @@
 #' \code{"NA"} is an approximation method using Normal approximation to 
 #' compute the probability mass function of \code{xmat} vector specified by user. This method requires an input of \code{xmat}.
 #'
-#' Notice if \code{xmat} is not specified then it will be \code{NULL}, \code{dpmd} will compute the whole pmf if the selected method is \code{"SIM"}
-#' or \code{"DFT-CF"}. Under the input of \code{xmat}, only the probability mass funtion limited by \code{xmat} will be computed.
+#' Notice if \code{xmat} is not specified then it will be \code{NULL}, \code{dpmd} will 
+#' compute the whole pmf if the selected method is \code{"SIM"} or \code{"DFT-CF"}. 
+#' Under the input of \code{xmat}, only the probability mass funtion limited 
+#' by \code{xmat} will be computed.
 #' 
 #' @return           
 #' For a given \code{xmat}, \code{dpmd} returns the probability mass function at points specified by \code{xmat}. 
-#' 
-#' If \code{xmat} is \code{NULL}, all mass points of a given \code{pmat} will be computed, the return will be a 
-#' multi-dimensional array. For instance, for the \code{pmat} matrix in the 
-#' following example, the value of the array element \eqn{a_{1,2,1}=0.90} means 
-#' the value of probability mass point (0,1,0,2) is 0.90. 
+#' If \code{xmat} is \code{NULL}, all mass points of a given \code{pmat} will be computed and
+#' stored in an output multi-dimensional array, say, \code{res}. Let the dimension of 
+#' \code{pmat} is \eqn{\rm n \times m}, \code{res} will be a \eqn{\rm n \times (m-1)} array. Then 
+#' \eqn{\rm P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})} will be \eqn{\rm res[x_{1}+1, \ldots, x_{m-1}+1]}.
+#' For instance, for the \code{pmat} matrix in the following example, the value of the array element \code{res[1,2,1]=0.90} means 
+#' the value of probability mass point \eqn{\rm P(X_{1}=0, X_{2}=1, X_{3}=0, X_{4}=2)=0.90}. 
 #'                    
 #' @examples
 #' pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
@@ -61,6 +64,7 @@
 #' dpmd(pmat = pp, xmat = x, method = "NA" )
 #' dpmd(pmat = pp, xmat = x1, method = "NA" )
 #'
+#' dpmd(pmat = pp, method = "SIM", B = 1e3)
 #' dpmd(pmat = pp, xmat = x, method = "SIM", B = 1e3)
 #' dpmd(pmat = pp, xmat = x1, method = "SIM", B = 1e3)
 #' 
@@ -294,8 +298,8 @@ dpmd <-function(pmat, xmat = NULL, method="DFT-CF", B=1e3)
 #' Poisson-Multinomial distributions that specified by input probability matrix 
 #' via given method.
 #'  
-#' @param pmat      An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
-#'                  \eqn{m} is the number of categories.
+#' @param pmat      An \eqn{\rm n \times m} matrix of probabilities. \eqn{\rm n} is the number of independent trials.
+#'                  \eqn{\rm m} is the number of categories.
 #'                  Each row of pmat describes the success probability for the corresponding
 #'                  trial and it should add up to 1.
 #' @param method     Character string stands for the method selected by user to 
@@ -303,11 +307,11 @@ dpmd <-function(pmat, xmat = NULL, method="DFT-CF", B=1e3)
 #'                   the following three: 
 #'                   \code{"DFT-CF"},
 #'                   \code{"NA"},
-#'                   \code{"SIM-ALL"}. 
+#'                   \code{"SIM"}. 
 #' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
-#'                   choose \code{"SIM-ALL"} method.
-#' @param x          A length \eqn{m} vector \eqn{x = (x_{1},\ldots,x_{m})} for computing 
-#'                   \eqn{P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})}.
+#'                   choose \code{"SIM"} method.
+#' @param xmat       A matrix with column number \eqn{\rm m} and each row has the form \eqn{\rm x = (x_{1},\ldots,x_{m})} for computing 
+#'                   \eqn{\rm P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})}.
 #' 
 #' @details 
 #' See Details in \code{dpmd} for the definition of the PMD and the introduction of notations.
@@ -317,25 +321,34 @@ dpmd <-function(pmat, xmat = NULL, method="DFT-CF", B=1e3)
 #' \code{"DFT-CF"} is an exact method 
 #' to calculate all mass points of Poisson-Multinomial Distributions
 #' via FFT algorithm.
-#' \code{"SIM-ALL"} is a simulation method using a naive simulation scheme to 
+#' \code{"SIM"} is a simulation method using a naive simulation scheme to 
 #' calculate the whole probability mass function.
 #' \code{"NA"} is an approximation method using Normal approximation method.
 #' 
 #' @return 
-#' The value of \eqn{P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})} of given 
-#' \eqn{x = (x_{1},\ldots, x_{m})}.
+#' The value of \eqn{\rm P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})} of given 
+#' \eqn{\rm x = (x_{1},\ldots, x_{m})}.
 #' 
 #' @examples
 #' pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 #' x <- matrix(c(3,2,1,3),nrow=1)
+#' x1 <- matrix(c(0,0,1,2,2,1,0,0),nrow=2,byrow=TRUE)
 #'
-#' ppmd(pmat = pp, x = x)
-#' ppmd(pmat = pp, x = x, method = "NA")
-#' ppmd(pmat = pp, x = x, method = "SIM-ALL", B = 1e3)
+#' ppmd(pmat = pp, xmat = x)
+#' ppmd(pmat = pp, xmat = x1)
+#'
+#' ppmd(pmat = pp, xmat = x, method = "NA")
+#' ppmd(pmat = pp, xmat = x1, method = "NA")
+#'
+#' ppmd(pmat = pp, xmat = x, method = "SIM", B = 1e3)
+#' ppmd(pmat = pp, xmat = x1, method = "SIM", B = 1e3)
+#'
 #' @export
-ppmd = function(pmat,x,method="DFT-CF",B=1e3){
-  chck = pmat.check(pmat,x)
+ppmd = function(pmat,xmat,method="DFT-CF",B=1e3){
+  chck = pmat.check(pmat,xmat)
   if(chck!=1){stop(chck)}
+  x = xmat
+  nrow.x = nrow(xmat)
   
   nn = nrow(pmat)
   mm = ncol(pmat)
@@ -377,40 +390,180 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
   switch(method,
          "DFT-CF" = {
            res = dpmd(pmat)
-           temp.index = idx0[index,]
-           prob  = 0
-           res.expr="prob = prob + res[temp[1]"
-           if(mm>=3)
-           {
-             for(i in 2:(mm-1))
-             {
-               res.expr=paste0(res.expr, ", temp[", i, "]")
-             }
-           }
-           res.expr=paste0(res.expr, "]")
-           
-           for(i in 1:nrow(temp.index)){
-            temp =  as.numeric(temp.index[i,])
-            eval(parse(text=res.expr))
-           }
-           
-         },
-         "SIM-ALL" = {
-             T=B
-             points.pos = points[which(points[,mm]>=0),]
-             prob = 0
-             for(i in 1:nrow(points.pos)){
-               prob = prob + pmd.by.demands(as.numeric(points.pos[i,]),pmat,T)
-           }
-         },
-         "NA" = {
-           prob = 0
-           points.pos = points[which(points[,mm]>=0),]
-           if(nrow(points.pos)!=0){
-            for(i in 1:nrow(points.pos)){
-              prob = prob + dpmd(pmat, xmat = as.matrix(points.pos[i,]), method="NA")
+           if(nrow.x==1){
+            # filter probability mass points
+            conditions = c()
+            expr0 = 'which('
+            expr1 = ')'
+            for(i in 1:mm){
+              conditions[i] = paste0('idx$V',i,'<=',x[i])
+            }
+            cond = conditions[1]
+            for(i in 1:(mm-1)){
+              cond = paste0(cond,'&',conditions[i+1])
+            }
+            expr = paste0(expr0,cond,expr1)
+            index = eval(parse(text=expr))
+            points = idx[index,]
+
+
+            temp.index = idx0[index,]
+            prob  = 0
+            res.expr="prob = prob + res[temp[1]"
+            if(mm>=3)
+            {
+              for(i in 2:(mm-1))
+              {
+                res.expr=paste0(res.expr, ", temp[", i, "]")
+              }
+            }
+            res.expr=paste0(res.expr, "]")
+            
+            for(i in 1:nrow(temp.index)){
+              temp=as.numeric(temp.index[i,])
+              eval(parse(text=res.expr))
             }
            }
+           prob.mat = matrix(rep(NA,nrow.x),ncol=1)
+           for(j in 1:nrow.x){
+            # filter probability mass points
+            conditions = c()
+            expr0 = 'which('
+            expr1 = ')'
+            for(i in 1:mm){
+              conditions[i] = paste0('idx$V',i,'<=',x[j,i])
+            }
+            cond = conditions[1]
+            for(i in 1:(mm-1)){
+              cond = paste0(cond,'&',conditions[i+1])
+            }
+            expr = paste0(expr0,cond,expr1)
+            index = eval(parse(text=expr))
+            points = idx[index,]
+
+
+            temp.index = idx0[index,]
+            prob  = 0
+            res.expr="prob = prob + res[temp[1]"
+            if(mm>=3)
+            {
+              for(i in 2:(mm-1))
+              {
+                res.expr=paste0(res.expr, ", temp[", i, "]")
+              }
+            }
+            res.expr=paste0(res.expr, "]")
+            
+            for(i in 1:nrow(temp.index)){
+              temp =  as.numeric(temp.index[i,])
+              eval(parse(text=res.expr))
+            }
+            prob.mat[j] = prob
+           }
+           prob <- prob.mat
+         },
+         "SIM" = {
+             if(nrow.x==1){
+              # filter probability mass points
+              conditions = c()
+              expr0 = 'which('
+              expr1 = ')'
+              for(i in 1:mm){
+                conditions[i] = paste0('idx$V',i,'<=',x[i])
+              }
+              cond = conditions[1]
+              for(i in 1:(mm-1)){
+                cond = paste0(cond,'&',conditions[i+1])
+              }
+              expr = paste0(expr0,cond,expr1)
+              index = eval(parse(text=expr))
+              points = idx[index,]
+              points.pos = points[which(points[,mm]>=0),]
+              prob = 0
+              for(i in 1:nrow(points.pos)){
+                prob = prob + pmd.by.demands(as.numeric(points.pos[i,]),pmat,B)
+              }
+             }
+             #nrow.x>1
+             prob.mat = matrix(rep(NA,nrow.x),ncol=1)
+             for (j in 1:nrow.x) {
+              # filter probability mass points
+              conditions = c()
+              expr0 = 'which('
+              expr1 = ')'
+              for(i in 1:mm){
+                conditions[i] = paste0('idx$V',i,'<=',x[j,i])
+              }
+              cond = conditions[1]
+              for(i in 1:(mm-1)){
+                cond = paste0(cond,'&',conditions[i+1])
+              }
+              expr = paste0(expr0,cond,expr1)
+              index = eval(parse(text=expr))
+              points = idx[index,]
+              points.pos = points[which(points[,mm]>=0),]
+              prob = 0
+              for(i in 1:nrow(points.pos)){
+                prob = prob + pmd.by.demands(as.numeric(points.pos[i,]),pmat,B)
+              }
+              prob.mat[j]=prob
+             }
+             prob=prob.mat
+         },
+         "NA" = {
+             if(nrow.x==1){
+              # filter probability mass points
+              conditions = c()
+              expr0 = 'which('
+              expr1 = ')'
+              for(i in 1:mm){
+                conditions[i] = paste0('idx$V',i,'<=',x[i])
+              }
+              cond = conditions[1]
+              for(i in 1:(mm-1)){
+                cond = paste0(cond,'&',conditions[i+1])
+              }
+              expr = paste0(expr0,cond,expr1)
+              index = eval(parse(text=expr))
+              points = idx[index,]
+
+              prob = 0
+              points.pos = points[which(points[,mm]>=0),]
+              if(nrow(points.pos)!=0){
+                for(i in 1:nrow(points.pos)){
+                  prob = prob + dpmd(pmat, xmat = as.matrix(points.pos[i,]), method="NA")
+                }
+              }
+             }
+             #nrow.x>1
+             prob.mat = matrix(rep(NA,nrow.x),ncol=1)
+             for (j in 1:nrow.x) {
+              # filter probability mass points
+              conditions = c()
+              expr0 = 'which('
+              expr1 = ')'
+              for(i in 1:mm){
+                conditions[i] = paste0('idx$V',i,'<=',x[j,i])
+              }
+              cond = conditions[1]
+              for(i in 1:(mm-1)){
+                cond = paste0(cond,'&',conditions[i+1])
+              }
+              expr = paste0(expr0,cond,expr1)
+              index = eval(parse(text=expr))
+              points = idx[index,]
+
+              prob = 0
+              points.pos = points[which(points[,mm]>=0),]
+              if(nrow(points.pos)!=0){
+                for(i in 1:nrow(points.pos)){
+                  prob = prob + dpmd(pmat, xmat = as.matrix(points.pos[i,]), method="NA")
+                }
+              }
+              prob.mat[j]=prob
+             }
+             prob=prob.mat
+
          })
   return(prob)
 }
@@ -418,7 +571,7 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
 #' @title Poisson-Multinomial Distribution Random Number Generator
 #' @description Generating random samples from Poisson-Multinomial distribution based on a given success probability matrix.
 #'  
-#' @param pmat      The \eqn{n \times m} success probability matrix, where \eqn{n} is the number of independent trials and \eqn{m} is the number of categories.
+#' @param pmat      The \eqn{\rm n \times m} success probability matrix, where \eqn{\rm n} is the number of independent trials and \eqn{\rm m} is the number of categories.
 #'                  Each row of pmat describes the success probability for the corresponding
 #'                  trial, which adds up to 1.
 #' @param s         The number of samples to be generated.
@@ -427,7 +580,7 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
 #' An \eqn{s \times m} matrix of samples, each row stands for one sample from the PMD with success probability matrix \code{pmat}.
 #' 
 #' @examples 
-#' pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+#' pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
 #'  
 #' rpmd(pmat = pp, s = 5)
 #' 

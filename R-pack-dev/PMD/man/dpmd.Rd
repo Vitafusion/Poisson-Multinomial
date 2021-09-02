@@ -7,14 +7,14 @@
 dpmd(pmat, xmat = NULL, method = "DFT-CF", B = 1000)
 }
 \arguments{
-\item{pmat}{An \eqn{n \times m} matrix of probabilities. \eqn{n} is the number of independent trials.
-\eqn{m} is the number of categories. Also called success probability matrix.
+\item{pmat}{An \eqn{\rm n \times m} matrix of probabilities. \eqn{\rm n} is the number of independent trials.
+\eqn{\rm m} is the number of categories. Also called success probability matrix.
 Each row of pmat describes the success probability for the corresponding
 trial and it should add up to 1.}
 
-\item{xmat}{Result matrix of column dimension \eqn{m} (probability mass point) specified by user. Each row of the matrix should has the form
-\eqn{x = (x_{1}, \ldots, x_{m})} which is used for computing 
-\eqn{P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}, the values of \eqn{x} should sum up to \eqn{n}.}
+\item{xmat}{Result matrix of column dimension \eqn{\rm m} (probability mass point) specified by user. Each row of the matrix should has the form
+\eqn{\rm x = (x_{1}, \ldots, x_{m})} which is used for computing 
+\eqn{\rm P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}, the values of \eqn{\rm x} should sum up to \eqn{\rm n}.}
 
 \item{method}{Character string stands for the method selected by user to 
 compute the probability mass. The method can only be one of 
@@ -28,11 +28,12 @@ choose \code{"SIM"} method.}
 }
 \value{
 For a given \code{xmat}, \code{dpmd} returns the probability mass function at points specified by \code{xmat}. 
-
-If \code{xmat} is \code{NULL}, all mass points of a given \code{pmat} will be computed, the return will be a 
-multi-dimensional array. For instance, for the \code{pmat} matrix in the 
-following example, the value of the array element \eqn{a_{1,2,1}=0.90} means 
-the value of probability mass point (0,1,0,2) is 0.90.
+If \code{xmat} is \code{NULL}, all mass points of a given \code{pmat} will be computed and
+stored in an output multi-dimensional array, say, \code{res}. Let the dimension of 
+\code{pmat} is \eqn{\rm n \times m}, \code{res} will be a \eqn{\rm n \times (m-1)} array. Then 
+\eqn{\rm P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})} will be \eqn{\rm res[x_{1}+1, \ldots, x_{m-1}+1]}.
+For instance, for the \code{pmat} matrix in the following example, the value of the array element \code{res[1,2,1]=0.90} means 
+the value of probability mass point \eqn{\rm P(X_{1}=0, X_{2}=1, X_{3}=0, X_{4}=2)=0.90}.
 }
 \description{
 Probability mass function of Poisson-Multinomial distributions 
@@ -41,10 +42,10 @@ is capable for computation of the whole probability mass function as well as
 of one single probability mass point.
 }
 \details{
-Consider \eqn{n} independent trials and each trial leads to a success for exactly one of \eqn{m} categories. 
+Consider \eqn{\rm n} independent trials and each trial leads to a success for exactly one of \eqn{\rm m} categories. 
 Each category has varying success probabilities from different trials. The Poisson multinomial distribution (PMD) gives the probability 
-of any particular combination of numbers of successes for the \eqn{m} categories. 
-The success probabilities form an \eqn{n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}.  
+of any particular combination of numbers of successes for the \eqn{\rm m} categories. 
+The success probabilities form an \eqn{\rm n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}.  
 For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method to calculate all mass points of Poisson-Multinomial Distributions
 via FFT algorithm. When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} might challenge the capability 
 of a computer because the method automatically compute all probability mass points regardless the input of \code{xmat}.
@@ -57,8 +58,10 @@ computational burden of a CPU or GPU.
 \code{"NA"} is an approximation method using Normal approximation to 
 compute the probability mass function of \code{xmat} vector specified by user. This method requires an input of \code{xmat}.
 
-Notice if \code{xmat} is not specified then it will be \code{NULL}, \code{dpmd} will compute the whole pmf if the selected method is \code{"SIM"}
-or \code{"DFT-CF"}. Under the input of \code{xmat}, only the probability mass funtion limited by \code{xmat} will be computed.
+Notice if \code{xmat} is not specified then it will be \code{NULL}, \code{dpmd} will 
+compute the whole pmf if the selected method is \code{"SIM"} or \code{"DFT-CF"}. 
+Under the input of \code{xmat}, only the probability mass funtion limited 
+by \code{xmat} will be computed.
 }
 \examples{
 pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
@@ -72,6 +75,7 @@ dpmd(pmat = pp, xmat = x)
 dpmd(pmat = pp, xmat = x, method = "NA" )
 dpmd(pmat = pp, xmat = x1, method = "NA" )
 
+dpmd(pmat = pp, method = "SIM", B = 1e3)
 dpmd(pmat = pp, xmat = x, method = "SIM", B = 1e3)
 dpmd(pmat = pp, xmat = x1, method = "SIM", B = 1e3)
 

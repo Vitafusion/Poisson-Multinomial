@@ -7,7 +7,7 @@
 rpmd(pmat, s = 1)
 }
 \arguments{
-\item{pmat}{The \eqn{n \times m} success probability matrix, where \eqn{n} is the number of independent trials and \eqn{m} is the number of categories.
+\item{pmat}{The \eqn{\rm n \times m} success probability matrix, where \eqn{\rm n} is the number of independent trials and \eqn{\rm m} is the number of categories.
 Each row of pmat describes the success probability for the corresponding
 trial, which adds up to 1.}
 
@@ -20,7 +20,7 @@ An \eqn{s \times m} matrix of samples, each row stands for one sample from the P
 Generating random samples from Poisson-Multinomial distribution based on a given success probability matrix.
 }
 \examples{
-pp=matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
+pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
  
 rpmd(pmat = pp, s = 5)
 
