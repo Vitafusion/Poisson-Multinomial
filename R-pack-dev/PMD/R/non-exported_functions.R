@@ -30,7 +30,7 @@ pmd.by.demands = function(x_vec,pp,B=1000){
 }
 
 #' @noRd
-pmat.check = function(pmat,x=NULL){
+pmat.check = function(pmat,xmat=NULL){
     if(is.matrix(pmat)==F){
       return("pmat is not a matrix.")
     }
@@ -42,16 +42,16 @@ pmat.check = function(pmat,x=NULL){
       if(abs(sum(pmat[i,])-1)>1*1e-10)
         return("Existing a row in pmat that doesn't sum up to 1.")
     }
-    if(!is.null(x)){
-      if(!is.matrix(x))
+    if(!is.null(xmat)){
+      if(!is.matrix(xmat))
       {
-        return("x is not a matrix.")
+        return("xmat is not a matrix.")
       }
       nn = nrow(pmat)
       mm = ncol(pmat)
-      if(any(x<0)|ncol(x)!=mm)
+      if(any(xmat<0)|ncol(xmat)!=mm)
       {
-        return("Invalid value or length of x.")
+        return("Invalid value or column number of xmat.")
       }
     }
     return(1)

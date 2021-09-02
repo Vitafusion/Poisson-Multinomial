@@ -15,45 +15,38 @@
 #'                   \code{"DFT-CF"},
 #'                   \code{"NA"},
 #'                   \code{"SIM"},
-#'                   \code{"SIM-ALL"}.
-#' @param xmat       Result matrix of length \eqn{m} (probability mass point) specified by user. Each row of the matrix should has the form
+#' @param xmat       Result matrix of column dimension \eqn{m} (probability mass point) specified by user. Each row of the matrix should has the form
 #'                   \eqn{x = (x_{1}, \ldots, x_{m})} which is used for computing 
-#'                   \eqn{P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}.
+#'                   \eqn{P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})}, the values of \eqn{x} should sum up to \eqn{n}.
 #' @param B          Number of repetitions in the simulation method. Will be ignored if users do not
 #'                   choose \code{"SIM"} method.
 #'                   
 #' @details
-#' Consider \eqn{n} independent trials and each trial leads to a success for exactly one of \eqn{m} categories. Each category has varying success probabilities from different trials. The Poisson multinomial distribution (PMD) gives the probability of any particular combination of numbers of successes for the \eqn{m} categories. The success probabilities form an \eqn{n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}. 
-#' The total number of outcomes is \eqn{(n+1)^{m-1}}. 
-#' For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method 
-#' to calculate all mass points of Poisson-Multinomial Distributions
-#' via FFT algorithm. When users select \code{"DFT-CF"}, \code{dpmd} will ignore
-#' \code{vec} and return the probability mass function for all outcomes.
+#' Consider \eqn{n} independent trials and each trial leads to a success for exactly one of \eqn{m} categories. 
+#' Each category has varying success probabilities from different trials. The Poisson multinomial distribution (PMD) gives the probability 
+#' of any particular combination of numbers of successes for the \eqn{m} categories. 
+#' The success probabilities form an \eqn{n \times m} matrix, which is called the success probability matrix and denoted by \code{pmat}.  
+#' For the methods we applied in \code{dpmd}, \code{"DFT-CF"} is an exact method to calculate all mass points of Poisson-Multinomial Distributions
+#' via FFT algorithm. When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} might challenge the capability 
+#' of a computer because the method automatically compute all probability mass points regardless the input of \code{xmat}.
 #' 
 #' \code{"SIM"} is a simulation method using a naive simulation scheme to 
-#' calculate the whole probability mass function if the input of \eqn{xmat} is not specified. Notice that the accuracy and running time will be
-#' affected by user choice of \code{B}. Usually \code{B}=1e5 or 1e6 will be 
-#' accurate enough. Increasing \code{B} to larger than 1e8 will heavily aggravate 
+#' calculate the whole probability mass function. Notice that the accuracy and running time will be affected by user choice of \code{B}. 
+#' Usually \code{B}=1e5 or 1e6 will be accurate enough. Increasing \code{B} to larger than 1e8 will heavily aggravate 
 #' computational burden of a CPU or GPU. 
 #' 
-#' When the dimension of \code{pmat} increases, the computation burden of \code{"DFT-CF"} as well as 
-#' \code{"SIM"}  method might challenge the 
-#' capability of a computer because both of the methods calculate all
-#' mass points of Poisson-Multinomial distributions.
-#' 
-#' \code{"SIM"} is as same as \code{"SIM-ALL"} except that it only computes the
-#'  probability mass function at a single outcome specified by \code{vec}.
-#' 
 #' \code{"NA"} is an approximation method using Normal approximation to 
-#' compute the probability mass function of \code{vec} vector
-#' specified by user.
+#' compute the probability mass function of \code{xmat} vector specified by user. This method requires an input of \code{xmat}.
+#'
+#' Notice if \code{xmat} is not specified then it will be \code{NULL}, \code{dpmd} will compute the whole pmf if the selected method is \code{"SIM"}
+#' or \code{"DFT-CF"}. Under the input of \code{xmat}, only the probability mass funtion limited by \code{xmat} will be computed.
 #' 
 #' @return           
-#' For a single mass point, \code{dpmd} returns the probability mass function at that point. 
+#' For a given \code{xmat}, \code{dpmd} returns the probability mass function at points specified by \code{xmat}. 
 #' 
-#' For all mass points of a given \code{pmat}, it returns a 
+#' If \code{xmat} is \code{NULL}, all mass points of a given \code{pmat} will be computed, the return will be a 
 #' multi-dimensional array. For instance, for the \code{pmat} matrix in the 
-#' following example, the value of the array element \eqn{a_{1,2,1}} = 0.90 means 
+#' following example, the value of the array element \eqn{a_{1,2,1}=0.90} means 
 #' the value of probability mass point (0,1,0,2) is 0.90. 
 #'                    
 #' @examples
@@ -62,21 +55,21 @@
 #' x1 <- matrix(c(0,0,1,2,2,1,0,0),nrow=2,byrow=TRUE)
 #'
 #' dpmd(pmat = pp)
-#' dpmd(pmat = pp, x = x1)
-#' dpmd(pmat = pp, x = x)
+#' dpmd(pmat = pp, xmat = x1)
+#' dpmd(pmat = pp, xmat = x)
 #'
-#' dpmd(pmat = pp, x = x, method = "NA" )
-#' dpmd(pmat = pp, x = x1, method = "NA" )
+#' dpmd(pmat = pp, xmat = x, method = "NA" )
+#' dpmd(pmat = pp, xmat = x1, method = "NA" )
 #'
-#' dpmd(pmat = pp, x = x, method = "SIM", B = 1e3)
-#' dpmd(pmat = pp, x = x1, method = "SIM", B = 1e3)
+#' dpmd(pmat = pp, xmat = x, method = "SIM", B = 1e3)
+#' dpmd(pmat = pp, xmat = x1, method = "SIM", B = 1e3)
 #' 
 #' @export
-dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
+dpmd <-function(pmat, xmat = NULL, method="DFT-CF", B=1e3)
 {
-  chck = pmat.check(pmat,x)
+  chck = pmat.check(pmat,xmat)
   if(chck!=1){stop(chck)}
-  # x should be matrix
+  # xmat should be matrix
   switch(method,
          "DFT-CF"={
            mm=ncol(pmat) # ncol of pmat
@@ -123,15 +116,15 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
            
            res=round(res, 10)
 
-           if(!is.null(x))
+           if(!is.null(xmat))
            {
-            nrow.x=nrow(x)
+            nrow.x=nrow(xmat)
             res.x=rep(NA,nrow.x)
             if(nrow.x!=1)
             {
               for(j in 1:nrow.x)
               {
-                idx.x=x[j,1:(mm-1)]+1
+                idx.x=xmat[j,1:(mm-1)]+1
                 res.x.expr="res.x[j]=res[idx.x[1]"
                 if(mm>=3)
                 {
@@ -148,7 +141,7 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
             else
             {
               res.x.expr="res.x=res[idx.x[1]"
-              idx.x=x[1:(mm-1)]+1
+              idx.x=xmat[1:(mm-1)]+1
                 if(mm>=3)
                 {
                   for(i in 2:(mm-1))
@@ -165,7 +158,7 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
            
          },
          "SIM"={
-            if(is.null(x))
+            if(is.null(xmat))
             {
               mm=ncol(pmat) # ncol of pmat
               nn=nrow(pmat) # nrow of pmat
@@ -206,18 +199,18 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
             }
             else
             {
-              nrow.x = nrow(x)
+              nrow.x = nrow(xmat)
               res = rep(NA,nrow.x)
               if(nrow.x!=1)
               {
                 for (i in 1:nrow.x) {
-                  res[i] = pmd.by.demands(x[i,],pmat,B)
+                  res[i] = pmd.by.demands(xmat[i,],pmat,B)
                 }
                 res=matrix(res,ncol=1)
               }
               else
               {
-                res = pmd.by.demands(x,pmat,B)
+                res = pmd.by.demands(xmat,pmat,B)
               }
             }
          },
@@ -225,18 +218,18 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
            mm=ncol(pmat) # m categories
            nn=nrow(pmat) # n people
            
-           if(is.null(x))
+           if(is.null(xmat))
            {
-            stop("Value of x is not assigned.")
+            stop("Value of xmat is not assigned.")
            }
            
-           nrow.x = nrow(x)
+           nrow.x = nrow(xmat)
            
            for (i in 1:nrow.x) 
            {
-            if(sum(x[i,])>nn)
+            if(sum(xmat[i,])>nn)
             {
-              stop("Sum of a row of x greater than n.")
+              stop("Sum of a row of xmat greater than n.")
             }
            }
            
@@ -266,7 +259,7 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
            {
             for (i in 1:nrow.x) 
             {
-              x_vec = x[i,1:mm]
+              x_vec = xmat[i,1:mm]
               lb = as.numeric(x_vec - 0.5)
               ub = as.numeric(x_vec+0.5)
               res0 = 0
@@ -278,7 +271,7 @@ dpmd <-function(pmat, x = NULL, method="DFT-CF", B=1e3)
             }
             else
             {
-              x_vec = x[1:mm]
+              x_vec = xmat[1:mm]
               lb = as.numeric(x_vec - 0.5)
               ub = as.numeric(x_vec+0.5)
               res0 = 0
@@ -415,7 +408,7 @@ ppmd = function(pmat,x,method="DFT-CF",B=1e3){
            points.pos = points[which(points[,mm]>=0),]
            if(nrow(points.pos)!=0){
             for(i in 1:nrow(points.pos)){
-              prob = prob + dpmd(pmat, x = as.matrix(points.pos[i,]), method="NA")
+              prob = prob + dpmd(pmat, xmat = as.matrix(points.pos[i,]), method="NA")
             }
            }
          })
