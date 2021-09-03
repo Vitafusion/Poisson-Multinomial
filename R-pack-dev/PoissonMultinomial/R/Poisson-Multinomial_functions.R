@@ -54,7 +54,7 @@
 #'                    
 #' @examples
 #' pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
-#' x <- matrix(c(0,0,1,2), nrow=1) 
+#' x <- c(0,0,1,2) 
 #' x1 <- matrix(c(0,0,1,2,2,1,0,0),nrow=2,byrow=TRUE)
 #'
 #' dpmd(pmat = pp)
@@ -71,6 +71,11 @@
 #' @export
 dpmd <-function(pmat, xmat = NULL, method="DFT-CF", B=1e3)
 {
+  if(is.vector(xmat))
+  {
+    xmat=as.matrix(t(xmat))
+  }
+  
   chck = pmat.check(pmat,xmat)
   if(chck!=1){stop(chck)}
   # xmat should be matrix
@@ -331,7 +336,7 @@ dpmd <-function(pmat, xmat = NULL, method="DFT-CF", B=1e3)
 #' 
 #' @examples
 #' pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
-#' x <- matrix(c(3,2,1,3),nrow=1)
+#' x <- c(3,2,1,3)
 #' x1 <- matrix(c(0,0,1,2,2,1,0,0),nrow=2,byrow=TRUE)
 #'
 #' ppmd(pmat = pp, xmat = x)
@@ -345,6 +350,12 @@ dpmd <-function(pmat, xmat = NULL, method="DFT-CF", B=1e3)
 #'
 #' @export
 ppmd = function(pmat,xmat,method="DFT-CF",B=1e3){
+  
+  if(is.vector(xmat))
+  {
+    xmat=as.matrix(t(xmat))
+  }
+  
   chck = pmat.check(pmat,xmat)
   if(chck!=1){stop(chck)}
   x = xmat

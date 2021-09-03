@@ -48,7 +48,7 @@ calculate the whole probability mass function.
 }
 \examples{
 pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)
-x <- matrix(c(3,2,1,3),nrow=1)
+x <- c(3,2,1,3)
 x1 <- matrix(c(0,0,1,2,2,1,0,0),nrow=2,byrow=TRUE)
 
 ppmd(pmat = pp, xmat = x)
