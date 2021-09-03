@@ -1,0 +1,24 @@
+Package: PoissonMultinomial
+Type: Package
+Title: The Poisson Multinomial Distribtuion
+Version: 1.0
+Date: 2021-08-06
+Authors@R: c(person("Yili Hong", role = c("aut", "cre"),
+                     email = "yilihong@vt.edu"),
+              person("Zhengzhi Lin", role = c("aut","ctb"), email = "zhengzhi@vt.edu"),
+              person("Yueyao Wang",  role = c("aut","ctb"), email = "yueyao94@vt.edu"),
+              person("Florian Junge", role = c("aut", "ctb"), email = "florian.junge@h-da.de"))
+Maintainer: Yili Hong <yilihong@vt.edu>
+Description: Applying exact, simulation and approximation methods for computing probability mass functions, cumulative distribution functions of Poisson-Multinomial distributions together with a random number generator to conduct Poisson-Multinomial distribution sampling. The exact method is based on fast Fourier transformation of the characteristic functions of Poisson-Multinomial distributions. Simulation method is built via naive sampling scheme of different multinomial distributions. Approximation method is designed by asymptotic distrbutions of Poisson-Multinomial distributions, which are normal.
+License: GPL (>= 2)
+Encoding: UTF-8
+Imports: mvtnorm, Rcpp
+LinkingTo: Rcpp, RcppArmadillo
+SystemRequirements: fftw3(>=3.3)
+RoxygenNote: 7.1.1
+NeedsCompilation: yes
+Packaged: 2021-09-03 01:12:00 UTC; yilih
+Author: Yili Hong [aut, cre],
+  Zhengzhi Lin [aut, ctb],
+  Yueyao Wang [aut, ctb],
+  Florian Junge [aut, ctb]

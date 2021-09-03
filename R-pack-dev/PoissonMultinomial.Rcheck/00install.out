@@ -1,0 +1,29 @@
+* installing *source* package 'PoissonMultinomial' ...
+** using staged installation
+** libs
+
+*** arch - i386
+"C:/rtools40/mingw32/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c RcppExports.cpp -o RcppExports.o
+"C:/rtools40/mingw32/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c pm-fft.cpp -o pm-fft.o
+C:/rtools40/mingw32/bin/g++ -std=gnu++11 -shared -s -static-libgcc -o PoissonMultinomial.dll tmp.def RcppExports.o pm-fft.o -L/lib -l fftw3 -LC:/PROGRA~1/R/R-41~1.0/bin/i386 -lR
+installing to C:/Users/yilih/Documents/GitHub/Git-Poisson-Multinomial/R-pack-dev/PoissonMultinomial.Rcheck/00LOCK-POISSO~1/00new/PoissonMultinomial/libs/i386
+
+*** arch - x64
+"C:/rtools40/mingw64/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c RcppExports.cpp -o RcppExports.o
+"C:/rtools40/mingw64/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c pm-fft.cpp -o pm-fft.o
+C:/rtools40/mingw64/bin/g++ -std=gnu++11 -shared -s -static-libgcc -o PoissonMultinomial.dll tmp.def RcppExports.o pm-fft.o -L/lib -l fftw3 -LC:/PROGRA~1/R/R-41~1.0/bin/x64 -lR
+installing to C:/Users/yilih/Documents/GitHub/Git-Poisson-Multinomial/R-pack-dev/PoissonMultinomial.Rcheck/00LOCK-POISSO~1/00new/PoissonMultinomial/libs/x64
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+*** arch - i386
+*** arch - x64
+** testing if installed package can be loaded from final location
+*** arch - i386
+*** arch - x64
+** testing if installed package keeps a record of temporary installation path
+* DONE (PoissonMultinomial)
