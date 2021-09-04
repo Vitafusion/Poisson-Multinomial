@@ -13,7 +13,7 @@ nameEx("dpmd")
 flush(stderr()); flush(stdout())
 
 ### Name: dpmd
-### Title: Probability Mass Function of Poisson-Multinomial Distributions
+### Title: Probability Mass Function of Poisson-Multinomial Distribution
 ### Aliases: dpmd
 
 ### ** Examples

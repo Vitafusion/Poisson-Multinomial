@@ -7,44 +7,37 @@
 ppmd(pmat, xmat, method = "DFT-CF", B = 1000)
 }
 \arguments{
-\item{pmat}{An \eqn{\rm n \times m} matrix of probabilities. \eqn{\rm n} is the number of independent trials.
+\item{pmat}{An \eqn{\rm n \times m} success probability matrix. Here, \eqn{\rm n} is the number of independent trials, and
 \eqn{\rm m} is the number of categories.
 Each row of pmat describes the success probability for the corresponding
 trial and it should add up to 1.}
 
-\item{xmat}{A matrix with column number \eqn{\rm m} and each row has the form \eqn{\rm x = (x_{1},\ldots,x_{m})} for computing 
-\eqn{\rm P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})}.}
+\item{xmat}{A matrix with \eqn{\rm m} columns.  Each row has the form \eqn{\rm x = (x_{1},\ldots,x_{m})} for computing the cdf at \eqn{\rm x},
+\eqn{\rm P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})}. It can also be a vector with length \eqn{\rm m}.}
 
-\item{method}{Character string stands for the method selected by user to 
-compute the probability mass. The method can only be one of 
+\item{method}{Character string stands for the method selected by users to 
+compute the cdf. The method can only be one of 
 the following three: 
 \code{"DFT-CF"},
 \code{"NA"},
 \code{"SIM"}.}
 
-\item{B}{Number of repetitions in the simulation method. Will be ignored if users do not
-choose \code{"SIM"} method.}
+\item{B}{Number of repeats used in the simulation method. It is ignored for methods other than
+the \code{"SIM"} method.}
 }
 \value{
-The value of \eqn{\rm P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})} of given 
+The value of cdf \eqn{\rm P(X_{1} \leq x_{1},\ldots, X_{m} \leq x_{m})} at 
 \eqn{\rm x = (x_{1},\ldots, x_{m})}.
 }
 \description{
-This function computes cumulative distribution function of 
-Poisson-Multinomial distributions that specified by input probability matrix 
-via given method.
+Computes the cdf of 
+Poisson-Multinomial distribution that is specified by the success probability matrix, 
+using various methods.
 }
 \details{
-See Details in \code{dpmd} for the definition of the PMD and the introduction of notations.
-\code{ppmd} computes the cumulative distribution function by adding all probability 
-mass points within hyper-dimensional space limited by \code{x}. 
-
-\code{"DFT-CF"} is an exact method 
-to calculate all mass points of Poisson-Multinomial Distributions
-via FFT algorithm.
-\code{"SIM"} is a simulation method using a naive simulation scheme to 
-calculate the whole probability mass function.
-\code{"NA"} is an approximation method using Normal approximation method.
+See Details in \code{dpmd} for the definition of the PMD, the introduction of notation, and the description of the three methods (\code{"DFT-CF"}, \code{"NA"}, and \code{"SIM"}).
+\code{ppmd} computes the cdf by adding all probability 
+mass points within hyper-dimensional space bounded by \code{x} as in the cdf.
 }
 \examples{
 pp <- matrix(c(.1, .1, .1, .7, .1, .3, .3, .3, .5, .2, .1, .2), nrow = 3, byrow = TRUE)

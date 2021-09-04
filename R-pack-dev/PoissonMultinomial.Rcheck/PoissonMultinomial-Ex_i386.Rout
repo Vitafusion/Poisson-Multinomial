@@ -32,7 +32,7 @@ Type 'q()' to quit R.
 > flush(stderr()); flush(stdout())
 > 
 > ### Name: dpmd
-> ### Title: Probability Mass Function of Poisson-Multinomial Distributions
+> ### Title: Probability Mass Function of Poisson-Multinomial Distribution
 > ### Aliases: dpmd
 > 
 > ### ** Examples
@@ -205,7 +205,7 @@ Type 'q()' to quit R.
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  0.92 0 0.92 NA NA 
+Time elapsed:  0.92 0.01 0.93 NA NA 
 > grDevices::dev.off()
 null device 
           1 

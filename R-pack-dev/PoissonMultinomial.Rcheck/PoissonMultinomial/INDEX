@@ -1,5 +1,5 @@
 dpmd                    Probability Mass Function of
-                        Poisson-Multinomial Distributions
+                        Poisson-Multinomial Distribution
 ppmd                    Cumulative Distribution Function of
                         Poisson-Multinomial Distribution
 rpmd                    Poisson-Multinomial Distribution Random Number
