@@ -34,7 +34,7 @@ stored and outputted in a multi-dimensional array, denoted by \code{res}. Note t
 \code{pmat} is \eqn{\rm n \times m}, thus \code{res} will be a \eqn{\rm n \times (m-1)} array. Then 
 the value of the pmf \eqn{\rm P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})} can be extracted as \eqn{\rm res[x_{1}+1, \ldots, x_{m-1}+1]}.
 
-For example, for the \code{pmat} matrix in the example section, the value of the array element \code{res[1,2,1]=0.90} gives 
+For example, for the \code{pmat} matrix in the example section, the array element \code{res[1,2,1]=0.90} gives 
 the value of the pmf \eqn{\rm P(X_{1}=0, X_{2}=1, X_{3}=0, X_{4}=2)=0.90}.
 }
 \description{

@@ -17,7 +17,7 @@ LinkingTo: Rcpp, RcppArmadillo
 SystemRequirements: fftw3(>=3.3)
 RoxygenNote: 7.1.1
 NeedsCompilation: yes
-Packaged: 2021-09-04 02:20:39 UTC; yilih
+Packaged: 2021-09-06 17:59:46 UTC; yilih
 Author: Yili Hong [aut, cre],
   Zhengzhi Lin [aut, ctb],
   Yueyao Wang [aut, ctb],
