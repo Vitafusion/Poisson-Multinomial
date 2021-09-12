@@ -75,6 +75,7 @@
 \newcommand{\kvec}{\boldsymbol{k}}
 \newcommand{\rvec}{\boldsymbol{r}}
 \newcommand{\pvec}{\boldsymbol{p}}
+\newcommand{\pmat}{}
 \newcommand{\minitab}[2][l]{\begin{tabular}{#1}#2\end{tabular}}
 
 
@@ -146,43 +147,23 @@ The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicat
 \section{Introduction}
 \subsection{Motivation}
 
-The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}).  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it.
-
+The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different independent Multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}). One intriguing area that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $\rm n$  independent members needs to elect a chairman between $\rm m$ candidates. Each member has a different voting behavior. Mostly, people pay attention to the result of a election. Statisticians focus on the probability for each electoral outcome to happen. An $\rm (n,m)$ $\PMD$ is a perfect model for this example by seeing members as independent random variables following different Multinomial distributions. The probability vector of the Multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of greatest concern. Enumeration could be a fine method when $\rm n \times m$ is small. However, when we have more members(large $\rm n$) or more candidates(large $\rm m$), the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Additionally, in machine learning, especially in classification context, when we classify $\rm n$ samples one by one into $\rm m$ categories, then the total number of samples assigned to each category follows a $\PMD$. People who study the probability of classification outcomes also encounters same dilemma. Not only in the field of classification and political science, computing pmf is frequently required in scenarios that $\PMD$s are involved. However, there is no existing algorithm for computing pmf for PMD. Hereby it is a necessity to build one that can calculate pmf of $\PMD$s efficiently. 
 
 
 
 \subsection{Related Literature and Contribution of This Work}
 
-Ecological inference
-
-https://www.pnas.org/content/96/19/10578
+%Ecological inference https://www.pnas.org/content/96/19/10578
 
 
-Some former studies have uncover PMD's structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of PMD is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} shows us some interesting application of PMD and its sparsity property. Due to the huge practical value of PMD, computing its pmf is of great importance. However, there is no available algorithm for computing pmf for PMD. In this case, we are motivated to develop a thorough method to calculate its pmf.
+Some former studies have uncover $\PMD$'s structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of $\PMD$ is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} illustrates us some interesting application of PMD and its sparsity property. Motivated by the huge practical value of $\PMD$, we develop an algorithm based on prior studies to compute probability mass function of $\PMD$s. Our algorithm contains three methods. They are 'DFT-CF' which is based on multi-dimensional Fourier transformation, 'SIM' that is a simulation method and 'N.A' which applies 'CLT' to approximate the $\PMD$. The algorithm enables researchers to calculate pmf of $\PMD$s under certain requirements of accuracy and timing even when $\rm n$ and $\rm m$ gets large. We also construct a R package to perform our algorithm, the functions contained in the package are able to compute pmf and cdf of $\PMD$ using all methods we mentioned in this paper as well as generate random samples from given $\PMD$.
 
-
-We design three methods to calculate it,
-
-MD-DFT(base on multi-dimensional discrete Fourier transform(MD-DFT)) method: we use Multidimensional Fast Discrete Fourier Transformation algorithm to calculate PMD's exact probability mass function.
-
-Simulation based method: we use multinomial distributions to simulate the process of voting and use the frequency as our result to approximate true result.
-
-Normal approximation based method: when $n$ is large, we apply CLT and use a approximated normal distribution as our result.
-
-
-We also compare the time efficiency and accuracy of each method, and come up a guide of the best situation for each method. A R package is developed to implement these three methods, users can call certain function to calculate user given $(n,m)$ PMD pmf's.
 
 
 
 
 \subsection{Overview}
-The rest of the paper is organized as follows. \\
-\\
-In the coming part, we describe the definition of Poisson Multinomial distribution as well as demonstrate some useful properties. In the third part, we explain three ways of computing the probability mass function by details.\\
-\\
-The fourth part of this article compare the accuracy and time efficiency of the listed three methods. \\
-\\
-In the application part, we begin with a simple scenario of committee voting where small dimensional PMDs can be applied. Later we show a way of implementing medium size PMDs to AI4I 2020 Predictive Maintenance Dataset which is a large scale aggregated dataet(large $n$). We also place PMD in a classification scenario using the solar cells EI image data.
+The rest of the paper is organized as follows. In the second part, we describe the mathematical definition of Poisson Multinomial distribution and list some of its useful properties. In the third part, we introduce three methods that we include in the algorithm to compute $\PMD$s' pmf by details. The fourth part of this article studies the accuracy and time efficiency characteristics of the three methods. In the fifth part, we illustrate application of our algorithm via three examples respectively in the fields of voting theory, statistical inference for aggregated data and classification. In the sixth part, we introduce our R package that implemented with the algorithm and the seventh part of this paper draws the conclusion and prospective research areas.
 
 
 
@@ -192,7 +173,7 @@ In the application part, we begin with a simple scenario of committee voting whe
 \subsection{Definition of the Distribution}
 		
 Let $(I_{i1}, \ldots, I_{i,m})'$, $i = 1,\dots,n$ be a sequence of independent indicator vectors where exactly one of $(m)$ categories successes. That is there is one and only one of those $I_{ij}$, $j=1,\ldots, m$ can take value one for each $i$. Take election as an example, suppose there are several candidates, denoted as $j = 1,\dots,m$, and some voters, voters are independent to each other, denoted as $i = 1,\dots,n$, every voter can only vote for one candidate, if the $i$th voter votes for $j$th candidate, then $I_{ij} = 1$, else $I_{ij} = 0$.  Denote $p_{ij} = \Pr(I_{ij} = 1)$, as the success probability of $j$th candidate gets a vote from $i$th voter. The Poisson multinomial random variable $\Xvec_m = (X_1, \dots, X_m)' $ is defined as the sum of $n$ independent and non-identical distributed indicator vectors $\boldsymbol{I}_i = (I_{i1}, \ldots, I_{i,m})'$, which is the result of election, the total votes each candidate gets. Here $X_j=\sum_{i=1}^{n}I_{ij}$. Assume all probabilities $p_{ij}$'s are known, we care about the distribution of our election result, which is the probability of a certain result. Because of the sum constraints that, $\sum_{j=1}^{m} I_{ij}= 1$, $\sum_{j=1}^{m} p_{ij}= 1$, and $\sum_{j=1}^{m} X_{j}= n$, one can drop the last random variable when the focus is on the distribution of $\Xvec_m = (X_1, \ldots, X_m)'$. That is, the random vectors $\Xvec_m$ and $\Xvec_{m-1}$ are equivalent. The distribution of the $\Xvec_m$ is called the Poisson multinomial distribution (PMD), which is denoted by
-$$\Xvec_m  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,\Pmat_{n\times m}),$$
+$$\Xvec_m  = \sum_{i = 1}^n \boldsymbol{I}_i \sim \PMD(n,m,\Pmat_{n \times m}),$$
 where the success probability matrix (SPM) is
 \begin{equation*}
 \Pmat_{n \times m} = \begin{pmatrix}
