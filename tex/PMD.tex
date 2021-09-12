@@ -146,43 +146,23 @@ The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicat
 \section{Introduction}
 \subsection{Motivation}
 
-The Poisson Multinomial Distribution (PMD) is defined as sum of different independent multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}).  One of the popular areas that involved PMD is voting theory. A very simple example is, suppose we have $n$ independent voters to vote for a president from $m$ candidates, each voter has its own chance to vote on a certain candidate. It is not our concern how voters vote, we care only the voting result, that is how many votes each candidate gets. An $(n,m)$ PMD is a perfect model for this example. In machine learning, especially in classification context, when we classify $n$ samples one by one into $m$ categories, then the total number of samples assigned to each category follows a PMD. When $(n,m)$ is small it is possible to calculate the distribution function by using enumeration method. However when $n,m$ get large, we need better method, or algorithm to calculate it.
-
+The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different independent Multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}). One intriguing area that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $\rm n$  independent members needs to elect a chairman between $\rm m$ candidates. Each member has a different voting behavior. Mostly, people pay attention to the result of a election. Statisticians focus on the probability for each electoral outcome to happen. An $\rm (n,m)$ $\PMD$ is a perfect model for this example by seeing members as independent random variables following different Multinomial distributions. The probability vector of the Multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of greatest concern. Enumeration could be a fine method when $\rm n \times m$ is small. However, when we have more members(large $\rm n$) or more candidates(large $\rm m$), the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Additionally, in machine learning, especially in classification context, when we classify $\rm n$ samples one by one into $\rm m$ categories, then the total number of samples assigned to each category follows a $\PMD$. People who study the probability of classification outcomes also encounters same dilemma. Not only in the field of classification and political science, computing pmf is frequently required in scenarios that $\PMD$s are involved. However, there is no existing algorithm for computing pmf for PMD. Hereby it is a necessity to build one that can calculate pmf of $\PMD$s efficiently. 
 
 
 
 \subsection{Related Literature and Contribution of This Work}
 
-Ecological inference
-
-https://www.pnas.org/content/96/19/10578
+%Ecological inference https://www.pnas.org/content/96/19/10578
 
 
-Some former studies have uncover PMD's structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of PMD is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} shows us some interesting application of PMD and its sparsity property. Due to the huge practical value of PMD, computing its pmf is of great importance. However, there is no available algorithm for computing pmf for PMD. In this case, we are motivated to develop a thorough method to calculate its pmf.
+Some former studies have uncover $\PMD$'s structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of $\PMD$ is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} illustrates us some interesting application of PMD and its sparsity property. Motivated by the huge practical value of $\PMD$, we develop an algorithm based on prior studies to compute probability mass function of $\PMD$s. Our algorithm contains three methods. They are 'DFT-CF' which is based on multi-dimensional Fourier transformation, 'SIM' that is a simulation method and 'N.A' which applies 'CLT' to approximate the $\PMD$. The algorithm enables researchers to calculate pmf of $\PMD$s under certain requirements of accuracy and timing even when $\rm n$ and $\rm m$ gets large. We also construct a R package to perform our algorithm, the functions contained in the package are able to compute pmf and cdf of $\PMD$ using all methods we mentioned in this paper as well as generate random samples from given $\PMD$.
 
-
-We design three methods to calculate it,
-
-MD-DFT(base on multi-dimensional discrete Fourier transform(MD-DFT)) method: we use Multidimensional Fast Discrete Fourier Transformation algorithm to calculate PMD's exact probability mass function.
-
-Simulation based method: we use multinomial distributions to simulate the process of voting and use the frequency as our result to approximate true result.
-
-Normal approximation based method: when $n$ is large, we apply CLT and use a approximated normal distribution as our result.
-
-
-We also compare the time efficiency and accuracy of each method, and come up a guide of the best situation for each method. A R package is developed to implement these three methods, users can call certain function to calculate user given $(n,m)$ PMD pmf's.
 
 
 
 
 \subsection{Overview}
-The rest of the paper is organized as follows. \\
-\\
-In the coming part, we describe the definition of Poisson Multinomial distribution as well as demonstrate some useful properties. In the third part, we explain three ways of computing the probability mass function by details.\\
-\\
-The fourth part of this article compare the accuracy and time efficiency of the listed three methods. \\
-\\
-In the application part, we begin with a simple scenario of committee voting where small dimensional PMDs can be applied. Later we show a way of implementing medium size PMDs to AI4I 2020 Predictive Maintenance Dataset which is a large scale aggregated dataet(large $n$). We also place PMD in a classification scenario using the solar cells EI image data.
+The rest of the paper is organized as follows. In the second part, we describe the mathematical definition of Poisson Multinomial distribution and list some of its useful properties. In the third part, we introduce three methods that we include in the algorithm to compute $\PMD$s' pmf by details. The fourth part of this article studies the accuracy and time efficiency characteristics of the three methods. In the fifth part, we illustrate application of our algorithm via three examples respectively in the fields of voting theory, statistical inference for aggregated data and classification. In the sixth part, we introduce our R package that implemented with the algorithm and the seventh part of this paper draws the conclusion and prospective research areas.
 
 
 
@@ -469,21 +449,13 @@ For simulation method $\MAE$ and $\TAE$ are given via
 \end{equation*}
 To test the accuracy, we need to generate $\boldsymbol{\rm P}_{\rm n \times \rm m}$ randomly for different settings of $(n,m)$. Also for a fixed $(n,m)$ we repeat the random generation of $\boldsymbol{\rm P}_{\rm n \times \rm m}$ for 5000 times to eliminate the noise effect. As the dimension of $\boldsymbol{\rm P}$ increases, the distribution gets sparse. As a result, $\MAE$ would become smaller no matter what computation method we use. To include the effect of sparsity, we introduce another method called origin. Origin is a method just as simple as estimating all probability mass point with value 0. Thus the $\TAE$ will always be 1 and $\MAE$ will be the $\max |p_{\rm true}(\xvec)|$. The $\MAE$ of origin will show us a good picture for sparsity of $\PMD$ distribution as its dimension growth. Comparison between origin and other methods as shown in Figure 1 will illustrate how effective normal approximation and simulation method are regardless of sparsity.
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[angle=-90,origin=c,scale=0.5]{tex/figures/mae_plot.pdf}
-	\caption{$\MAE$ given different $(n,m)$ settings}
-\end{figure}
+%input pic of mae
 
 
 Figure 1 and Figure 2 exhibit the accuracy test results for different $(n,m)$ pairs. Our computations are done on Linux server with AMD EPYC 7702 chips(128 cores, 2GHz) and 256GB RAM. For simulation method, the repeating time are set to be $10^4$ and it is easy to anticipate that with the growth of repeating  time the accuracy of the method will be better. Also it is not necessary to test with large repeating time because of the computation capacity limits. Due to the computation limits of device, we are able to test $(n,m)$ pairs with $(n+1)^{m-1}$ less than $2^{31}$. 
 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[angle=-90,origin=c,scale=0.5]{tex/figures/tae_plot.pdf}
-	\caption{$\MAE$ and giving different $(n,m)$ settings}
-\end{figure}
+%input pic of tae
 
 
 Figure 1 shows accuracy comparisons in a perspective of $\MAE$. It can be seen that when $m$ is small(less than 5), normal approximation is barely better than origin method as their curves are almost overlapped, it means the accuracy of normal approximation method is no much better than estimating all probability mass points with 0. While $m$ is larger or equal to 5, normal approximation is sufficiently better than simulation method regardless of sparsity. Simulation method under this situation is slightly exceeding origin.
