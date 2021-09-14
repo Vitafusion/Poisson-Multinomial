@@ -10,7 +10,6 @@
 *.dvi
 *.log
 *.synctex
-
 R-pack-dev/.DS_Store
 .DS_Store
 .DS_Store
