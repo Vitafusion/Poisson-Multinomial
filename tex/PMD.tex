@@ -151,7 +151,7 @@ The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicat
 \section{Introduction}
 \subsection{Motivation}
 
-The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different independent Multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}). One intriguing area that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $\rm n$  independent members needs to elect a chairman between $\rm m$ candidates. Each member has a different voting behavior. Mostly, people pay attention to the result of a election. Statisticians focus on the probability for each electoral outcome to happen. An $\rm (n,m)$ $\PMD$ is a perfect model for this example by seeing members as independent random variables following different Multinomial distributions. The probability vector of the Multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of greatest concern. Enumeration could be a fine method when $\rm n \times m$ is small. However, when we have more members(large $\rm n$) or more candidates(large $\rm m$), the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Additionally, in machine learning, especially in classification context, when we classify $\rm n$ samples one by one into $\rm m$ categories, then the total number of samples assigned to each category follows a $\PMD$. People who study the probability of classification outcomes also encounters same dilemma. Not only in the field of classification and political science, computing pmf is frequently required in scenarios that $\PMD$s are involved. However, there is no existing algorithm for computing pmf for PMD. Hereby it is a necessity to build one that can calculate pmf of $\PMD$s efficiently. 
+The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different independent Multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}). One intriguing area that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $\rm n$  independent members needs to elect a chairman between $\rm m$ candidates. Each member has a different voting behavior. Mostly, people pay attention to the result of a election. Statisticians focus on the probability for each electoral outcome to happen. An $\rm (n,m)$ $\PMD$ is a perfect model for this example by seeing members as independent random variables following different Multinomial distributions. The probability vector of the Multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of greatest concern. Enumeration could be a fine method when $\rm n \times m$ is small. However, when we have more members(large $\rm n$) or more candidates(large $\rm m$), the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Additionally, in machine learning, especially in classification context, when we classify $\rm n$ samples one by one into $\rm m$ categories, then the total number of samples assigned to each category follows a $\PMD$. People who study the probability of classification outcomes also encounters same dilemma. Not only in the field of classification and political science, computing pmf is frequently required in scenarios that $\PMD$s are involved. However, there is no existing algorithm for computing pmf for PMD. Hereby it is a necessity to build one that can calculate pmf of $\PMD$s efficiently.
 
 
 
@@ -160,7 +160,7 @@ The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different ind
 %Ecological inference https://www.pnas.org/content/96/19/10578
 
 
-Some former studies have uncover $\PMD$'s structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of $\PMD$ is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} illustrates us some interesting application of PMD and its sparsity property. Motivated by the huge practical value of $\PMD$, we develop an algorithm based on prior studies to compute probability mass function of $\PMD$s. Our algorithm contains three methods. They are 'DFT-CF' which is based on multi-dimensional Fourier transformation, 'SIM' that is a simulation method and 'N.A' which applies 'CLT' to approximate the $\PMD$. The algorithm enables researchers to calculate pmf of $\PMD$s under certain requirements of accuracy and timing even when $\rm n$ and $\rm m$ gets large. We also construct a R package to perform our algorithm, the functions contained in the package are able to compute pmf and cdf of $\PMD$ using all methods we mentioned in this paper as well as generate random samples from given $\PMD$.
+Some former studies have uncover $\PMD$'s structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of $\PMD$ is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} illustrates us some interesting application of PMD and its sparsity property. Motivated by the huge practical value of $\PMD$, we develop an algorithm based on prior studies to compute probability mass function of $\PMD$s. Our algorithm contains three methods. They are `DFT-CF' which is based on multi-dimensional Fourier transformation, `SIM' that is a simulation method and `NA' which applies `CLT' to approximate the $\PMD$. The algorithm enables researchers to calculate pmf of $\PMD$s under certain requirements of accuracy and timing even when $\rm n$ and $\rm m$ gets large. We also construct a R package to perform our algorithm, the functions contained in the package are able to compute pmf and cdf of $\PMD$ using all methods we mentioned in this paper as well as generate random samples from given $\PMD$.
 
 
 
@@ -177,8 +177,8 @@ The rest of the paper is organized as follows. In the second part, we describe t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
 
-Let $\Ivec_{i} = (\rm I_{i1}, \dots, I_{im})', i=1, \dots, n$ be a random indicator vector that follows multinomial distribution with associated probabilities $\pvec_{i} = (p_{i1}, \dots, p_{im})'$ and for a fixed $i$, $\sum_{j=1}^{m}\rm I_{ij}=1$. Then the sum $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$ follows a Poisson Multinomial Distribution with corresponding probability matrix $\Pmat_{\rm n \times m} = (\pvec_{1}, \dots, \pvec_{n})'$, denoted it as
-$$\Xmat \sim \PMD(\Pmat_{\rm n\times m}).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. The matrix $\Pmat$ is called Success Probability Matrix(SPM). 
+Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be a random indicator vector that follows multinomial distribution with associated probabilities $\pvec_{i} = (p_{i1}, \dots, p_{im})'$ and for a fixed $i$, $\sum_{j=1}^{m} I_{ij}=1$. Then the sum $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$ follows a Poisson Multinomial Distribution with corresponding probability matrix $\Pmat_{\rm n \times m} = (\pvec_{1}, \dots, \pvec_{n})'$, denoted it as
+$$\Xmat \sim \PMD(\Pmat_{\rm n\times m}).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. The matrix $\Pmat$ is called Success Probability Matrix (SPM).
 
 \begin{equation*}
 \Pmat_{\rm n \times m} = \begin{pmatrix}
@@ -189,10 +189,10 @@ p_{n1} &  \dots & p_{nm} \\
 \end{equation*}
 Let vector $\xvec = (x_1,\dots,x_m)'$ be a realization of a $\PMD$ random variable $\Xmat$, the probability mass function (pmf) of PMD,
 $$p(\Xmat=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right)$$
-is of interest. 
+is of interest.
 
 \begin{example}\normalfont
-Suppose there are three candidates and four voters, the result of voting is a random variable $\Xmat \sim \PMD(\Pmat)$. Based on prior information, 
+Suppose there are three candidates and four voters, the result of voting is a random variable $\Xmat \sim \PMD(\Pmat)$. Based on prior information,
 \begin{equation*}
 \Pmat_{4 \times 3} = \begin{pmatrix}
 0.1 &  0.2 & 0.7\\
@@ -239,7 +239,7 @@ The CF for the $\PMD$ is
 \begin{equation*}
 \phi_{\Xmat}(t_1, \dots, t_{m-1}) = \phi_{(X_1,\dots,X_m)'}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
 \end{equation*}
-where  $\ivec=\sqrt{-1}$. 
+where  $\ivec=\sqrt{-1}$.
 \qedw
 \end{ppt}
 The derivations of the above properties are trivial. One important thing is that we realize the covariance matrix $\boldsymbol{\Sigma}$ is singular, but we still can get a non-singular $n \times (m-1)$ matrix, say $\boldsymbol{\Sigma}_{0}$, to given $\Pmat_{\rm n \times m}$ by deleting the last column of $\boldsymbol{\Sigma}$ due to the fact that the last column is linear dependent on the first $m-1$ columns. Similarly, the last element of the expectation vector of $X$ is also redundant since it equals to $n$ minus summation of the first $m-1$ elements. Therefore we can denote $\EE(X)$ by replacing $\boldsymbol{\mu}$ to $\boldsymbol{\mu}_0 = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$.
@@ -591,7 +591,7 @@ The corresponding $\wh{\Pmat}^{(1)}$ and $\wh{\Pmat}^{(5)}$ for group 1 and grou
  0.04170 & 0.55944 & 0.39886\\
  0.03559 & 0.53568 & 0.42873\\
  0.04890 & 0.54668 & 0.40442
-    \end{pmatrix}, \quad 
+    \end{pmatrix}, \quad
     \wh{\Pmat}^{(5)} = \begin{pmatrix}
  0.15604 & 0.70766 & 0.13630\\
  0.14469 & 0.73976 & 0.11555\\

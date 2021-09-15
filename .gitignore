@@ -5,11 +5,12 @@
 *.aux
 *.bbl
 .DS_Store
-
+*.toc
 *.blg
 *.dvi
 *.log
 *.synctex
+*.synctex.gz
 R-pack-dev/.DS_Store
 .DS_Store
 .DS_Store
@@ -18,3 +19,5 @@ R-pack-dev/.DS_Store
 R-pack-dev/PMD/.DS_Store
 R-pack-dev/PMD/.DS_Store
 .DS_Store
+PMD.pdf
+
