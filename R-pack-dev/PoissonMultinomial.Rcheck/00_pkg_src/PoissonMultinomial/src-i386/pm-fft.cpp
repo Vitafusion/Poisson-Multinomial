@@ -38,30 +38,6 @@ void l_vec_compute_arma(int k, arma::vec& l_vec, arma::vec& cn_vec, int m)
 }
 
 
-/*
-arma::vec test(int mm, arma::vec nn_vec)
-{  
-  int i;
-  
-  int nn_vec_a[mm-1] = {0};
- 
-  for(i=0; i<mm-1; i++)
-  {
-
-    Rcout<<"i= "<< i<<"  value "<< nn_vec_a[i] <<endl;
-    
-    nn_vec_a[i]=nn_vec(i);
-    
-    Rcout<<"i= "<< i<<"  value "<< nn_vec_a[i] <<endl;
-  
-  }
-  
-  return nn_vec;
-    
-}  
-*/
-
-
 //[[Rcpp::export]]  
 arma::vec pmn_mdfft_arma(int nnt, arma::mat pp, arma::vec nn_vec, arma::vec l_vec, arma::vec cn_vec)
 {  
