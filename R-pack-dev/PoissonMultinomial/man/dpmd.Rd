@@ -31,7 +31,7 @@ For a given \code{xmat}, \code{dpmd} returns the pmf at points specified by \cod
 
 If \code{xmat} is \code{NULL}, all probability mass points for the distribution specified by the success probability matrix \code{pmat} will be computed, and the results are
 stored and outputted in a multi-dimensional array, denoted by \code{res}. Note the dimension of 
-\code{pmat} is \eqn{\rm n \times m}, thus \code{res} will be a \eqn{\rm (n+1)^(m-1)} array. Then 
+\code{pmat} is \eqn{\rm n \times m}, thus \code{res} will be an \eqn{\rm (n+1)^{(m-1)}} array. Then 
 the value of the pmf \eqn{\rm P(X_{1}=x_{1}, \ldots, X_{m} = x_{m})} can be extracted as \eqn{\rm res[x_{1}+1, \ldots, x_{m-1}+1]}.
 
 For example, for the \code{pmat} matrix in the example section, the array element \code{res[1,2,1]=0.90} gives 
