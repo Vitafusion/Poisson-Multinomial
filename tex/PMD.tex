@@ -70,6 +70,9 @@
 \newcommand{\sigmaR}{\sigma_{R}}
 \newcommand{\muR}{\mu_{R}}
 \newtheorem{result}{Result}
+
+
+
 \newcommand{\Xvec}{\boldsymbol{X}}
 \newcommand{\Zvec}{\boldsymbol{Z}}
 \newcommand{\xvec}{\boldsymbol{x}}
@@ -78,6 +81,12 @@
 \newcommand{\minitab}[2][l]{\begin{tabular}{#1}#2\end{tabular}}
 \newcommand{\fft}{\textbf{FFT}}
 
+
+
+
+%mu sigma vector
+\newcommand{\Sig}{\boldsymbol{\Sigma}}
+\newcommand{\mvec}{\boldsymbol{\mu}}
 
 %methods
 \newcommand{\SIM}{\boldsymbol{\rm SIM}}
@@ -237,7 +246,7 @@ Now let's take a look of some basic properties of Poisson Multinomial Distributi
 \begin{ppt}\normalfont
 Given random variable $\Xmat$ that follows a Poisson Multinomial distribution with $\Pmat_{\rm n\times m}$, the mean of $\Xmat$ is
    $$\\E(\Xmat) = \boldsymbol{\mu} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$$ where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$.\\
-The variance-covariance matrix of $\Xmat$ is an $m \times m$ matrix $\boldsymbol{\Sigma}$ that has entries $\Sigma_{ij}$ defined as
+The variance-covariance matrix of $\Xmat$ is an $m \times m$ matrix $\Sig$ that has entries $\Sigma_{ij},i=1,\dots,m,j=1,\dots,m$ defined as
 \begin{equation*}
    \Sigma_{ij} =
            \begin{cases}
@@ -247,13 +256,18 @@ The variance-covariance matrix of $\Xmat$ is an $m \times m$ matrix $\boldsymbol
 \end{equation*}\\
 The CF for the $\PMD$ is
 \begin{equation*}
-\phi_{\Xmat}(t_1, \dots, t_{m-1}) = \phi_{(X_1,\dots,X_m)'}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
+\phi_{\Xmat}(t_1, \dots, t_{m-1}) = \phi_{(X_1,\dots,X_m)'}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n} \cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
 \end{equation*}
 where  $\ivec=\sqrt{-1}$.
 \qedw
 \end{ppt}
-The derivations of the above properties are trivial. One important thing is that we realize the covariance matrix $\boldsymbol{\Sigma}$ is singular, but we still can get a non-singular $n \times (m-1)$ matrix, say $\boldsymbol{\Sigma}_{0}$, to given $\Pmat_{\rm n \times m}$ by deleting the last column of $\boldsymbol{\Sigma}$ due to the fact that the last column is linear dependent on the first $m-1$ columns. Similarly, the last element of the expectation vector of $X$ is also redundant since it equals to $n$ minus summation of the first $m-1$ elements. Therefore we can denote $\EE(X)$ by replacing $\boldsymbol{\mu}$ to $\boldsymbol{\mu}_0 = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$.
+The derivations of mean and characteristic function are as trivial as following the definitions. The $\Sig$ can be calculated by observing that for any fix $i=1,\dots,n$, $I_{ij}$ and $I_{ik}$ has covariance $-p_{ij}p_{ik},j=1,\dots,m,k=1,\dots,m$. One important thing is that the covariance matrix $\Sig$ is singular because the elements of $\Xvec$ are linear dependent.
 
+Let $\Xvec^{\star}=(X_1,\dots,X_{m-1})'$ with corresponding $\Pmat^{\star}$ equals to the first $m-1$ columns of $\Pmat$, then it has a non-singular $(m-1) \times (m-1)$ covariance matrix $\boldsymbol{\Sigma}_{0}$. Similar to $\Sig$, the covariance matrix
+ $$\Var(\Xvec^{\star}) =\Sig^{\star}=\sum_{i=1}^n[\diag(\pvec_i)-\pvec_i\pvec_i']$$
+where $\pvec_i$ is the $i$th row of $\Pmat^{\star}$. Also,  
+  $$\EE(\Xvec^{\star}) =\boldsymbol{\mu^{\star}} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$$
+ We call $\Xvec^{\star}$ a reduced $\PMD$ of $\Xvec$ and $\Pmat^{\star}$ a reduced SPM of $\Pmat$. Respectively, $\Sig^{\star}$ is the reduced covariance matrix of $\Sig$ and $\mvec^{\star}$.
 \begin{ppt}\normalfont
 If the SPM $\Pmat$ can be written as a combination of diagonal matrices $\Pmat_1, \Pmat_2, \dots, \Pmat_{K}$, $\Pmat = \diag(\Pmat_{\rm k}), k=1,\dots,K$. Then the outcome of $\Pmat$, $\boldsymbol{x}$ can hereby be decomposed in to outcomes of the diagonal matrices, $\xvec= (\xvec_{1},\dots,\xvec_{\rm K})$.  There will also have random variables $\Xvec_{\rm i} \sim \PMD(\Pmat_{\rm i})$, respectively. The pmf can computed as the product of the corresponding marginal pmfs. That is
 \begin{align*}
@@ -275,22 +289,31 @@ We introduce three methods for computing the pmf, which are the method based on 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Although $\PMD$ is of great importance, its pmf is obscure and no straightforward form has been found so far. However, its characteristic function(cf) can be wrote down in an accessible form. The cf is just a Fourier transformation of pmf, thus we can obtain pmf via Fourier transformed cf. Notice the pmf is discrete, so the discrete Fourier transformation will be used. In this section we provide an exact method to compute the pmf of the PMD using multidimensional discrete Fourier transformation. To speed up the computing, we implement Fast Fourier Transformation algorithm($\fft$). %fft reference
 
-Suppose a random variable $\Xvec =  (X_1, \dots, X_{m})' \sim \PMD(\Pmat)$, where $\Pmat = (p_{ij}), i=1,\dots,n,j=1,\dots,m$. Let $X_m = n-\sum_{j=1}^{m-1}X_j$ and the cf between $\Xvec$ and $\Xvec^{\star} = (X_1, \dots, X_{m-1})'$ will be equivalent. The cf of $\Xvec^{\star}$ is 
+Suppose a random variable $\Xvec =  (X_1, \dots, X_{m})' \sim \PMD(\Pmat)$, where $\Pmat = (p_{ij}), i=1,\dots,n,j=1,\dots,m$. Consider $\Xvec^{\star} = (X_1, \dots, X_{m-1})'$ will be equivalent since the last element of $\Xvec$ is redundant. The cf of $\Xvec^{\star}$ is 
 
-\begin{align*}
+\begin{align}
 \phi(t_1, \dots, t_{m-1}) & = \EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right]=\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right].
-\end{align*}
+\end{align}
 Here $\ivec=\sqrt{-1}$. We notice
-\begin{equation*}
+\begin{equation}
 \begin{split}
   &\EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right] = \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).\\
-  \\
+\end{split}
+\end{equation}
+By definition, 
+\begin{equation}
+\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)= \exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)
+\end{equation}
+The expectation of RHS of (3) can be expressed as
+\begin{equation}
+\begin{split}
   &\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right] = \EE\left[ \exp\left( \ivec\sum_{j=1}^{m-1} t_jI_{1j} + \dots + \ivec\sum_{j=1}^{m-1} t_jI_{nj}\right)\right].\\
   \\
   & = \prod_{i=1}^n \EE\left[ \exp\left( \ivec \sum_{j=1}^{m-1} t_j I_{ij}\right)\right] = \prod_{i=1}^n \left[(1 - \sum_{j=1}^{m-1}p_{ij})+\sum_{j=1}^{m-1}p_{ij}\exp(\ivec t_j)\right].
 \end{split}
-\end{equation*}
-Therefore we get
+\end{equation}
+We know (4) is equivalent to (2). Therefore we get
+
 \begin{align*}
 \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right)= \prod_{i=1}^{n}\left[(1 - \sum_{j=1}^{m-1}p_{ij})+\sum_{j=1}^{m-1}p_{ij}\exp(\ivec t_j)\right].
 \end{align*}
@@ -300,112 +323,85 @@ Let $t_j = \omega l_j$, $l_j = 0, \ldots, n$, $\omega = 2\pi/(n+1)$. Then the eq
 \end{align}
 where
 $$ q(l_1, \ldots, l_{m-1})=\prod_{i=1}^{n}\left[(1 - \sum_{j=1}^{m-1}p_{ij})+\sum_{j=1}^{m-1}p_{ij}\exp(\ivec \omega l_j)\right].$$	
-Note that $q(l_1, \ldots, l_{m-1})$ can be computed directly. The left side of equation (1) is the inverse multi-dimensional discrete Fourier transform of the sequence $ p(x_1,\ldots,x_{m-1}), x_i = 0 , \dots, n$. Therefore we can apply MD-DFT on both sides to recover the sequence, we obtain the pmf as
+Note that $q(l_1, \ldots, l_{m-1})$ can be computed directly. The left side of equation (5) is the inverse multi-dimensional discrete Fourier transform of the sequence $ p(x_1,\ldots,x_{m-1}), x_i = 0 , \dots, n$. Therefore we can apply Multi Dimensional Discrete Fourier Transformation(MD-DFT) on both sides to recover the sequence, the pmf can be obtained as
 \begin{equation}
 p(x_1, \ldots, x_{m-1}) = \frac{1}{(n+1)^{m-1}}\sum_{l_1 = 0}^{n}\cdots \sum_{l_{m-1} = 0}^n q(l_1, \ldots, l_{m-1}) \exp\left(-\ivec\omega\sum_{j=1}^{m-1}l_j x_j\right)
 \end{equation}
 Let $\ell = (l_1,\dots,l_{m-1})$, then we will have $(n
 +1)^{m-1}$ different $\ell$ as $l_i$ values from $0$ to $n$. For example, if we have $n=4$, $m=4$, then $\ell$ can be $(0, 0, 0), (0, 0, 1), \dots, (4, 4, 4)$, 125 different vectors in total. Now we have $q(l_1,\dots,l_{m-1}) = q(\ell)$. We design to use these vectors to generate respective $p(x_1,\dots,x_{m-1})$. For each $\ell$, we get a $p(x_1,\dots,x_{m-1})$.
 
-To get all $p(x_1,\dots,x_{m-1})$ with respect to given $n$, $m-1$ and $P_{n \times (m-1)}$, we apply the fast Fourier transformation (FFT) algorithm  from GSL Scientific Library to make calculation efficient. This FFT algorithm is C language based, we implemented it and wrote a new MD-DFT algorithm. Our MD-DFT algorithm can calculate all values of distribution function as long as we input our $P_{n\times (m-1)}$ matrix, and it can be called from R.
+To speed up the computing, we apply the Fast Fourier transformation (FFT) algorithm  from GSL Scientific Library. The FFT algorithm is C language based, we implement it with R and make a new algorithm named $\dft$ algorithm. Our $\dft$ algorithm can calculate all values of distribution function as long as we input our $P_{\rm n \times m}$ matrix.
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normal-Approximation Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Let $\pvec_i$ be the $i$th row of the SPM $P$. Let $\pvec=\sum_{i=1}^n\pvec_i/n$ be the average of the rows of $\Pmat$.
-
-
+Since covariance matrix of any $\Xvec \sim \PMD$ is singular, we use the reduced $\PMD$ $\Xvec^{\star}$ to establish the normal approximation. From \citeN{Daskalakis2015OnTS}  we know that Central Limit Theory can be applied to $\PMD$s, the following theorem studies the error bound, or converge rate of normal approximation of $\PMD$. 
 \begin{thm}
-For a Poisson-Multinomial random variable $\Xmat = (X_1,\dots,X_{m-1})'$ with mean $\boldsymbol{\mu}_0$ and non-singular covariance matrix $\boldsymbol{\Sigma}_0$. For each outcome $\boldsymbol{\boldsymbol{x}}_i$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{\boldsymbol{x}}_i} = [\boldsymbol{\boldsymbol{x}}_i-0.5,\boldsymbol{\boldsymbol{x}}_i+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\boldsymbol{\Sigma}_0 = CC'$ and the error bound of Central Limit Theory approximation is
+For a Poisson-Multinomial random variable $\Xmat = (X_1,\dots,X_{m})'$ that has a reduced mean vector $\mvec^{\star} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$ and non-singular reduced covariance matrix $\Sig^{\star}$. For each possible outcome $\boldsymbol{\boldsymbol{x}}_r$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{\boldsymbol{x}}_r} = [\boldsymbol{\boldsymbol{x}}_r-0.5,\boldsymbol{\boldsymbol{x}}_r+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\Sig^{\star} = CC'$ and the error bound of Central Limit Theory approximation is
 \begin{equation*}
-    |P(\Xmat \in \mathcal{N}_{\boldsymbol{x}_i}) - P(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_i-\boldsymbol{\mu}_0})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
+    |P(\Xmat \in \mathcal{N}_{\boldsymbol{x}_r}) - P(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_r-\mvec^{\star}})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
 \end{equation*}
-where $\boldsymbol{Z}$ is normal with mean 0 and covariance matrix $\boldsymbol{\Sigma}_0$.
+where $\boldsymbol{Z}$ is normal with mean 0 and covariance matrix $\Sig^{\star}$.
 \end{thm}
-We first show that CLT can be applied to
-\begin{equation*}
-\frac{\Xmat}{n} - \pvec = \frac{(X_1,\dots,X_{m-1})}{n} - \pvec = \frac{(X_1 - \sum_{i=1}^{n}p_{i1},\dots,X_{m-1} - \sum_{i=1}^{n}p_{i,m-1})}{n}
-\end{equation*}
-We just need to show that for any $j = 1,\dots,m-1$, $X_j - \sum_{i=1}^{n}p_{ij}$ satisfies conditions of CLT. Where $X_{j} = \sum_i I_{ij}$ \\
-Notice that for any $\delta > 0$
-\begin{equation*}
-    1\geq p_{ij}(1-p_{ij}) = \Var (I_{ij}) \geq E(|I_{ij}|^{2+ \delta})
-\end{equation*}
-Therefore, let $s_n^2 = \sum_{i=1}^{n}\Var(I_{ij})$, we have
-\begin{equation*}
-    \frac{1}{s_n^{2+\delta}}\sum_{i=1}^{n}E|I_{ij}|^{2 + \delta} \leq  \frac{1}{s_n^{2+\delta}}\sum_{i=1}^{n}\Var(I_{ij}) = \frac{1}{s_n^\delta}
-\end{equation*}
-As $n \rightarrow \infty$, $s_n \rightarrow \infty$, so the above equation converges to 0. Therefore $X_j$ satisfies Lyapunov condition, thus CLT can be applied to $X_j$.\\
-To compute the covariance matrix for $\Xmat$,
-observe that for any fix $i$, $I_{ij}$ and $I_{ik}$ has covariance $-p_{ij}p_{ik}$. Therefore, it is trivial to get the covariance matrix $$\boldsymbol{\Sigma}=\sum_{i=1}^n[\diag(\pvec_i)-\pvec_i\pvec_i']$$
 By central limit theorem (CLT),
-$$\left(\frac{\Xmat}{n}-\pvec\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\boldsymbol{\Sigma}\right).$$\\
-To show $\mathbf{Theorem 3}$, we notice
+$$\left(\frac{\Xvec^{\star}}{n}-\pvec\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\Sig^{\star}\right).$$\\
+where $\pvec = \frac{1}{n}\sum_{i=1}^{n}\pvec_i$.
+To show $\mathbf{Theorem1}$, notice
 \begin{align*}
-    \Xmat = (X_1,\dots,X_{m-1})' = \sum_{i=1}^{n} \boldsymbol{I}_{i}
+    \Xvec^{\star} = (X_1,\dots,X_{m-1})' = \sum_{i=1}^{n} \boldsymbol{\rm{I}_{i}^{\star}}= \sum_{i=1}^{n} (I_{i1},\dots,I_{i,m-1})'
 \end{align*}
-Easy to get $\boldsymbol{I}_i - \EE \boldsymbol{I}_i$ has mean 0. Hereby $\Xmat - \EE \Xmat = \sum (\boldsymbol{I}_i - \EE \boldsymbol{I}_i)$ also has mean 0. The covariance of $\Xmat$ is $\boldsymbol{\Sigma} = CC'$.\\
+Intuitionally, $\boldsymbol{\rm{I}_i^{\star}} - \EE \boldsymbol{\rm{I}_i^{\star}}$ has mean 0. Hereby $\Xvec^{\star} - \EE \Xvec^{\star} = \sum_{i=1}^{n} (\boldsymbol{\rm{I}_i^{\star}} - \EE \boldsymbol{\rm I_{i}^{\star}})$ also has mean 0. The covariance of $\Xvec^{\star}$ is $\Sig^{\star} = CC'$.\\
 By extended $\textbf{Berry-Esseen theory}$ (V. Yu. Bentkus, A Lyapunov-type bound in Rd
-), there existing  a constant $b$ such that
+), there existing  a constant $c$ such that
 \begin{equation*}
     |P\left(\Xmat \in \mathcal{N}_{\boldsymbol{x}_i}\right) - P\left(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_i-\boldsymbol{\mu}_0} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|C^{-1}\boldsymbol{I}_i\right|^3
 \end{equation*}
-Where $\boldsymbol{Z}$ is $\textbf{CLT}$ multivariate normal distribution of with 0 mean and covariance $\boldsymbol{\Sigma}_0$.\\ When $n$ is sufficiently large, our R package use the normal distribution to calculate our probability by demand of users.
-
+Where $\boldsymbol{Z}$ is $\textbf{CLT}$ multivariate normal distribution of with 0 mean and covariance $\Sig^{\star}$.\\ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation-Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-One can simulate $I_i$ from multinomial distribution and then compute $X$. Repeat this many times to generate enough samples for $X$. Then use the sample distribution to approximate the true distribution.
-To be specific,
+One can simulate $\Ivec_i$ from multinomial distribution and then compute $\Xvec = \sum_{i=1}^{n}\Ivec_i$. Repeat this many times to generate enough samples for $\Xvec$. Then use the sample distribution to approximate the true distribution. To be specific, let $\xvec$ be a given realization of $\Xvec$, the probability $\Pr(\Xvec=\xvec)$ can be calculated by following steps,
 \begin{enumerate}[Step 1]
-    \item randomly generate $I_i$ with given $p_i$ using multinomial distribution.
-    \item repeat step 1 to generate $I_1,\dots,I_n$. Calculate $X = (X_1,\dots,X_{m})'$, where $X_j = \sum_{i=1}^{n}I_{ij}, j=1,\dots,m$.
-    \item repeat step 1 and step 2 for $T$ times, and calculate the frequency of $X$ as to form our distribution density.
+    \item for each $i=1,\dots,n$ randomly generate $\Ivec_i$ once with given $\pvec_i$ using multinomial distribution, calculate $\Xvec = \sum_{i=1}^{n}\Ivec_i$.
+    \item repeat step 1 $\rm B$ times to get $\Xvec^{(1)},\dots,\Xvec^{(\rm B)}$.
+    \item count the frequency of $\xvec$ showing up in $\Xvec^{(1)},\dots,\Xvec^{(\rm B)}$ as the desired probability.
 \end{enumerate}
-\begin{example}\normalfont
-Suppose we are given $n=3$, $m=2$
-\begin{equation*}
-P_{\rm n \times m} = P_{3 \times 1} = \begin{pmatrix}
-0.1 & 0.9\\
-0.5 & 0.5\\
-0.3 & 0.7\\
-\end{pmatrix}.
-\end{equation*}
-We first generate $I_1$ by using multinomial distribution with respect to probability vector $(0.1,0.9)$, we get $I_1 = (0,1)$  ,then we generate $I_2$ using multinomial distribution with probability vector $(0.5,0.5) \rightarrow I_2 = (1,0)$, and also generate $I_3$ by using prob vector $(0.3,0.7) \rightarrow I_3 = (0,1)$. Now we have a simulation result $X = I_1+I_2+I_3 = (1,2)$. We repeat above process $10^4$ times to get $10^4$ results, finally if we want to know probability of (1,2), we can calculate the frequency of it in the $10^4$ results. \qedw
-\end{example}
-We design a C based algorithm to perform this simulation process. Our algorithm automatically calculate probabilities of all possible results and it can be called from R.\\
+Consequently, we can calculate each point one by one and eventually the pmf can be calculated by this way. Alternatively, another scheme to do this is by
+\begin{enumerate}[Step 1]
+	\item generate $\Xvec^{(1)},\dots,\Xvec^{(\rm B)}$.
+	\item calculate the frequency of each probability mass point showing up in $\Xvec^{(1)},\dots,\Xvec^{(\rm B)}$ as the pmf.
+\end{enumerate}
 
-In our package, as $n$ and $m$ get large, the total number of probability mass points $(n+1)^{m-1}$ will be extensively great. For time efficiency purpose, we only calculate the probability as customer demand. User will be asked to input the resulting vector, and the probability for the vector will be calculated.
+We design a C++ based algorithm to perform this simulation process. Our algorithm uses the first scheme to calculate probabilities of $\xvec$s as user input  and use the second scheme to calculate pmf if $\xvec$ is no specified.
 
-
-
-
+The following theorem studies the expected error bound of the simulation method by given $\Pmat$ and $\rm B$.
 \begin{thm}
-Given repeating time \mbox{B} and $\rm n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_1,\dots,\boldsymbol{x}_N$. Let the probability for a specific result $\boldsymbol{x}_{i}$ be $p_{\boldsymbol{x}_{i}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{i}}$ using simulation method is $\wh{p}_{\boldsymbol{x}_i}$. We have the following expected error given by Central Limit Theory,
+Given repeating time \mbox{B} and $\rm n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_r, r=1,\dots,N$. Let the probability for a specific result $\boldsymbol{x}_{r}$ be $p_{\boldsymbol{x}_{r}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{r}}$ using simulation method is $\wh{p}_{\boldsymbol{x}_r}$. We have the following expected error given by Central Limit Theory,
 \begin{equation*}
-    \EE|p_{\boldsymbol{x}_i} - \wh{p}_{\boldsymbol{x}_i}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{\pi B}}
+    \EE|p_{\boldsymbol{x}_r} - \wh{p}_{\boldsymbol{x}_r}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_r}(1-p_{\boldsymbol{x}_r})}{\pi B}}
 \end{equation*}
-The expected total absolute error(expected \mbox{TAE}) will be smaller or equal to
-$\sqrt{\frac{2(N-1)}{\pi B}}$.
+The expected total absolute error, 
+$$\sum_{r=1}^{N} \EE|p_{\boldsymbol{x}_r} - \wh{p}_{\boldsymbol{x}_r}| \leq \sqrt{\frac{2(N-1)}{\pi B}}$$
+
 \end{thm}
-For any result $\boldsymbol{x}_i,i=1,\dots,N$. Consider a Bernoulli $\textbf{r.v}$ $Y_i$ with probability $p_{\boldsymbol{x}_i}$ to be 1, and $1-p_{\boldsymbol{x}_i}$ to be 0. By repeating the trail for $B$ times, we get $\textbf{i.i.d}$ random variables $Y_1,\dots,Y_{B}$. By $\textbf{WLLN}$
+For any result $\boldsymbol{x}_r,i=1,\dots,N$. Consider a Bernoulli $\textbf{r.v}$ $Y_r$ with probability $p_{\boldsymbol{x}_r}$ to be 1, and $1-p_{\boldsymbol{x}_r}$ to be 0. By repeating the trail for $B$ times, we get $\textbf{i.i.d}$ random variables $Y_r^{(1)},\dots,Y_r^{(\rm B)}$. By $\textbf{WLLN}$
 \begin{equation*}
-    \Bar{Y}-p_{\boldsymbol{x}_i} \xrightarrow{d} N(0,\sigma^2)
+    \Bar{Y_r}-p_{\boldsymbol{x}_r} \xrightarrow{d} N(0,\sigma^2)
 \end{equation*}
-where $\sigma^2 = \frac{p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}{B}$. Trivally, we get the expectation of absolute error for a single $\boldsymbol{x}_i$
+where $\sigma^2 = \frac{p_{\boldsymbol{x}_r}(1-p_{\boldsymbol{x}_r})}{B}$. Then the expectation of absolute error for a single $\boldsymbol{x}_r$
 \begin{equation*}
-    \EE |\Bar{Y}-p_{\boldsymbol{x}_i}| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi B}p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}
+    \EE |\Bar{Y}-p_{\boldsymbol{x}_r}| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi B}p_{\boldsymbol{x}_r}(1-p_{\boldsymbol{x}_r})}
 \end{equation*}
 Let $c = \sqrt{\frac{2}{\pi B}}$ for simplicity, then
 \begin{align*}
-    & \sum_{i=1}^{N}\EE |\Bar{Y}-p_{\boldsymbol{x}_i}| = c \sum_{i=1}^{N} \sqrt{p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}  = c N \sum_{i=1}^{N}\frac{\sqrt{p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})}}{N} \\
-    & \leq c N \sqrt{\sum_{i}p_{\boldsymbol{x}_i}(1-p_{\boldsymbol{x}_i})/N} = c \sqrt{N} \sqrt{1-\sum p_{\boldsymbol{x}_{i}}^2}\\ &\leq c \sqrt{N} \sqrt{1-1/N} = c\sqrt{N-1}\\
+    & \sum_{r=1}^{N}\EE |\Bar{Y_r}-p_{\boldsymbol{x}_r}| = c \sum_{r=1}^{N} \sqrt{p_{\boldsymbol{x}_r}(1-p_{\boldsymbol{x}_r})}  = c N \sum_{r=1}^{N}\frac{\sqrt{p_{\boldsymbol{x}_r}(1-p_{\boldsymbol{x}_r})}}{N} \\
+    & \leq c N \sqrt{\sum_{r}p_{\boldsymbol{x}_r}(1-p_{\boldsymbol{x}_r})/N} = c \sqrt{N} \sqrt{1-\sum p_{\boldsymbol{x}_{r}}^2}\\ &\leq c \sqrt{N} \sqrt{1-1/N} = c\sqrt{N-1}\\
     & = \sqrt{\frac{2(N-1)}{\pi B}}
 \end{align*}
-The equality will be achieved if $p_{\boldsymbol{x}_1} = \dots = p_{\boldsymbol{x}_N}$.
+The equality will be achieved if $p_{\boldsymbol{x}_1} = \dots = p_{\boldsymbol{x}_N}$. For a fixed $\rm B$,because of the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $\rm B$ to maintain accuracy regardless of time efficiency.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
