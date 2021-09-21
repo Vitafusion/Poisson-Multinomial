@@ -430,7 +430,7 @@ As we know already, $\dft$ is an analytic proved method. It will be impossible t
 To prove $\dft$ is able to calculate pmf exactly under the situation when $(n,m)$ is small enough to be calculated by enumeration, we randomly generate multiple $\Pmat$s from dimension $2 \times 2$ to $6 \times 4$ with smallest probability $0.007$ and largest probability $0.97$. The detailed result is not listed since $\dft$ computes the pmfs exactly same as those computed by enumeration.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.9\textwidth]{figures/binom.pdf}
+	\includegraphics[width=0.7\textwidth]{figures/binom.pdf}
 	\caption{ As $n$ increasing to 1000, the MAE is around $10^{-11}$ and the TAE is around $10^{-9}$}
 	\label{fig: dft accuracy}
 \end{figure}
@@ -439,7 +439,7 @@ From Figure 1, one can tell $\dft$ is reliable. The error is well controlled and
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.9\textwidth]{figures/poib.pdf}
+	\includegraphics[width=0.7\textwidth]{figures/poib.pdf}
 	\caption{Accuracy result of $\dft$ under Poisson Binomial senario}
 	\label{fig: dft accuracy}
 \end{figure}
@@ -462,7 +462,7 @@ For simulation method the error metric is given via the difference between the s
 For fixed $n$ from 1 to 75 and $m=3$, randomly generate 5000 $\Pmat$s to exclude the noise effect followed by calculating error metrics with respect to each methods. The results are shown via Figure 3 and Figure 4. In Figure 3, we mainly study the relationship between accuracy and simulation times $\mbox{B}$. The top lines in three plots are of $B=10$,  the middle lines are of $B=10^5$ and the rest are of $B=10^7$. Observe that the gap between lines reduces as $n$ increases possibly due to sparsity. The accuracy performance when $B$ is large is evidently better than when $B$ is small. We can tell from the plots that $B=10^7$ might be a good choice for user since it provide an accuracy error as small as $10^{-5}$.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.9\textwidth]{figures/simulation.pdf}
+	\includegraphics[width=0.7\textwidth]{figures/simulation.pdf}
 	\caption{$\MAE$ of $\NA$ compared with baseline(Original)}
 	\label{fig: dft accuracy}
 \end{figure}
@@ -470,7 +470,7 @@ For fixed $n$ from 1 to 75 and $m=3$, randomly generate 5000 $\Pmat$s to exclude
 Specifically, for $\NA$ we introduce a baseline called $\textbf{Original}$ to express the sparsity of $\PMD$ as $n$ and $m$ increase. The $\textbf{Original}$ is just to estimate all probability mass points by 0s. We can see through the plot the baseline is decreasing which is resulting from sparsity. From Figure 3, for given $m$, as $n$ increase the solid line which represent $\NA$ is always under the dashed baseline. The gap between the two lines grows wider as $n$ gets larger for fixed $m$ indicates that $\NA$ is more accurate when $n$ is large regardless of sparsity.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.9\textwidth]{figures/mae.pdf}
+	\includegraphics[scale=0.7]{figures/mae.pdf}
 	\caption{$\MAE$ of $\NA$ compared with baseline(Original)}
 	\label{fig: dft accuracy}
 \end{figure}

@@ -13,12 +13,12 @@
 \contentsline {subsection}{\numberline {4.1}Accuracy of $\boldsymbol {\rm DFT-CF}$}{12}{}%
 \contentsline {subsection}{\numberline {4.2}Accuracy of Normal Approximation and Simulation Method}{13}{}%
 \contentsline {subsection}{\numberline {4.3}Time Efficiency of DFT-CF method}{14}{}%
-\contentsline {subsection}{\numberline {4.4}Recommendations}{15}{}%
+\contentsline {subsection}{\numberline {4.4}Recommendations}{14}{}%
 \contentsline {section}{\numberline {5}Applications}{15}{}%
 \contentsline {subsection}{\numberline {5.1}Calculation of Voting Probability}{15}{}%
-\contentsline {subsection}{\numberline {5.2}Statistical Inference for Aggregated Data}{17}{}%
+\contentsline {subsection}{\numberline {5.2}Statistical Inference for Aggregated Data}{16}{}%
 \contentsline {subsection}{\numberline {5.3}Uncertainty Quantification in Classification}{18}{}%
-\contentsline {section}{\numberline {6}Illustrations of the R Package}{21}{}%
-\contentsline {subsection}{\numberline {6.1}Examples}{21}{}%
-\contentsline {subsection}{\numberline {6.2}Benchmark of R Packages for Poisson Binomial Distribution}{21}{}%
-\contentsline {section}{\numberline {7}Conclusions and Areas for Future Research}{21}{}%
+\contentsline {section}{\numberline {6}Illustrations of the R Package}{19}{}%
+\contentsline {subsection}{\numberline {6.1}Examples}{19}{}%
+\contentsline {subsection}{\numberline {6.2}Benchmark of R Packages for Poisson Binomial Distribution}{19}{}%
+\contentsline {section}{\numberline {7}Conclusions and Areas for Future Research}{19}{}%
