@@ -406,50 +406,50 @@ The equality will be achieved if $p_{\boldsymbol{x}_1} = \dots = p_{\boldsymbol{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we compare the three methods in terms of numerical accuracy and the time efficiency, we also give out recommendations of under what condition which method will be preferred. At the first three subsections, we show the accuracy of the methods we mention earlier. Here the major accuracy criterion we use is maximum absolute error(MAE). Suppose we have an PMD matrix with $n\times m$ dimension. Hence there will be $(n+1)^{m-1}$ probability mass points notated as a set $X = \left\{x_1,\dots,x_{N}\right\}$, where $N=(n+1)^{m-1}$. By this way, MAE is defined as following,
+In this section, we compare the three methods in terms of numerical accuracy and the time efficiency, we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is maximum absolute error(MAE). Suppose we have an PMD matrix with $\rm n\times m$ dimension. Denote the number of possible outcome as $N$ and the set of them as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
 \begin{center}
-$\mathrm{MAE} = \underset{X}{\max}|p(x) - p_{\text{true}}(x)|$
+$\mathrm{\MAE} = \underset{\chi}{\max}|p(\xvec) - p_{\text{true}}(\xvec)|$
 \end{center}
 which is the max value of the differences between probability densities calculated by our methods and true ones.
-We also use total absolute error (TAE) as a supplemental criterion where
+We also use total absolute error ($\TAE$)  where
 \begin{equation*}
-    \mbox{TAE} = \sum_X |p(x) - p_{\text{true}}(x)|
+    \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|
 \end{equation*}
-For MD-DFT method, we test its accuracy by using small PMD matrix with given inputs due to the complexity of calculation. For other methods, let the densities calculated by MD-DFT to be the true densities and compare them with our goal method. The PMD matrices we use here are generated randomly.
+We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD  EPYC 7702 with 256GB memory. We first test the accuracy of our exact method $\dft$ with the true pmf small dimensional $\PMD$ calculated by enumeration. Due to the limitation of enumeration method, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution%ref Hong 2013. 
+After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf to study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate a thousand $\Pmat$s randomly for a given $(n,m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
 
+ 
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Accuracy of MD-DFT Method}
-As we know already, MD-DFT is a analytic proved method. For large $n$ and $m=2$, which is the Binomial Passion Distribution, the accuracy is justified by \citeN{hong2013computing}. Thus for convenience and incapability of calculating the true density of large $m$, here we show the accuracy of MD-DFT by using given small $(n,m)$ pairs. For those pairs, we can work out their probability densities by hand, and compare them with the results computed by MD-DFT method.
-\begin{table}%[h!]
-\centering
-\caption{Accuracy of MD-DFT method.}\label{tab:my_label}
-\vspace{1ex}
-\begin{tabular}{c|c|c|c}
-\hline\hline
-     $(n,m)$ & $\min (p_{i j})$ & $\max (p_{i j})$ & $\mathrm{MAE}$ \\
-\hline
-    (2,2) & 0.14 & 0.86 & $\leq 10^{-16}$\\
-\hline
-    (4,3) &0.09 &0.56 & $\leq 10^{-16}$\\
-\hline
-    (5,3) &0.02 &0.6 &$\leq 10^{-16}$\\
-\hline
-    (6,3) &0.1 &0.59 &$\leq 10^{-16}$\\
-\hline
-    (4,4) &0.08 &0.41 &$\leq 10^{-16}$\\
-\hline
-    (5,4) &0.005 &0.39 &$\leq 10^{-16}$\\
-\hline
-    (6,4) &0.007 &0.44 &$\leq 10^{-16}$\\
-\hline\hline
-\end{tabular}
+\subsection{Accuracy of $\dft$}
+As we know already, $\dft$ is an analytic proved method. It will be impossible to get the true pmf for large $n$ and $m$, but some special cases can be considered. First of all we look at the Binomial distribution which is actually a partical case of $\PMD$ when all rows of $\Pmat$ are same and $m=2$. For large $n$ and $m=2$ and no constrain on $\Pmat$, which is a more general case called Binomial Passion Distribution, a method based on one dimensional discrete Fourier transformation is justified by \citeN{hong2013computing}, thus we can use it to test the accuracy of $\dft$. For $m \geq 3$, let $n$ be relatively small so that enumeration can be applied here. In this case, we can work out their probability densities by hand, and compare them with the results computed by $\dft$ method.
 
-\end{table}
-As we see from Table 1, the $\mathrm{MAE}$ are all less or equal to machine epsilon. This shows us that MD-DFT is accurate enough and the error is only due to the computation limit of devices. Therefore, it is convincing to use MD-DFT as true probability densities in the following subsections.
+To prove $\dft$ is able to calculate pmf exactly under the situation when $(n,m)$ is small enough to be calculated by enumeration, we randomly generate multiple $\Pmat$s from dimension $2 \times 2$ to $6 \times 4$ with smallest probability $0.007$ and largest probability $0.97$. The detailed result is not listed since $\dft$ computes the pmfs exactly same as those computed by enumeration.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/binom.pdf}
+	\caption{ As $n$ increasing to 1000, the MAE is around $10^{-11}$ and the TAE is around $10^{-9}$}
+	\label{fig: dft accuracy}
+\end{figure}
+
+From Figure 1, one can tell $\dft$ is reliable. The error is well controlled and smaller than $10^{-9}$ generally. The possible source of error is the machine error from inside of the C++ interface of Multi-Dimensional Fast Fourier Transformation algorithm. As dimension increases, the Fast Fourier transformation algorithm become imprecise. This is also the why compare with the result from \citeN{hong2013computing} our algorithm is less accurate. Figure 2 shows us similar results when the Binomial is replaced by Poisson Binomial, the error is small and due to FFT algorithm itself. Overall, it suffices to conclude that our $\dft$ algorithm is accurate and it can be used to compute true pmf.  
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/poib.pdf}
+	\caption{Accuracy result of $\dft$ under Poisson Binomial senario}
+	\label{fig: dft accuracy}
+\end{figure}
+
+
+
+
+
+
+
 \subsection{Accuracy of Normal Approximation and Simulation Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Among the three computing algorithms we proposed, one of them is able to calculate the exact probability while the other two are approximation methods. Therefore, it is necessary to explore accuracy of the approximation methods under different circumstances. The metric here we use is $\MAE$ and $\TAE$. Probability mass points computed by MD-DFT are considered as true probabilities, denote it as $p_{true}$.
