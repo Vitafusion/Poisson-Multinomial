@@ -415,8 +415,8 @@ We also use total absolute error ($\TAE$)  where
 \begin{equation*}
     \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|
 \end{equation*}
-We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD  EPYC 7702 with 256GB memory. We first test the accuracy of our exact method $\dft$ with the true pmf small dimensional $\PMD$ calculated by enumeration. Due to the limitation of enumeration method, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution%ref Hong 2013. 
-After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf to study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate a thousand $\Pmat$s randomly for a given $(n,m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
+We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702(128 cores, 2GHz) and 256GB RAM. We first test the accuracy of our exact method $\dft$ with the true pmf small dimensional $\PMD$ calculated by enumeration. Due to the limitation of enumeration method, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution. %ref Hong 2013. 
+After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf to study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate thousands of $\Pmat$s randomly for a given $(n,m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
 
  
 
@@ -452,32 +452,31 @@ From Figure 1, one can tell $\dft$ is reliable. The error is well controlled and
 
 \subsection{Accuracy of Normal Approximation and Simulation Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Among the three computing algorithms we proposed, one of them is able to calculate the exact probability while the other two are approximation methods. Therefore, it is necessary to explore accuracy of the approximation methods under different circumstances. The metric here we use is $\MAE$ and $\TAE$. Probability mass points computed by MD-DFT are considered as true probabilities, denote it as $p_{true}$.
+Among the three computing algorithms we proposed, one of them is able to calculate the exact probability while the other two are approximation methods. Therefore, it is necessary to explore accuracy of the approximation methods under different circumstances. The accuracy metric for $\NA$ is $\MAE$. For $\SIM$ we only consider the maximum probability and probability mass points of 0.95, 0.90 quantiles due to computation capability of device. Probability mass points computed by $\dft$ are considered as true probabilities, denote it as $p_{\rm true}$.
 $\MAE$ and $\TAE$ for normal approximation are given by
 \begin{equation*}
-    \MAE = \max_{\xvec}|p_{\rm NA}(\xvec)-p_{\rm true}(\xvec)|, \quad  \TAE = \sum_{\xvec}|p_{\rm NA}(\xvec)-p_{\rm true}(\xvec)|
+    \MAE = \max_{\xvec \in \chi}|p_{\NA}(\xvec)-p_{\rm true}(\xvec)|,
 \end{equation*}
-For simulation method $\MAE$ and $\TAE$ are given via
-\begin{equation*}
-    \MAE = \max_{\xvec}|p_{\rm SIM}(\xvec)-p_{\rm true}(\xvec)|, \quad  \TAE = \sum_{\xvec}|p_{\rm SIM
-    }(\xvec)-p_{\rm true}(\xvec)|
-\end{equation*}
-To test the accuracy, we need to generate $\boldsymbol{\rm P}_{\rm n \times \rm m}$ randomly for different settings of $(n,m)$. Also for a fixed $(n,m)$ we repeat the random generation of $\boldsymbol{\rm P}_{\rm n \times \rm m}$ for 5000 times to eliminate the noise effect. As the dimension of $\boldsymbol{\rm P}$ increases, the distribution gets sparse. As a result, $\MAE$ would become smaller no matter what computation method we use. To include the effect of sparsity, we introduce another method called origin. Origin is a method just as simple as estimating all probability mass point with value 0. Thus the $\TAE$ will always be 1 and $\MAE$ will be the $\max |p_{\rm true}(\xvec)|$. The $\MAE$ of origin will show us a good picture for sparsity of $\PMD$ distribution as its dimension growth. Comparison between origin and other methods as shown in Figure 1 will illustrate how effective normal approximation and simulation method are regardless of sparsity.
+For simulation method the error metric is given via the difference between the selected probability mass points(maximum, 0.95 and 0.90 quantiles) calculated by $\SIM$ and $\dft$. 
 
-%mae plot
+For fixed $n$ from 1 to 75 and $m=3$, randomly generate 5000 $\Pmat$s to exclude the noise effect followed by calculating error metrics with respect to each methods. The results are shown via Figure 3 and Figure 4. In Figure 3, we mainly study the relationship between accuracy and simulation times $\mbox{B}$. The top lines in three plots are of $B=10$,  the middle lines are of $B=10^5$ and the rest are of $B=10^7$. Observe that the gap between lines reduces as $n$ increases possibly due to sparsity. The accuracy performance when $B$ is large is evidently better than when $B$ is small. We can tell from the plots that $B=10^7$ might be a good choice for user since it provide an accuracy error as small as $10^{-5}$.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/simulation.pdf}
+	\caption{$\MAE$ of $\NA$ compared with baseline(Original)}
+	\label{fig: dft accuracy}
+\end{figure}
+
+Specifically, for $\NA$ we introduce a baseline called $\textbf{Original}$ to express the sparsity of $\PMD$ as $n$ and $m$ increase. The $\textbf{Original}$ is just to estimate all probability mass points by 0s. We can see through the plot the baseline is decreasing which is resulting from sparsity. From Figure 3, for given $m$, as $n$ increase the solid line which represent $\NA$ is always under the dashed baseline. The gap between the two lines grows wider as $n$ gets larger for fixed $m$ indicates that $\NA$ is more accurate when $n$ is large regardless of sparsity.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/mae.pdf}
+	\caption{$\MAE$ of $\NA$ compared with baseline(Original)}
+	\label{fig: dft accuracy}
+\end{figure}
 
 
-Figure 1 and Figure 2 exhibit the accuracy test results for different $(n,m)$ pairs. Our computations are done on Linux server with AMD EPYC 7702 chips(128 cores, 2GHz) and 256GB RAM. For simulation method, the repeating time are set to be $10^4$ and it is easy to anticipate that with the growth of repeating  time the accuracy of the method will be better. Also it is not necessary to test with large repeating time because of the computation capacity limits. Due to the computation limits of device, we are able to test $(n,m)$ pairs with $(n+1)^{m-1}$ less than $2^{31}$.
 
-
-% tae plot
-
-
-Figure 1 shows accuracy comparisons in a perspective of $\MAE$. It can be seen that when $m$ is small(less than 5), normal approximation is barely better than origin method as their curves are almost overlapped, it means the accuracy of normal approximation method is no much better than estimating all probability mass points with 0. While $m$ is larger or equal to 5, normal approximation is sufficiently better than simulation method regardless of sparsity. Simulation method under this situation is slightly exceeding origin.
-
-In Figure 2, when $m$ is smaller than 5 and using $\TAE$ as y axis metric, the dashed line that represents simulation method is beneath the red line which stands for normal approximation. The gap between two curves are significant. When $m$ is larger than 4. Normal approximation outperforms simulation method. As $n$ grows, the differences between two methods get larger.
-
-To conclude, in the concern of accuracy simulation method is a much better choice for user when $m$ is less than 5. Conversely, normal approximation method is considerably more accurate than simulation method if $m$ is larger than 4.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Time Efficiency of DFT-CF method}
 In this section, we show computation efficiency of simulation method and MD-DFT for calculating all probability mass points as $(n,m)$ gets large. We generate random matrices with respect to given $(n, m)$, record the calculating time of each method. As for normal approach, it is a asymptotic method, we only need to calculate the asymptotic normal distribution.
