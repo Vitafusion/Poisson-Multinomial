@@ -430,7 +430,7 @@ As we know already, $\dft$ is an analytic proved method. It will be impossible t
 To prove $\dft$ is able to calculate pmf exactly under the situation when $(n,m)$ is small enough to be calculated by enumeration, we randomly generate multiple $\Pmat$s from dimension $2 \times 2$ to $6 \times 4$ with smallest probability $0.007$ and largest probability $0.97$. The detailed result is not listed since $\dft$ computes the pmfs exactly same as those computed by enumeration.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.7\textwidth]{figures/binom.pdf}
+	\includegraphics[width=0.8\textwidth]{figures/binom.pdf}
 	\caption{ As $n$ increasing to 1000, the MAE is around $10^{-11}$ and the TAE is around $10^{-9}$}
 	\label{fig: dft accuracy}
 \end{figure}
@@ -439,7 +439,7 @@ From Figure 1, one can tell $\dft$ is reliable. The error is well controlled and
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{figures/poib.pdf}
+	\includegraphics[width=0.8\textwidth]{figures/poib.pdf}
 	\caption{Accuracy result of $\dft$ under Poisson Binomial senario}
 	\label{fig: dft accuracy}
 \end{figure}
@@ -459,18 +459,18 @@ $\MAE$ and $\TAE$ for normal approximation are given by
 \end{equation*}
 For simulation method the error metric is given via the difference between the selected probability mass points(maximum, 0.95 and 0.90 quantiles) calculated by $\SIM$ and $\dft$. 
 
-For fixed $n$ from 1 to 75 and $m=3$, randomly generate 5000 $\Pmat$s to exclude the noise effect followed by calculating error metrics with respect to each methods. The results are shown via Figure 3 and Figure 4. In Figure 3, we mainly study the relationship between accuracy and simulation times $\mbox{B}$. The top lines in three plots are of $B=10$,  the middle lines are of $B=10^5$ and the rest are of $B=10^7$. Observe that the gap between lines reduces as $n$ increases possibly due to sparsity. The accuracy performance when $B$ is large is evidently better than when $B$ is small. We can tell from the plots that $B=10^7$ might be a good choice for user since it provide an accuracy error as small as $10^{-5}$.
+For fixed $n$ from 1 to 75 and $m=3$, randomly generate 5000 $\Pmat$s to exclude the noise effect followed by calculating error metrics with respect to each methods. The results are shown via Figure 3 and Figure 4. In Figure 3, we mainly study the relationship between accuracy and simulation times $\mbox{B}$. The top lines in three plots are of $B=10$,  the middle lines are of $B=10^5$ and the rest are of $B=10^7$. Observe that the gap between lines reduces as $n$ increases possibly due to sparsity. The accuracy performance when $B$ is evidently better than when $B$ is small. We can tell from the plots that $B=10^7$ might be a good choice for user since it provide an accuracy error as small as $10^{-5}$.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{figures/simulation.pdf}
-	\caption{$\MAE$ of $\NA$ compared with baseline(Original)}
+	\includegraphics[width=0.8\textwidth]{figures/simulation.pdf}
+	\caption{Accuracy of $\SIM$ method based on quantile of $\PMD$ when $m=3$}
 	\label{fig: dft accuracy}
 \end{figure}
 
 Specifically, for $\NA$ we introduce a baseline called $\textbf{Original}$ to express the sparsity of $\PMD$ as $n$ and $m$ increase. The $\textbf{Original}$ is just to estimate all probability mass points by 0s. We can see through the plot the baseline is decreasing which is resulting from sparsity. From Figure 3, for given $m$, as $n$ increase the solid line which represent $\NA$ is always under the dashed baseline. The gap between the two lines grows wider as $n$ gets larger for fixed $m$ indicates that $\NA$ is more accurate when $n$ is large regardless of sparsity.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.7]{figures/mae.pdf}
+	\includegraphics[scale=0.8]{figures/mae.pdf}
 	\caption{$\MAE$ of $\NA$ compared with baseline(Original)}
 	\label{fig: dft accuracy}
 \end{figure}
@@ -479,62 +479,34 @@ Specifically, for $\NA$ we introduce a baseline called $\textbf{Original}$ to ex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Time Efficiency of DFT-CF method}
-In this section, we show computation efficiency of simulation method and MD-DFT for calculating all probability mass points as $(n,m)$ gets large. We generate random matrices with respect to given $(n, m)$, record the calculating time of each method. As for normal approach, it is a asymptotic method, we only need to calculate the asymptotic normal distribution.
+As a method to compute the whole pmf, we need to consider $\dft$'s time efficiency especially when the dimension is large. The method actually calculates $(n+1)^{m-1}$ probability mass points that includes the possible outcomes of $\PMD$ which is $\binom{n+m-1}{m-1}$. Because it takes every $x_j,j=1,\dots,m-1$ from 0 to $n$. The number $(n+1)^{m-1}$ increases drastically as $m$ gets larger. When $m$ is small, the result is showed by Figure 5. When $m$ is moderate ($8 \leq m \leq 20$) or larger, using $\dft$ can be problematic since $(n+1)^{m-1}$ can be enormous such that the device either takes too long to compute nor unable to compute due to exhausted usage of RAM. 
 
-\begin{table}%[h!]
-\centering
-\caption{Accuracy of simulation method.}\label{tab:my_label}
-\begin{tabular}{c|c|c}
-\hline
-\hline
-     $(n, m)$ & MD-DFT & Simulation based $(10^6)$  \\
-\hline
-    (4, 3) & 0.023 & 0.542 \\
-\hline
-    (6, 3) & 0.002 & 0.852\\
-\hline
-    (8, 3) & 0.003 & 1.177\\
-    (10, 3) & 0.003 & 1.634\\
-    (20, 3) & 0.014 & 4.532\\
-    (50, 3) & 0.098 & 22.349\\
-    (100, 3) & 0.49 & 80.243\\
-    (200, 3) & 2.834 & 307.350\\
-    (1000, 3) & 249.449  & 7992.507 \\
-\hline\hline
-\end{tabular}
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Study the computing of the three methods.
+We use the same device as for accuracy study to test the time efficiency of $\dft$. Figure 5 plots the average computing time of 1000 randomly generated $\Pmat$s using $\dft$. The scale of time is second(s) and the computing is done on the same device as for the accuracy study. The following plot (Figure 5) shows that the when $m$ is small (less or equal to 4), it is good to use $\dft$ to calculate the entire pmf. As we can see through the plot the computing time for $n=60, m=4$ is 16 seconds which is affordable. Even when $m=5$ and $n=40$ the time is around 100 seconds which is still acceptable. However, when $m=6$ or higher, increasing $n$ can make the computing time huge.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{figures/effi.pdf}
+	\caption{Time efficiency study of $\dft$}
+	\label{fig: dft efficiency}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Recommendations}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-For small $m$ and moderate $n$, the MD-DFT can be used.
-
-For large $m$ and moderate $n$, the simulation-based method can be used.
-
-For large $n$, the NA-based method can be used.
+According to the results of accuracy and efficiency study. We hereby give out our recommendations of which method to choose under what circumstances. For small $m$ and moderate $n$, the $\dft$ can be used. Since the computing time is affordable and the method is an exact method that can compute the entire pmf automatically. However when $m$ is moderate or large, this method can be very time consuming and will need a huge RAM. Thus for moderate $m$ ($5 \leq m \leq 20$) and small $n$, we encourage users to use simulation method with $B$ around $10^6$ to calculate partial pmf that is of users' interests. By this way the accuracy will be maintained at a satisfied level and computing time will be affordable. For large $n$ including when $m$ is also large, the $\NA$ is recommended because the accuracy is backed up by central limit theory. If only calculate partial pmf, computing time will not be a concern.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Applications}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Calculation of Voting Probability}
 
+  In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson Multinomial distribution can fit the situation perfectly under some assumptions.\\
 
-Do some example like this:
+Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ possible outcomes denoted as $\boldsymbol{x}_r, r = 1, \dots, N$, respectively. Each $\xvec_r$ is a 3 dimension vector that has three elements denoting the number of votes each candidate gets. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.\\
 
-https://stats.stackexchange.com/questions/274211/calculating-the-probability-of-someone-winning-from-a-poll
-
-
-In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson Multinomial distribution can fit the situation perfectly under some assumptions.\\
-
-Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ different results $\boldsymbol{x}_1,\dots, \boldsymbol{x}_N$, respectively. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.\\
-
-To demonstrate that, suppose we have ten electoral voters and three candidates with $\Pmat$ matrix with means of column one, two and three are $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
+To demonstrate that, suppose we have ten electoral voters and three candidates with $\Pmat$ matrix that has means of column one, two and three to be $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
 \begin{equation*}
-    \Pmat = \begin{pmatrix}
+    \Pmat[1:5,] = \begin{pmatrix}
 0.071 & 0.589 & 0.340\\
 0.365 & 0.195 & 0.440\\
 0.445 & 0.505 & 0.050\\
@@ -542,7 +514,7 @@ To demonstrate that, suppose we have ten electoral voters and three candidates w
 0.620 & 0.111 & 0.269
     \end{pmatrix}
 \end{equation*}
-To compute the probability of each candidate winning the election, just need to introduce constraints. For instance, under the constraint $\chi_1 = \left\{x_1>x_2\right\} \cap \left\{x_1>x_3\right\}$, we are able to compute the winning rate of the first candidate is
+To compute the probability of each candidate winning the election, just need to introduce constraints. For instance, under the constraint $\chi_1 = \left\{\text{the first element is the largest one}\right\} = \left\{x_1>x_2, x_1>x_3; x_1, x_2,x_3 \in \left\{0,\dots,10\right\}\right\}$, we are able to compute the winning rate of the first candidate is
 \begin{equation*}
     p(\text{the 1st candidate wins}) = \sum_{\boldsymbol{x} \in \chi_{1}} p(\boldsymbol{x}) = 0.3429
 \end{equation*}
@@ -553,7 +525,8 @@ Similarly, the probabilities for the second candidate and the third candidate to
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Statistical Inference for Aggregated Data}\label{sec:model.est.inf}	
-First introduce the out "Logistic-like" model to fit a given aggregated dataset with selected features and a categorical response variable that has $m$ categories. By dividing the rows of our data into $H$ groups $G_1,\dots,G_{S}$, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily to be equal. Let the quantity for each category of group $G_i$ be $\boldsymbol{x}^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\boldsymbol{H}^{(i)}$ to be the covariate matrix of $G_i$, then $\boldsymbol{H}^{(i)} = (\boldsymbol{1}, \boldsymbol{h}_{1}^{(i)},\dots,\boldsymbol{h}_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\boldsymbol{1}$, where $v$ equals to the number of covariates plus one. Let $\Pmat^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\boldsymbol{x}^{(i)}$ for group $G_i$ be $p(\boldsymbol{x}^{(i)})$. The total log-likelihood for all groups can be computed as
+First introduce the "Logistic-like" model to fit a given aggregated dataset with selected features and a categorical response variable that has $m$ categories. 
+By dividing the rows of our data into $H$ groups $G_1,\dots,G_{S}$ via some given criterion, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily equal to each other. Let the quantity for each category of group $G_i$ be $\boldsymbol{x}^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\boldsymbol{H}^{(i)}$ to be the covariate matrix of $G_i$, then $\boldsymbol{H}^{(i)} = (\boldsymbol{1}, \boldsymbol{h}_{1}^{(i)},\dots,\boldsymbol{h}_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\boldsymbol{1}$, where $v$ equals to the number of covariates plus one. Let $\Pmat^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\boldsymbol{x}^{(i)}$ for group $G_i$ be $p(\boldsymbol{x}^{(i)})$. The total log-likelihood for all groups can be computed as
 \begin{equation*}
     \ell = \sum_{i=1}^{S}\ell_i = \sum_{i=1}^{S}\log p(\boldsymbol{x}^{(i)})
 \end{equation*}
@@ -614,11 +587,6 @@ For group 1 and 5, $\boldsymbol{x}^{(1)} = (1,5,2)'$ and $\boldsymbol{x}^{(5)} =
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Uncertainty Quantification in Classification}
-
-Confusion matrix
-
-Use Theorem for independent.
-
 In machine learning classification problem with multiple labels, for each unit in the test set, the probability of the unit belongs to each class is computed. Usually, the predicted class is assigned as the highest probability. In the classifiers (i.e., soft classification), the unit class is randomly assigned according to the predicted probabilities, leading to randomness in the confusion matrix. The PMD can be used to characterize the distribution of the counts in the confusion matrix.
 
 
@@ -700,9 +668,7 @@ Illustrate the use of major functions in the R package.
 \section{Conclusions and Areas for Future Research}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We develop algorithm that can be useful for computing the pmf of the PMD distribution, which is challenging to compute but useful in many application scenarios.
-
-
+We develop algorithms that can be useful for computing the pmf of the PMD distribution, which is challenging to compute but useful in many application scenarios. We design three methods that are implemented in our algorithms. Among the methods, $\dft$ is an exact method, $\SIM$ is a simulation method and $\NA$ is a method using approximation theories. The accuracy and efficiency of the methods are guaranteed under given circumstances. We also recommend users to use $\dft$ when $m$ is small, use $\SIM$ when $m$ is moderate and $n$ is small, use $\NA$ when $n$ is large. However, there are still some fields remain to be explored. The computing speed of $\dft$ can be improved using more efficient Fourier transformation algorithms or we could find a way to calculate only the $\binom{n+m-1}{m-1}$ possible outcomes rather than $(n+1)^{m-1}$ probability mass points which contains a large amount of points have values equal to 0. $\SIM$ method is still time consuming although it can compute some cases that $\dft$ are unable to, once we develop more efficient exact algorithms, $\SIM$ could be replaced. Till now, we are still unable to compute the pmf of $\PMD$ when $m$ is large, this area remains to be disclosed.
 
 
 
