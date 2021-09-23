@@ -79,7 +79,7 @@
 \newcommand{\kvec}{\boldsymbol{k}}
 \newcommand{\rvec}{\boldsymbol{r}}
 \newcommand{\minitab}[2][l]{\begin{tabular}{#1}#2\end{tabular}}
-\newcommand{\fft}{\textbf{FFT}}
+\newcommand{\fft}{\textrm{FFT}}
 
 
 
@@ -89,9 +89,9 @@
 \newcommand{\mvec}{\boldsymbol{\mu}}
 
 %methods
-\newcommand{\SIM}{\boldsymbol{\rm SIM}}
-\newcommand{\NA}{\boldsymbol{\rm N.A}}
-\newcommand{\dft}{\boldsymbol{\rm DFT-CF}}
+\newcommand{\SIM}{{\rm SIM}}
+\newcommand{\NA}{{\rm NA}}
+\newcommand{\dft}{{\rm DFT-CF}}
 
 
 
@@ -177,7 +177,7 @@ The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different ind
 %Ecological inference https://www.pnas.org/content/96/19/10578
 
 
-Some former studies have uncover $\PMD$'s structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of $\PMD$ is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} illustrates us some interesting applications of PMD and its sparsity property. Motivated by the huge practical value of $\PMD$, we develop an algorithm based on prior studies to compute probability mass function of $\PMD$s. Our algorithm contains three methods. They are $\dft$ which is based on multi-dimensional Fourier transformation, $\SIM$ that is a simulation method and $\NA$ which applies $\boldsymbol{\rm C.L.T}$ to approximate the $\PMD$. The algorithm enables researchers to calculate pmf of $\PMD$s under certain requirements of accuracy and timing even when $\rm n$ and $\rm m$ gets large. We also construct a R package to perform our algorithm, the functions contained in the package are able to compute pmf and cdf of $\PMD$ using all methods we mentioned in this paper as well as generate random samples from given $\PMD$.
+Some former studies have uncover $\PMD$'s structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of $\PMD$ is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} illustrates us some interesting applications of PMD and its sparsity property. Motivated by the huge practical value of $\PMD$, we develop an algorithm based on prior studies to compute probability mass function of $\PMD$s. Our algorithm contains three methods. They are $\dft$ which is based on multi-dimensional Fourier transformation, $\SIM$ that is a simulation method and $\NA$ which applies ${\rm C.L.T}$ to approximate the $\PMD$. The algorithm enables researchers to calculate pmf of $\PMD$s under certain requirements of accuracy and timing even when $\rm n$ and $\rm m$ gets large. We also construct a R package to perform our algorithm, the functions contained in the package are able to compute pmf and cdf of $\PMD$ using all methods we mentioned in this paper as well as generate random samples from given $\PMD$.
 
 
 
@@ -337,7 +337,7 @@ To speed up the computing, we apply the Fast Fourier transformation (FFT) algori
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normal-Approximation Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Since covariance matrix of any $\Xvec \sim \PMD$ is singular, we use the reduced $\PMD$ $\Xvec^{\star}$ to establish the normal approximation. From \citeN{Daskalakis2015OnTS}  we know that Central Limit Theory can be applied to $\PMD$s, the following theorem studies the error bound, or converge rate of normal approximation of $\PMD$. 
+Since covariance matrix of any $\Xvec \sim \PMD$ is singular, we use the reduced $\PMD$ $\Xvec^{\star}$ to establish the normal approximation. From \citeN{Daskalakis2015OnTS}  we know that central limit theory can be applied to $\PMD$s, the following theorem studies the error bound, or converge rate of normal approximation of $\PMD$. 
 \begin{thm}
 For a Poisson-Multinomial random variable $\Xmat = (X_1,\dots,X_{m})'$ that has a reduced mean vector $\mvec^{\star} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$ and non-singular reduced covariance matrix $\Sig^{\star}$. For each possible outcome $\boldsymbol{\boldsymbol{x}}_r$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{\boldsymbol{x}}_r} = [\boldsymbol{\boldsymbol{x}}_r-0.5,\boldsymbol{\boldsymbol{x}}_r+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\Sig^{\star} = CC'$ and the error bound of Central Limit Theory approximation is
 \begin{equation*}
@@ -387,7 +387,7 @@ The expected total absolute error,
 $$\sum_{r=1}^{N} \EE|p_{\boldsymbol{x}_r} - \wh{p}_{\boldsymbol{x}_r}| \leq \sqrt{\frac{2(N-1)}{\pi B}}$$
 
 \end{thm}
-For any result $\boldsymbol{x}_r,i=1,\dots,N$. Consider a Bernoulli $\textbf{r.v}$ $Y_r$ with probability $p_{\boldsymbol{x}_r}$ to be 1, and $1-p_{\boldsymbol{x}_r}$ to be 0. By repeating the trail for $B$ times, we get $\textbf{i.i.d}$ random variables $Y_r^{(1)},\dots,Y_r^{(\rm B)}$. By $\textbf{WLLN}$
+For any result $\boldsymbol{x}_r,i=1,\dots,N$. Consider a Bernoulli $\textbf{r.v}$ $Y_r$ with probability $p_{\boldsymbol{x}_r}$ to be 1, and $1-p_{\boldsymbol{x}_r}$ to be 0. By repeating the trail for $B$ times, we get $\textbf{i.i.d}$ random variables $Y_r^{(1)},\dots,Y_r^{(\rm B)}$. By $\textrm{WLLN}$
 \begin{equation*}
     \Bar{Y_r}-p_{\boldsymbol{x}_r} \xrightarrow{d} N(0,\sigma^2)
 \end{equation*}

@@ -6,11 +6,11 @@
 \contentsline {subsection}{\numberline {2.1}Definition of the Distribution}{4}{}%
 \contentsline {subsection}{\numberline {2.2}Properties of the Distribution}{6}{}%
 \contentsline {section}{\numberline {3}Computation of The Probability Mass Function}{7}{}%
-\contentsline {subsection}{\numberline {3.1}The $\boldsymbol {\rm DFT-CF}$ Method}{7}{}%
+\contentsline {subsection}{\numberline {3.1}The ${\rm DFT-CF}$ Method}{7}{}%
 \contentsline {subsection}{\numberline {3.2}Normal-Approximation Based Method}{9}{}%
 \contentsline {subsection}{\numberline {3.3}Simulation-Based Method}{9}{}%
 \contentsline {section}{\numberline {4}Method Comparisons}{11}{}%
-\contentsline {subsection}{\numberline {4.1}Accuracy of $\boldsymbol {\rm DFT-CF}$}{12}{}%
+\contentsline {subsection}{\numberline {4.1}Accuracy of ${\rm DFT-CF}$}{12}{}%
 \contentsline {subsection}{\numberline {4.2}Accuracy of Normal Approximation and Simulation Method}{13}{}%
 \contentsline {subsection}{\numberline {4.3}Time Efficiency of DFT-CF method}{14}{}%
 \contentsline {subsection}{\numberline {4.4}Recommendations}{15}{}%
