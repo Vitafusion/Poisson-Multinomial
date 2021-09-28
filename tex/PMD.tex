@@ -2,6 +2,7 @@
 \documentclass[12pt]{article}
 \usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,pifont, multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
+\usepackage{listings}
 %\usepackage{bm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,8 +79,7 @@
 \newcommand{\rvec}{\boldsymbol{r}}
 \newcommand{\minitab}[2][l]{\begin{tabular}{#1}#2\end{tabular}}
 \newcommand{\fft}{\textrm{FFT}}
-
-
+\newcommand{\code}{\texttt}
 
 
 %mu sigma vector
@@ -653,13 +653,38 @@ Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. For
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Illustrations of the R Package}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Our R package $\textrm{PoissonMultinomial}$ specifically computes probability density function for $\PMD$ with corresponding $\Pmat$ using the methods described by this paper. The fast Fourier transformation algorithm are implemented in C.
 \subsection{Examples}
-Illustrate the use of major functions in the R package.
+There are three major functions in the package. $\code{dpmd}$ is a function to compute pmf, $\code{ppmd}$ is for cdf and one can use $\code{rpmd}$ to generate $\PMD$ random samples. User has to specify $\Pmat$ so that a $\PMD$ can be determined. With unspecified $\xvec$, $\code{dpmd}(\Pmat)$ will automatically calculate the whole pmf and the output will be a multi-dimensional array. If user inputs $\xvec$, the output of $\code{dpmd}(\Pmat,\xvec)$ will be partial pmf chosen by $\xvec$. User can also select all methods we list in this paper to compute the pmf or cdf. Notice only $\dft$ can automatically compute the whole pmf and it is the most efficient way for this job as well. The function $\code{ppmd}$ uses same method as $\code{dpmd}$ to compute the probability $\Pr(\Xvec < \xvec)$.  Examples of using $\code{dpmd}$ is following,
 
+\begin{lstlisting}
+P <- matrix(c(0.1,0.1,0.8,0.1,0.3,0.6,0.5,0.2,0.3), nrow=3, byrow=T)
+x <- c(0,1,2)
+dpmd(P)      # calculate whole pmf
+dpmd(P, x)   # calculate the probability mass point of x 
+\end{lstlisting}
+The output of $\code{dpmd}$ is a matrix as following, and we can see the output of $\code{dpmd}(P, x)$ is 0.186 which is the $[1,2]$ element of the output. 
+$$
+\begin{pmatrix}
+0.144 & 0.186 & 0.069 & 0.006 \\
+0.282 &0.190 &0.023  &0.000\\
+0.073 &0.022 &0.000 &0.000\\
+0.005 &0.000 &0.000 &0.000\\
+\end{pmatrix}
+$$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Benchmark of R Packages for Poisson Binomial Distribution}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+We compare the time efficiency of our package and an existing package that computes pmf of Poisson binomial distribution, which is a special case of Poisson multinomial distribution. The result Figure 7 shows when $m=2$ which is the special case of Poisson multinomial, $\code{poibin}$ is much faster than our package $\code{PoissonMultinomial}$. This is due to the fact that 2 dimensional fast Fourier transformation is faster than multi dimensional Fourier transformation in general.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.95\textwidth]{figures/bench.pdf}
+	\caption{Benchmark comparison of PoissonMultinomial and poibin}
+	\label{fig:benchmark}
+\end{figure}
+
+
 
 
 
@@ -669,9 +694,6 @@ Illustrate the use of major functions in the R package.
 
 We develop algorithms that can be useful for computing the pmf of the PMD distribution, which is challenging to compute but useful in many application scenarios. We design three methods that are implemented in our algorithms. Among the methods, $\dft$ is an exact method, $\SIM$ is a simulation method and $\NA$ is a method using approximation theories. The accuracy and efficiency of the methods are guaranteed under given circumstances. We also recommend users to use $\dft$ when $m$ is small, use $\SIM$ when $m$ is moderate and $n$ is small, use $\NA$ when $n$ is large. However, there are still some fields remain to be explored. The computing speed of $\dft$ can be improved using more efficient Fourier transformation algorithms or we could find a way to calculate only the $\binom{n+m-1}{m-1}$ possible outcomes rather than $(n+1)^{m-1}$ probability mass points which contains a large amount of points have values equal to 0. $\SIM$ method is still time consuming although it can compute some cases that $\dft$ are unable to, once we develop more efficient exact algorithms, $\SIM$ could be replaced. Untill now, we are still unable to compute the pmf of $\PMD$ when $m$ is large, this area remains to be disclosed.
 
-
-
-	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\section*{Acknowledgments}
