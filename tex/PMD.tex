@@ -438,7 +438,7 @@ From Figure 1, one can tell $\dft$ is reliable. The error is well controlled and
 \begin{figure}%[h]
 	\centering
 	\includegraphics[width=0.95\textwidth]{figures/poib.pdf}
-	\caption{Accuracy result of $\dft$ under Poisson Binomial senario}
+	\caption{Accuracy result of $\dft$ under Poisson binomial senario}
 	\label{fig: dft accuracy}
 \end{figure}
 
@@ -660,8 +660,8 @@ There are three major functions in the package. $\code{dpmd}$ is a function to c
 \begin{lstlisting}
 P <- matrix(c(0.1,0.1,0.8,0.1,0.3,0.6,0.5,0.2,0.3), nrow=3, byrow=T)
 x <- c(0,1,2)
-dpmd(P)      # calculate whole pmf
-dpmd(P, x)   # calculate the probability mass point of x 
+dpmd(P)      
+dpmd(P, x)   
 \end{lstlisting}
 The output of $\code{dpmd}$ is a matrix as following, and we can see the output of $\code{dpmd}(P, x)$ is 0.186 which is the $[1,2]$ element of the output. 
 $$
