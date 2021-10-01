@@ -3,6 +3,10 @@
 \usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,pifont, multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
 \usepackage{listings}
+
+\usepackage{subcaption}
+\usepackage[labelformat=parens,labelsep=quad,skip=3pt]{caption}
+\usepackage{graphicx}
 %\usepackage{bm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -152,7 +156,7 @@ Zhengzhi Lin, Yueyao Wang, and Yili Hong\\[1.5ex]
 \maketitle
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicators, in which each indicator is an $m$ element vector that follows a multinomial distribution. The PMD is useful in many areas such as, machine learning, uncertainty quantification, and voting theory. The distribution function (e.g., the probability mass function) has been studied by many authors for a long time, but there is no general computing method available for its distribution functions. In this paper, we develop algorithms to compute the probability mass function for the PMD, and we develop an R package that can calculate the probability mass function efficiently. We also study the accuracy of different methods. We illustrate the use of the PMD with three applications from voting theory, ecological inference, machine learning. We also provide examples to demonstrate the use of the R package.
+The Poisson Multinomial Distribution (PMD) is the sum of independent multinomial distributions. The PMD is useful in many areas such as, machine learning, uncertainty quantification, and voting theory. In this paper, we develop algorithms to compute the probability mass function for PMD using methods of Fourier transformation, normal approximation and simulation. We implement the algorithms into an R package so that users can calculate the probability mass function of $\PMD$ efficiently. We also study the accuracy of different methods. We illustrate the use of the PMD with three applications from voting theory, ecological inference, machine learning. We also provide examples to demonstrate the use of the R package.
 		
 \textbf{Key Words:} Binomial distribution; Classification; Poisson Binomial Distribution; Machine Learning; Uncertainty Quantification;  Voting Theory
 \end{abstract}
@@ -164,9 +168,14 @@ The Poisson Multinomial Distribution (PMD) is the sum of $n$ independent indicat
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-\subsection{Motivation}
+\subsection{Background and Motivation}
 
-The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different independent Multinomial distributions. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}), etc. One intriguing area that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $\rm n$  independent members needs to elect a chairman between $\rm m$ candidates. Each member has a different voting behavior. Mostly, people pay attention to the result of an election. Statisticians focus on the probability for each electoral outcome to happen. An $\rm (n,m)$ $\PMD$ is a perfect model for this example by seeing members as independent random variables following different Multinomial distributions. The probability vector of the Multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of greatest concern. Enumeration could be a fine method when $\rm n \times m$ is small. However, when we have more members(large $\rm n$) or more candidates(large $\rm m$), the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Additionally, in machine learning, especially in classification context, when we classify $\rm n$ samples one by one into $\rm m$ categories, then the total number of samples assigned to each category follows a $\PMD$. People who study the probability of classification outcomes also encounters same dilemma. Not only in the field of classification and political science, computing pmf is frequently required in scenarios that $\PMD$s are involved. However, there is no existing algorithm for computing pmf for PMD. Hereby it is a necessity to build one that can calculate pmf of $\PMD$s efficiently.
+Imagine there are $n$ different independent balls, one needs to throw them into $m$ different bins. Each ball has its own probabilities of falling into different bins. Then the probability distribution of how many balls are in each bin after throwing will be our concern and we call it Poisson Multinomial Distribution (\PMD). $\PMD$ is also known as generalized multinomial distribution and when $m=2$ it is called Poisson binomial distribution, which is a generalized distribution of binomial distribution. 
+
+As the continuous development of social informationlization, $\PMD$ becomes increasingly important to many fields including computer science, probability, statistics and political science. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}), etc. One of the intriguing areas that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $\rm n$  independent members needs to elect a chairman between $\rm m$ candidates. Each member has different voting behavior. Mostly, people pay attention to the result of an election while statisticians focus on the probability for each electoral outcome to happen. An $\PMD$ is a perfect model for this example by seeing members as independent random variables following different multinomial distributions. The probability vector of the multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of the greatest concern. Additionally, in soft classification context, people introduce randomness in decision making process. The process can be characterized by $\PMD$. Suppose 
+a machine learning model computes probabilities of an observation falling into different categories, this is actually equivalent to making one draw from a multinomial distribution. Thus $\PMD$ is a perfect tool to characterize the situation of  classifying multiple observations since it is as same as making multiple draws from different independent multinomial distributions. In ecological inference, consider making statistical inference to aggregated data. An aggregated dataset is to separate data points into groups and consider the groups as new data points. Let's assume the data response variable is categorical. In the grouped dataset, we could count the number of each category in each group and take it as our new response variable and this variable will follow $\PMD$ accordingly. All the areas above that involve $\PMD$ also require computation of its probability mass function. Without the pmf, we are unable to draw any conclusion over the listed examples.
+
+Enumeration could be a fine method since that if $\rm n \times m$ is small we can list all outcomes by hand. However, when $n$ and $m$ increase, the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Not only in the fields mentioned above, computing pmf is frequently required in many scenarios that $\PMD$s are involved. There is no existing algorithm for computing pmf for PMD. Hereby we are motivated to build one that can calculate pmf of $\PMD$s efficiently.
 
 
 
@@ -174,15 +183,41 @@ The Poisson Multinomial Distribution ($\PMD$) is defined as sum of different ind
 
 %Ecological inference https://www.pnas.org/content/96/19/10578
 
+Some former studies have uncovered $\PMD$'s structure and some of its properties. In 2015, \citeN{Daskalakis2015OnTS} proved that $\PMD$ is $\epsilon$-cover, which means there exists a set of distributions small enough to cover the set of all $\PMD$s. $\PMD$ can also be $\epsilon$-close so that it can be approximated by other distributions. The paper also reveal that exists learning algorithms for $\PMD$s. This result shows that we can find a sampling scheme to draw enough samples out of a $\PMD$ to depict its structure and complexity. Simply saying, we could study $\PMD$'s probability mass function via sampling. At almost the same time, \citeN{diakonikolas2016fourier} obtained a different understanding of the structures of $\PMD$s' using Fourier transformation and disclosed the sparsity of $\PMD$. The paper also provided the first computationally efficient for $\PMD$s and showed CLT can be applied to $\PMD$s. The most important statistical characteristic of $\PMD$, probability mass function has not been explored yet. In 2013, \citeN{hong2013computing} applied Fourier transformation and discovered an analytic form of probability mass function for a special case of $\PMD$, Poisson binomial distribution.
 
-Some former studies have uncover $\PMD$'s structure and properties, \citeN{diakonikolas2016fourier} shows the Fourier transformation of $\PMD$ is sparse and provide a theorem that there exist algorithms to calculate PMD's density. \citeN{Daskalakis2015OnTS} also prove us PMD is $\epsilon$-cover and Central Limit Theory is valid for PMD. Other papers such as \citeN{akter2019double} illustrates us some interesting applications of PMD and its sparsity property. Motivated by the huge practical value of $\PMD$, we develop an algorithm based on prior studies to compute probability mass function of $\PMD$s. Our algorithm contains three methods. They are $\dft$ which is based on multi-dimensional Fourier transformation, $\SIM$ that is a simulation method and $\NA$ which applies ${\rm C.L.T}$ to approximate the $\PMD$. The algorithm enables researchers to calculate pmf of $\PMD$s under certain requirements of accuracy and timing even when $\rm n$ and $\rm m$ gets large. We also construct a R package to perform our algorithm, the functions contained in the package are able to compute pmf and cdf of $\PMD$ using all methods we mentioned in this paper as well as generate random samples from given $\PMD$.
+Current studies have shown that $\PMD$s can be applied to many fields. In game theory, based on the structure and properties of $\PMD$, \citeN{diakonikolas2016fourier} constructed a efficient scheme to approximate Nash equilibria in anonymous games and \citeN{Cheng2017PlayingAG} proved that any $n$-player anonymous games can have approximate Nash equilibria in polynomial time. In 2017, \citeN{akter2019double} introduced $\PMD$ in image processing field for the first time. They used $\PMD$s to count the encrypted image data and computed $\PMD$s' probability mass functions to obtain optimal results. However, the probability mass functions of $\PMD$s is computed by using simplified multinomial distributions which is actually an approximation method.
+
+In this paper, the contributions are following,
+\begin{itemize}
+	\item The main contribution of this paper is constructing an exact method to compute pmf of $\PMD$ and we call this method $\dft$. Besides, we also construct two approximation methods to compute pmf of $\PMD$, the one is a simulation scheme and the other one is approximation based on CLT. Along the journey of constructing methods, several properties and theorems are built.
+	\begin{itemize}
+		\item $\dft$. This method uses fast Fourier transformation to obtain pmf of $\PMD$ analytically. 
+		\item $\NA$. This method applies CLT to approximate pmf of $\PMD$. We prove an analytic error bound for this method based on its CLT converge rate.
+		\item $\SIM$. This is the other approximation method. $\SIM$ uses multiple multinomial distributions to simulate $\PMD$ and obtains pmf via simulation results. An expected absolute error bound of this method is provided and proved.
+	\end{itemize}
+	\item Studying accuracy and time efficiency of each methods given different scenarios.
+	\begin{itemize}
+		\item Accuracy of $\dft$ using binomial, Poisson binomial and small dimensional $\PMD$s. It suffices to show $\dft$ is pretty accurate and the error comes from the fast Fourier transformation algorithm.
+		\item We conduct accuracy test of $\SIM$ that shows the method is accurate and the error bound can be controlled via improving simulation repeating times.
+		\item Our test support $\NA$'s accuracy when $n$ is moderate and large.
+	\end{itemize}
+	\item Showing the time efficiency of $\dft$ method.
+	\item We separate all $\PMD$s into different subsets according to their dimension and give out recommendations with respect to which method to be chosen.
+	\item Based on methods we develop, applications in ecological inference, political science and classification are made.
+	\begin{itemize}
+		\item We provide an example of applying $\PMD$ in voting scenario. The probability of a voting result can be computed via $\PMD$. Thus $\PMD$ provide a new perspective of predicting electoral results.
+		\item In ecological inference, people separate the data into multiple groups and consider each group as a new data point, this is also called aggregated data. We use Predictive Maintenance Dataset Data Set \cite{Dua:2019} from UCI machine learning repository to conduct the application of $\PMD$ in ecological inference, the dataset is separated into several groups to form aggregated data and a logistic-like model is build.
+		\item We illustrate an application of $\PMD$ in soft classification context using Electroluminescence (EL) image data. We show that $\PMD$ is a good tool to describe the distribution of the counts in confusion matrix.
+	\end{itemize}
+	\item We build an R package to contain all methods we develop and demonstrate the usage of the package.
+\end{itemize}
 
 
 
 
 
 \subsection{Overview}
-The rest of the paper is organized as follows. In the second part, we describe the mathematical definition of Poisson Multinomial distribution and list some of its useful properties. In the third part, we introduce three methods that we include in the algorithm to compute $\PMD$s' pmf by details. The fourth part of this article studies the accuracy and time efficiency characteristics of the three methods. In the fifth part, we illustrate application of our algorithm via three examples respectively in the fields of voting theory, statistical inference for aggregated data and classification. In the sixth part, we introduce our R package that implemented with the algorithm and the seventh part of this paper draws the conclusion and prospective research areas.
+The rest of the paper is organized as follows. In the second section, we describe the mathematical definition of Poisson Multinomial distribution and list some of its statistical properties. In the third part, we demonstrate the details of  the three methods that we develop to compute $\PMD$s' pmf. The fourth part of this article studies the accuracy and time efficiency characteristics of the three methods, we also give out recommendations of preferred situations for each method. In the fifth part, we illustrate application of our methods via three examples respectively in the fields of voting theory, ecological inference and soft classification. In the sixth part, we introduce our R package that implemented with the methods and the seventh section concludes the paper and lists prospective research areas.
 
 
 
@@ -285,7 +320,7 @@ We introduce three methods for computing the pmf, which are the method based on 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The $\dft$ Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Although $\PMD$ is of great importance, its pmf is obscure and no straightforward form has been found so far. However, its characteristic function(cf) can be wrote down in an accessible form. The cf is just a Fourier transformation of pmf, thus we can obtain pmf via Fourier transformed cf. Notice the pmf is discrete, so the discrete Fourier transformation will be used. In this section we provide an exact method to compute the pmf of the PMD using multidimensional discrete Fourier transformation. To speed up the computing, we implement Fast Fourier Transformation algorithm($\fft$). %fft reference
+Although $\PMD$ is of great importance, its pmf is obscure and no straightforward form has been found so far. However, its characteristic function(cf) can be wrote down in an accessible form. The cf is just a Fourier transformation of pmf, thus we can obtain pmf via Fourier transformed cf. Notice the pmf is discrete, so the discrete Fourier transformation will be used. In this section we provide an exact method to compute the pmf of the PMD using multidimensional discrete Fourier transformation. To speed up the computing, we implement Fast Fourier Transformation algorithm(\citeNP{1386650}).
 
 Suppose a random variable $\Xvec =  (X_1, \dots, X_{m})' \sim \PMD(\Pmat)$, where $\Pmat = (p_{ij}), i=1,\dots,n,j=1,\dots,m$. Consider $\Xvec^{\ast} = (X_1, \dots, X_{m-1})'$ will be equivalent since the last element of $\Xvec$ is redundant. The cf of $\Xvec^{\ast}$ is
 
@@ -339,20 +374,19 @@ Since covariance matrix of any $\Xvec \sim \PMD$ is singular, we use the reduced
 \begin{thm}
 For a Poisson-Multinomial random variable $\Xmat = (X_1,\dots,X_{m})'$ that has a reduced mean vector $\mvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$ and non-singular reduced covariance matrix $\Sig^{\ast}$. For each possible outcome $\boldsymbol{\boldsymbol{x}}_r$, and its neighbourhood interval $\mathcal{N}_{\boldsymbol{\boldsymbol{x}}_r} = [\boldsymbol{\boldsymbol{x}}_r-0.5,\boldsymbol{\boldsymbol{x}}_r+0.5]$. There exists a non-singular matrix $\boldsymbol{C}$ such that $\Sig^{\ast} = CC'$ and the error bound of Central Limit Theory approximation is
 \begin{equation*}
-    |P(\Xmat \in \mathcal{N}_{\boldsymbol{x}_r}) - P(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_r-\mvec^{\ast}})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
+    |\Pr(\Xmat \in \mathcal{N}_{\boldsymbol{x}_r}) - \Pr(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_r-\mvec^{\ast}})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|C^{-1}\boldsymbol{I}_{i}|^3
 \end{equation*}
 where $\boldsymbol{Z}$ is normal with mean 0 and covariance matrix $\Sig^{\ast}$.
 \end{thm}
 By central limit theorem (CLT),
 $$\left(\frac{\Xvec^{\ast}}{n}-\pvec\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\Sig^{\ast}\right).$$\\
 where $\pvec = \frac{1}{n}\sum_{i=1}^{n}\pvec_i$.
-To show $\mathbf{Theorem1}$, notice
+To show Theorem 1, notice
 \begin{align*}
     \Xvec^{\ast} = (X_1,\dots,X_{m-1})' = \sum_{i=1}^{n} \boldsymbol{\rm{I}_{i}^{\ast}}= \sum_{i=1}^{n} (I_{i1},\dots,I_{i,m-1})'
 \end{align*}
 Intuitionally, $\boldsymbol{\rm{I}}_i^{\ast} - \EE(\boldsymbol{\rm{I}}_i^{\ast})$ has mean 0. Hereby $\Xvec^{\ast} - \EE \Xvec^{\ast} = \sum_{i=1}^{n} (\boldsymbol{\rm{I}_i^{\ast}} - \EE \boldsymbol{\rm I_{i}^{\ast}})$ also has mean 0. The covariance of $\Xvec^{\ast}$ is $\Sig^{\ast} = CC'$.\\
-By extended Berry-Esseen theory (V. Yu. Bentkus, A Lyapunov-type bound in Rd
-), there existing  a constant $c$ such that
+By extended Berry-Esseen theory \cite{raivc2019multivariate}, there existing  a constant $c$ such that
 \begin{equation*}
     |\Pr\left(\Xmat \in \mathcal{N}_{\boldsymbol{x}_i}\right) - \Pr\left(\boldsymbol{Z} \in \mathcal{N}_{\boldsymbol{x}_i-\boldsymbol{\mu}_0} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|C^{-1}\boldsymbol{I}_i\right|^3
 \end{equation*}
@@ -413,7 +447,7 @@ We also use total absolute error ($\TAE$)  where
 \begin{equation*}
     \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|
 \end{equation*}
-We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702(128 cores, 2GHz) and 256GB RAM. We first test the accuracy of our exact method $\dft$ with the true pmf small dimensional $\PMD$ calculated by enumeration. Due to the limitation of enumeration method, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution. %ref Hong 2013.
+We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702(128 cores, 2GHz) and 256GB RAM. We first test the accuracy of our exact method $\dft$ with the true pmf small dimensional $\PMD$ calculated by enumeration. Due to the limitation of enumeration method, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution\cite{Hong2013}.
 After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf to study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate thousands of $\Pmat$s randomly for a given $(n,m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
 
 
@@ -479,7 +513,7 @@ Specifically, for $\NA$ we introduce a baseline called $\textbf{Original}$ to ex
 \subsection{Time Efficiency of DFT-CF method}
 As a method to compute the whole pmf, we need to consider $\dft$'s time efficiency especially when the dimension is large. The method actually calculates $(n+1)^{m-1}$ probability mass points that includes the possible outcomes of $\PMD$ which is $\binom{n+m-1}{m-1}$. Because it takes every $x_j,j=1,\dots,m-1$ from 0 to $n$. The number $(n+1)^{m-1}$ increases drastically as $m$ gets larger. When $m$ is small, the result is showed by Figure 5. When $m$ is moderate ($8 \leq m \leq 20$) or larger, using $\dft$ can be problematic since $(n+1)^{m-1}$ can be enormous such that the device either takes too long to compute nor unable to compute due to exhausted usage of RAM.
 
-We use the same device as for accuracy study to test the time efficiency of $\dft$. Figure 5 plots the average computing time of 1000 randomly generated $\Pmat$s using $\dft$. The scale of time is second(s) and the computing is done on the same device as for the accuracy study. The following plot (Figure 5) shows that the when $m$ is small (less or equal to 4), it is good to use $\dft$ to calculate the entire pmf. As we can see through the plot the computing time for $n=60, m=4$ is 16 seconds which is affordable. Even when $m=5$ and $n=40$ the time is around 100 seconds which is still acceptable. However, when $m=6$ or higher, increasing $n$ can make the computing time huge.
+We use the same device as for accuracy study to test the time efficiency of $\dft$. Figure 5 plots the average computing time of 1000 randomly generated $\Pmat$s using $\dft$. The scale of time is second(s). The following plot (Figure 5) shows that the when $m$ is small (less or equal to 4), it is good to use $\dft$ to calculate the entire pmf. As we can see through the plot the computing time for $n=60, m=4$ is 16 seconds which is affordable. Even when $m=5$ and $n=40$ the time is around 100 seconds which is still acceptable. However, when $m=6$ or higher, increasing $n$ can make the computing time huge.
 \begin{figure}%[h]
 	\centering
 	\includegraphics[width=0.95\textwidth]{figures/effi.pdf}
@@ -498,9 +532,9 @@ According to the results of accuracy and efficiency study. We hereby give out ou
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Calculation of Voting Probability}
 
-  In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson Multinomial distribution can fit the situation perfectly under some assumptions.\\
+  In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson Multinomial distribution can fit the situation perfectly under some assumptions.
 
-Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ possible outcomes denoted as $\boldsymbol{x}_r, r = 1, \dots, N$, respectively. Each $\xvec_r$ is a 3 dimension vector that has three elements denoting the number of votes each candidate gets. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.\\
+Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ possible outcomes denoted as $\boldsymbol{x}_r, r = 1, \dots, N$, respectively. Each $\xvec_r$ is a 3 dimension vector that has three elements denoting the number of votes each candidate gets. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.
 
 To demonstrate that, suppose we have ten electoral voters and three candidates with $\Pmat$ matrix that has means of column one, two and three to be $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
 \begin{equation*}
@@ -535,8 +569,9 @@ Where $p(\boldsymbol{x}^{(i)})$ can be computed via Poisson Multinomial distribu
     p_{i,m}^{(i)} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}}
 \end{align*}
 
-Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}^{(i)}$. \\
-In the rest of this part, we apply the model to the dataset ``ai4i". The dataset ``ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products(rows) and 14 features(columns) including Product type, Air temperature, Process temperature, Rotational speed and others.
+Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}^{(i)}$. 
+
+In the rest of this part, we apply the model to the dataset ``ai4i" \cite{Dua:2019}. The dataset ``ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products(rows) and 14 features(columns) including Product type, Air temperature, Process temperature, Rotational speed and others.
 
 For demonstration purpose, here we only use the first 1000 rows and Product type as response variable, Air temperature and Process temperature as covariates. The feature Product type is categorical and has three levels, ``M", ``L", ``H", we denote them as category 1, 2, 3 for simplicity. The number of products that fall in category 1, 2, and 3 are 285, 601, and 114. The other two features are continuous.
 
@@ -584,7 +619,7 @@ For group 1 and 5, $\boldsymbol{x}^{(1)} = (1,5,2)'$ and $\boldsymbol{x}^{(5)} =
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Uncertainty Quantification in Classification}
-In machine learning classification problem with multiple labels, for each unit in the test set, the probability of the unit belongs to each class is computed. Usually, the predicted class is assigned as the highest probability. In the classifiers (i.e., soft classification), the unit class is randomly assigned according to the predicted probabilities, leading to randomness in the confusion matrix. The PMD can be used to characterize the distribution of the counts in the confusion matrix.
+In machine learning classification problem with multiple labels, for each unit in the test set, the probability of the unit belongs to each class is computed. Usually, the predicted class is assigned as the highest probability. Using the soft classifiers, the unit class is randomly assigned according to the predicted probabilities, leading to randomness in the confusion matrix. The PMD can be used to characterize the distribution of the counts in the confusion matrix.
 
 
 %
@@ -592,7 +627,7 @@ In machine learning classification problem with multiple labels, for each unit i
 
 In this section, we consider an Electroluminescence (EL) image classification example to illustrate the usage of PMD in machine learning classification problems. In the photovoltaic (PV) reliability study, the EL image is an important data type that reveal information about the PV health status. Because disconnected parts do not irradiate, the darker areas in EL images indicate defective cells. The EL imaging provide visual inspection of solar panels and is a non-destructive technology for failure analysis of PV modules \shortcite{Deitsch2019}.
 
-The work of \shortciteN{Deitsch2019},\shortciteN{Buerhop2018}, and \shortciteN{Deitsch2021} provide a public dataset of solar cells extracted from high resolution EI images of PV modules (\url{https://github.com/zae-bayern/elpv-dataset}). In total there are 2624 images. All images are preprocessed with respect to size and are eliminated distortion induced by the camera lens used to capture the EL images. Each image is manually labeled  with its degree of defectiveness. The degree of defectiveness is determined by two questions. The first is how do evaluators think the status of the solar cells, functional or defective; the second is how they are confident about their assessments. In total there are four labels as shown in Table \ref{tbl:el.label} and we marked them as Class A-D.
+The work of \shortciteN{Deitsch2019}, \shortciteN{Buerhop2018}, and \shortciteN{Deitsch2021} provide a public dataset of solar cells extracted from high resolution EI images of PV modules (\url{https://github.com/zae-bayern/elpv-dataset}). In total there are 2624 images. All images are preprocessed with respect to size and are eliminated distortion induced by the camera lens used to capture the EL images. Each image is manually labeled  with its degree of defectiveness. The degree of defectiveness is determined by two questions. The first is how do evaluators think the status of the solar cells, functional or defective; the second is how they are confident about their assessments. In total there are four labels as shown in Table \ref{tbl:el.label} and we marked them as Class A-D.
 
 \begin{table}%[h!]
 	\centering
@@ -653,36 +688,59 @@ Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. For
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Illustrations of the R Package}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Our R package $\textrm{PoissonMultinomial}$ specifically computes probability density function for $\PMD$ with corresponding $\Pmat$ using the methods described by this paper. The fast Fourier transformation algorithm are implemented in C.
+We develop an R package $\textrm{PoissonMultinomial}$ specifically computes probability density function for $\PMD$ with corresponding $\Pmat$ using the methods described by this paper. The fast Fourier transformation algorithm are implemented in C.
 \subsection{Examples}
-There are three major functions in the package. $\code{dpmd}$ is a function to compute pmf, $\code{ppmd}$ is for cdf and one can use $\code{rpmd}$ to generate $\PMD$ random samples. User has to specify $\Pmat$ so that a $\PMD$ can be determined. With unspecified $\xvec$, $\code{dpmd}(\Pmat)$ will automatically calculate the whole pmf and the output will be a multi-dimensional array. If user inputs $\xvec$, the output of $\code{dpmd}(\Pmat,\xvec)$ will be partial pmf chosen by $\xvec$. User can also select all methods we list in this paper to compute the pmf or cdf. Notice only $\dft$ can automatically compute the whole pmf and it is the most efficient way for this job as well. The function $\code{ppmd}$ uses same method as $\code{dpmd}$ to compute the probability $\Pr(\Xvec < \xvec)$.  Examples of using $\code{dpmd}$ is following,
+There are three major functions in the package. $\code{dpmd}$ is a function to compute pmf, $\code{ppmd}$ is for cdf and one can use $\code{rpmd}$ to generate $\PMD$ random samples. User has to specify $\Pmat$ so that a $\PMD$ can be determined. With unspecified $\xvec$, $\code{dpmd}( )$ will automatically calculate the whole pmf and the output will be a multi-dimensional array. If user inputs $\xvec$, the output of $\code{dpmd}( )$ will be partial pmf chosen by $\xvec$. User can also select all methods we list in this paper to compute the pmf or cdf. Notice only $\dft$ can automatically compute the whole pmf and it is the most efficient way for this job as well. The function $\code{ppmd}$ uses same method as $\code{dpmd}$ to compute the probability $\Pr(\Xvec < \xvec)$ and the function $\code{rpmd}$ generates random samples from $\PMD$.  Examples of using $\code{dpmd}$ is following,
 
-\begin{lstlisting}
-P <- matrix(c(0.1,0.1,0.8,0.1,0.3,0.6,0.5,0.2,0.3), nrow=3, byrow=T)
-x <- c(0,1,2)
-dpmd(P)      
-dpmd(P, x)   
-\end{lstlisting}
-The output of $\code{dpmd}$ is a matrix as following, and we can see the output of $\code{dpmd}(P, x)$ is 0.186 which is the $[1,2]$ element of the output. 
+Firstly, $\code{pp}$ is an input matrix that specifies a $\PMD$. It looks as
 $$
 \begin{pmatrix}
-0.144 & 0.186 & 0.069 & 0.006 \\
-0.282 &0.190 &0.023  &0.000\\
-0.073 &0.022 &0.000 &0.000\\
-0.005 &0.000 &0.000 &0.000\\
+0.1 & 0.1 & 0.1& 0.7\\
+0.1 &0.3 & 0.3 & 0.3\\
+0.5  &0.2 & 0.1 & 0.2
 \end{pmatrix}
 $$
+and $\xvec=(0,0,1,2)'$. Then the codes of using $\code{dpmd}$ to calculate pmf, is given as following
+\begin{lstlisting}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Benchmark of R Packages for Poisson Binomial Distribution}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-We compare the time efficiency of our package and an existing package that computes pmf of Poisson binomial distribution, which is a special case of Poisson multinomial distribution. The result Figure 7 shows when $m=2$ which is the special case of Poisson multinomial, $\code{poibin}$ is much faster than our package $\code{PoissonMultinomial}$. This is due to the fact that 2 dimensional fast Fourier transformation is faster than multi dimensional Fourier transformation in general.
+dpmd(pmat = pp)
+
+dpmd(pmat = pp, xmat = x)
+
+dpmd(pmat = pp, xmat = x, method = "NA" )
+
+dpmd(pmat = pp, method = "SIM", B = 1e3)
+
+dpmd(pmat = pp, xmat = x, method = "SIM", B = 1e3)
+\end{lstlisting}
+The first line computes the whole pmf, the second one computes partial pmf of given $\xvec$, the rest of the codes just do the similar job using $\NA$ and $\SIM$.
+We shall demonstrate the one to one map between the output and the pmf of an $n \times m$ $\PMD$. First we have a location indicator vector $v = (v_1, \dots, v_{m-1})'$ and an $\xvec=(x_1,\dots,x_m)'$, let $v_j-1 = x_j, j =1,\dots,m-1$ then the array element with location $v$ has the value of $\Pr(X=\xvec)$. We further illustrate this map via the $\Pmat$ given above.
+
+The $\Pmat$ is $3 \times 4$ so the output of $\code{dpmd}$ is a $4 \times 4 \times 4$ dimensional array listed in figure (a), (b), (c), (d). Since the input $\code{pp}$ is dimension $3 \times 4$, the output is an $4 \times 4 \times 4$ array. First consider the element of row 3 column 2in (a). Then the first two elements of $v$ is 3 and 2. the third element depends on the comma number on the top of each figure. On the top of (a) there are two commas followed by 1, thus the third element of $v$ is 1. Now we have constructed $v = (3,2,1)$, then we minus 1 on each element we get $(2,1,0)=\xvec'$ which is the corresponding probability mass point. So far we can get the element that has location indicated by $v=(3,2,1)$ is 0.022 and we have $\Pr(X=(2,1,0)')=0.022$. In the other direction, if we want to know the probability of $X=\xvec=(0,3,0)'$ we need to construct its corresponding $v$, which can be computed by plus 1 to each element in $\xvec$ so that we get $v=(1,4,1)$. The $v$ we just constructed indicates a location of (1,4,1) of our array. That location is the first row, 4th column in the $\text{, , 1}$ figure which has value 0.006. 
 \begin{figure}
-	\centering
-	\includegraphics[width=0.95\textwidth]{figures/bench.pdf}
-	\caption{Benchmark comparison of PoissonMultinomial and poibin}
-	\label{fig:benchmark}
+  \begin{subfigure}{8cm}
+    \centering
+    \includegraphics[width=7cm]{figures/1.png}
+    \caption{ }
+  \end{subfigure}
+  \begin{subfigure}{9cm}
+    \centering
+    \includegraphics[width=7cm]{figures/2.png}
+    \caption{ }
+  \end{subfigure}
+  \begin{subfigure}{8cm}
+    \centering
+    \includegraphics[width=7cm]{figures/3.png}
+    \caption{ }
+  \end{subfigure}
+  \begin{subfigure}{9cm}
+    \centering
+    \includegraphics[width=7cm]{figures/4.png}
+    \caption{ }
+  \end{subfigure}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -692,7 +750,7 @@ We compare the time efficiency of our package and an existing package that compu
 \section{Conclusions and Areas for Future Research}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We develop algorithms that can be useful for computing the pmf of the PMD distribution, which is challenging to compute but useful in many application scenarios. We design three methods that are implemented in our algorithms. Among the methods, $\dft$ is an exact method, $\SIM$ is a simulation method and $\NA$ is a method using approximation theories. The accuracy and efficiency of the methods are guaranteed under given circumstances. We also recommend users to use $\dft$ when $m$ is small, use $\SIM$ when $m$ is moderate and $n$ is small, use $\NA$ when $n$ is large. However, there are still some fields remain to be explored. The computing speed of $\dft$ can be improved using more efficient Fourier transformation algorithms or we could find a way to calculate only the $\binom{n+m-1}{m-1}$ possible outcomes rather than $(n+1)^{m-1}$ probability mass points which contains a large amount of points have values equal to 0. $\SIM$ method is still time consuming although it can compute some cases that $\dft$ are unable to, once we develop more efficient exact algorithms, $\SIM$ could be replaced. Untill now, we are still unable to compute the pmf of $\PMD$ when $m$ is large, this area remains to be disclosed.
+We develop three methods that can be useful for computing the pmf of the PMD, which is challenging to compute but useful in many application scenarios. We include the three methods we designed in an R package. Among the methods, $\dft$ is an exact method, $\SIM$ is a simulation method and $\NA$ is a method using approximation theories. The accuracy and efficiency of the methods are guaranteed under given circumstances. We recommend users to use $\dft$ when $m$ is small, use $\SIM$ when $m$ is moderate and $n$ is small, use $\NA$ when $n$ is large. However, there are still some fields remain to be explored. The computing speed of $\dft$ can be improved using more efficient Fourier transformation algorithms or we could find a way to calculate only the $\binom{n+m-1}{m-1}$ possible outcomes rather than $(n+1)^{m-1}$ probability mass points which contains a large amount of points have values equal to 0. $\SIM$ method is still time consuming although it can compute some cases that $\dft$ are unable to, once we develop more efficient exact algorithms, $\SIM$ could be replaced. Untill now, we are still unable to compute the pmf of $\PMD$ when $m$ is large due to the computational limit of machines, this area remains to be disclosed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -703,7 +761,7 @@ We develop algorithms that can be useful for computing the pmf of the PMD distri
 
 
 \bibliographystyle{chicago}
-\bibliography{refs}	
+\bibliography{refs.BIB}	
 
 \end{document}
 
