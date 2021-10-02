@@ -170,12 +170,12 @@ The Poisson Multinomial Distribution (PMD) is the sum of independent multinomial
 \section{Introduction}
 \subsection{Background and Motivation}
 
-Imagine there are $n$ different independent balls, one needs to throw them into $m$ different bins. Each ball has its own probabilities of falling into different bins. Then the probability distribution of how many balls are in each bin after throwing will be our concern and we call it Poisson Multinomial Distribution (\PMD). $\PMD$ is also known as generalized multinomial distribution and when $m=2$ it is called Poisson binomial distribution, which is a generalized distribution of binomial distribution. 
+Imagine there are $n$ different independent balls, one needs to throw them into $m$ different bins. Each ball has its own probabilities of falling into different bins. Then the probability distribution of how many balls are in each bin after throwing will be our concern and we call it Poisson Multinomial Distribution (\PMD). $\PMD$ is also known as generalized multinomial distribution and when $m=2$ it is called Poisson binomial distribution, which is a generalized distribution of binomial distribution.
 
-As the continuous development of social informationlization, $\PMD$ becomes increasingly important to many fields including computer science, probability, statistics and political science. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}), etc. One of the intriguing areas that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $\rm n$  independent members needs to elect a chairman between $\rm m$ candidates. Each member has different voting behavior. Mostly, people pay attention to the result of an election while statisticians focus on the probability for each electoral outcome to happen. An $\PMD$ is a perfect model for this example by seeing members as independent random variables following different multinomial distributions. The probability vector of the multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of the greatest concern. Additionally, in soft classification context, people introduce randomness in decision making process. The process can be characterized by $\PMD$. Suppose 
+As the continuous development of social information, $\PMD$ becomes increasingly important to many fields including computer science, probability, statistics and political science. It has applications in game theory (\citeNP{Cheng2017PlayingAG}), digital imaging (\citeNP{akter2019double}), machine learning (\citeNP{kamath2014learning}), etc. One of the intriguing areas that involves $\PMD$ is political science. It would be good to illustrate $\PMD$ a little bit further via a very simple example in election scenario. Suppose a committee with $n$  independent members needs to elect a chairman between $m$ candidates. Each member has different voting behavior. Mostly, people pay attention to the result of an election while statisticians focus on the probability for each electoral outcome to happen. An $\PMD$ is a perfect model for this example by seeing members as independent random variables following different multinomial distributions. The probability vector of the multinomial distribution regards to the probabilities for a member voting for each candidates. By this way, we will be allowed to compute the probability of each electoral result which is referred as probability mass function of $\PMD$. Without a doubt, computing the probabilities of electoral results will be of the greatest concern. Additionally, in soft classification context, people introduce randomness in decision making process. The process can be characterized by $\PMD$. Suppose
 a machine learning model computes probabilities of an observation falling into different categories, this is actually equivalent to making one draw from a multinomial distribution. Thus $\PMD$ is a perfect tool to characterize the situation of  classifying multiple observations since it is as same as making multiple draws from different independent multinomial distributions. In ecological inference, consider making statistical inference to aggregated data. An aggregated dataset is to separate data points into groups and consider the groups as new data points. Let's assume the data response variable is categorical. In the grouped dataset, we could count the number of each category in each group and take it as our new response variable and this variable will follow $\PMD$ accordingly. All the areas above that involve $\PMD$ also require computation of its probability mass function. Without the pmf, we are unable to draw any conclusion over the listed examples.
 
-Enumeration could be a fine method since that if $\rm n \times m$ is small we can list all outcomes by hand. However, when $n$ and $m$ increase, the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Not only in the fields mentioned above, computing pmf is frequently required in many scenarios that $\PMD$s are involved. There is no existing algorithm for computing pmf for PMD. Hereby we are motivated to build one that can calculate pmf of $\PMD$s efficiently.
+Enumeration could be a fine method since that if $n \times m$ is small we can list all outcomes by hand. However, when $n$ and $m$ increase, the computing will be a dilemma that is impossible to overcome by enumeration. Thus arises the need of methods that are computationally cheap and precise at the meantime. Not only in the fields mentioned above, computing pmf is frequently required in many scenarios that $\PMD$s are involved. There is no existing algorithm for computing pmf for PMD. Hereby we are motivated to build one that can calculate pmf of $\PMD$s efficiently.
 
 
 
@@ -191,7 +191,7 @@ In this paper, the contributions are following,
 \begin{itemize}
 	\item The main contribution of this paper is constructing an exact method to compute pmf of $\PMD$ and we call this method $\dft$. Besides, we also construct two approximation methods to compute pmf of $\PMD$, the one is a simulation scheme and the other one is approximation based on CLT. Along the journey of constructing methods, several properties and theorems are built.
 	\begin{itemize}
-		\item $\dft$. This method uses fast Fourier transformation to obtain pmf of $\PMD$ analytically. 
+		\item $\dft$. This method uses fast Fourier transformation to obtain pmf of $\PMD$ analytically.
 		\item $\NA$. This method applies CLT to approximate pmf of $\PMD$. We prove an analytic error bound for this method based on its CLT converge rate.
 		\item $\SIM$. This is the other approximation method. $\SIM$ uses multiple multinomial distributions to simulate $\PMD$ and obtains pmf via simulation results. An expected absolute error bound of this method is provided and proved.
 	\end{itemize}
@@ -227,11 +227,11 @@ The rest of the paper is organized as follows. In the second section, we describ
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
 
-Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be a random indicator vector that follows multinomial distribution with associated probabilities $\pvec_{i} = (p_{i1}, \dots, p_{im})'$ and for a fixed $i$, $\sum_{j=1}^{m} I_{ij}=1$. Then the sum $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$ follows a Poisson Multinomial Distribution with corresponding probability matrix $\Pmat_{\rm n \times m} = (\pvec_{1}, \dots, \pvec_{n})'$, denoted it as
-$$\Xvec \sim \PMD(\Pmat_{\rm n\times m}).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. The matrix $\Pmat$ is called Success Probability Matrix (SPM).
+Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be a random indicator vector that follows multinomial distribution with associated probabilities $\pvec_{i} = (p_{i1}, \dots, p_{im})'$ and for a fixed $i$, $\sum_{j=1}^{m} I_{ij}=1$. Then the sum $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$ follows a Poisson Multinomial Distribution with corresponding probability matrix $\Pmat_{n \times m} = (\pvec_{1}, \dots, \pvec_{n})'$, denoted it as
+$$\Xvec \sim \PMD(\Pmat_{n\times m}).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. The matrix $\Pmat$ is called Success Probability Matrix (SPM).
 
 \begin{equation*}
-\Pmat_{\rm n \times m} = \begin{pmatrix}
+\Pmat_{n \times m} = \begin{pmatrix}
 p_{11} &  \dots & p_{1m} \\
 \vdots & \ddots & \vdots \\
 p_{n1} &  \dots & p_{nm} \\
@@ -266,7 +266,7 @@ P\{\Xmat = (1,3,0)\}  =  & 0.1\times 0.2 \times 0.5 \times 0.1 +
 \qedw
 \end{example}
 
-When dimension of $\Pmat$ is small, enumeration is an exact way to calculate the probability mass function. However, as $\rm n \times m$ gets larger enumeration becomes impossible since we will have to compute $\binom{n+m-1}{m-1}$ possible outcomes which is calculated by the number of non-negtive integer solution for equation $x_1 + \dots + x_m = n$.
+When dimension of $\Pmat$ is small, enumeration is an exact way to calculate the probability mass function. However, as $n \times m$ gets larger enumeration becomes impossible since we will have to compute $\binom{n+m-1}{m-1}$ possible outcomes which is calculated by the number of non-negative integer solution for equation $x_1 + \dots + x_m = n$.
 
 
 Note that when the SPM is identical across all rows, that is, $\rm I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the $\PMD$ is a generalization of the multinomial distribution. When $m=1$, the $\PMD$ is reduced to the Poisson binomial distribution as in \citeN{hong2013computing}.
@@ -277,7 +277,7 @@ Now let's take a look of some basic properties of Poisson Multinomial Distributi
 
 \subsection{Properties of the Distribution}
 \begin{ppt}\normalfont
-Given random variable $\Xmat$ that follows a Poisson Multinomial distribution with $\Pmat_{\rm n\times m}$, the mean of $\Xmat$ is
+Given random variable $\Xmat$ that follows a Poisson Multinomial distribution with $\Pmat_{n\times m}$, the mean of $\Xmat$ is
    $$\\E(\Xmat) = \boldsymbol{\mu} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$$ where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$.\\
 The variance-covariance matrix of $\Xmat$ is an $m \times m$ matrix $\Sig$ that has entries $\Sigma_{ij},i=1,\dots,m,j=1,\dots,m$ defined as
 \begin{equation*}
@@ -309,7 +309,7 @@ If the SPM $\Pmat$ can be written as a combination of diagonal matrices $\Pmat_1
 \qedw
 \end{ppt}
 
-To show this, we assume $\Pmat$ is $\rm n \times m$ and $\Pmat_{\rm k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. Suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates described by probability matrix $\Pmat_{\rm k}$. Strict proof can be done by decomposition of characteristic function of $\Pmat$ into characteristic functions of $\Pmat_{\rm k}$'s.
+To show this, we assume $\Pmat$ is $n \times m$ and $\Pmat_{\rm k}$ is $n_k \times m_k$. $\sum_{k=1}^K n_k = n$ and $\sum_{k=1}^K m_k = m$. Suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,K$, voters voting for corresponding candidates described by probability matrix $\Pmat_{\rm k}$. Strict proof can be done by decomposition of characteristic function of $\Pmat$ into characteristic functions of $\Pmat_{\rm k}$'s.
 
 
 
@@ -363,7 +363,7 @@ p(x_1, \ldots, x_{m-1}) = \frac{1}{(n+1)^{m-1}}\sum_{l_1 = 0}^{n}\cdots \sum_{l_
 Let $\ell = (l_1,\dots,l_{m-1})$, then we will have $(n
 +1)^{m-1}$ different $\ell$ as $l_i$ values from $0$ to $n$. For example, if we have $n=4$, $m=4$, then $\ell$ can be $(0, 0, 0), (0, 0, 1), \dots, (4, 4, 4)$, 125 different vectors in total. Now we have $q(l_1,\dots,l_{m-1}) = q(\ell)$. We design to use these vectors to generate respective $p(x_1,\dots,x_{m-1})$. For each $\ell$, we get a $p(x_1,\dots,x_{m-1})$.
 
-To speed up the computing, we apply the Fast Fourier transformation (FFT) algorithm  from GSL Scientific Library. The FFT algorithm is C language based, we implement it with R and make a new algorithm named $\dft$ algorithm. Our $\dft$ algorithm can calculate all values of distribution function as long as we input our $P_{\rm n \times m}$ matrix.
+To speed up the computing, we apply the Fast Fourier transformation (FFT) algorithm  from GSL Scientific Library. The FFT algorithm is C language based, we implement it with R and make a new algorithm named $\dft$ algorithm. Our $\dft$ algorithm can calculate all values of distribution function as long as we input our $P_{n \times m}$ matrix.
 
 
 
@@ -411,7 +411,7 @@ We design a C++ based algorithm to perform this simulation process. Our algorith
 
 The following theorem studies the expected error bound of the simulation method by given $\Pmat$ and $\rm B$.
 \begin{thm}
-Given repeating time \mbox{B} and $\rm n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_r, r=1,\dots,N$. Let the probability for a specific result $\boldsymbol{x}_{r}$ be $p_{\boldsymbol{x}_{r}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{r}}$ using simulation method is $\wh{p}_{\boldsymbol{x}_r}$. We have the following expected error given by Central Limit Theory,
+Given repeating time \mbox{B} and $n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\boldsymbol{x}_r, r=1,\dots,N$. Let the probability for a specific result $\boldsymbol{x}_{r}$ be $p_{\boldsymbol{x}_{r}}$, $i=1,\dots,N$. The estimate of  $p_{\boldsymbol{x}_{r}}$ using simulation method is $\wh{p}_{\boldsymbol{x}_r}$. We have the following expected error given by Central Limit Theory,
 \begin{equation*}
     \EE|p_{\boldsymbol{x}_r} - \wh{p}_{\boldsymbol{x}_r}| =  \sqrt{\frac{2 p_{\boldsymbol{x}_r}(1-p_{\boldsymbol{x}_r})}{\pi B}}
 \end{equation*}
@@ -438,7 +438,7 @@ The equality will be achieved if $p_{\boldsymbol{x}_1} = \dots = p_{\boldsymbol{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we compare the three methods in terms of numerical accuracy and the time efficiency, we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is maximum absolute error(MAE). Suppose we have an PMD matrix with $\rm n\times m$ dimension. Denote the number of possible outcome as $N$ and the set of them as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
+In this section, we compare the three methods in terms of numerical accuracy and the time efficiency, we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is maximum absolute error (MAE). Suppose we have an PMD matrix with $n\times m$ dimension. Denote the number of possible outcome as $N$ and the set of them as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
 \begin{center}
 $\mathrm{\MAE} = \underset{\chi}{\max}|p(\xvec) - p_{\text{true}}(\xvec)|$
 \end{center}
@@ -448,7 +448,7 @@ We also use total absolute error ($\TAE$)  where
     \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|
 \end{equation*}
 We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702(128 cores, 2GHz) and 256GB RAM. We first test the accuracy of our exact method $\dft$ with the true pmf small dimensional $\PMD$ calculated by enumeration. Due to the limitation of enumeration method, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution\cite{Hong2013}.
-After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf to study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate thousands of $\Pmat$s randomly for a given $(n,m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
+After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf to study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate thousands of $\Pmat$s randomly for a given $(n, m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
 
 
 
@@ -569,7 +569,7 @@ Where $p(\boldsymbol{x}^{(i)})$ can be computed via Poisson Multinomial distribu
     p_{i,m}^{(i)} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \boldsymbol{h}_{j}^{(i)} \boldsymbol{\beta}_{k} \right)}}
 \end{align*}
 
-Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}^{(i)}$. 
+Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}^{(i)}$.
 
 In the rest of this part, we apply the model to the dataset ``ai4i" \cite{Dua:2019}. The dataset ``ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products(rows) and 14 features(columns) including Product type, Air temperature, Process temperature, Rotational speed and others.
 
@@ -716,7 +716,7 @@ dpmd(pmat = pp, xmat = x, method = "SIM", B = 1e3)
 The first line computes the whole pmf, the second one computes partial pmf of given $\xvec$, the rest of the codes just do the similar job using $\NA$ and $\SIM$.
 We shall demonstrate the one to one map between the output and the pmf of an $n \times m$ $\PMD$. First we have a location indicator vector $v = (v_1, \dots, v_{m-1})'$ and an $\xvec=(x_1,\dots,x_m)'$, let $v_j-1 = x_j, j =1,\dots,m-1$ then the array element with location $v$ has the value of $\Pr(X=\xvec)$. We further illustrate this map via the $\Pmat$ given above.
 
-The $\Pmat$ is $3 \times 4$ so the output of $\code{dpmd}$ is a $4 \times 4 \times 4$ dimensional array listed in figure (a), (b), (c), (d). Since the input $\code{pp}$ is dimension $3 \times 4$, the output is an $4 \times 4 \times 4$ array. First consider the element of row 3 column 2in (a). Then the first two elements of $v$ is 3 and 2. the third element depends on the comma number on the top of each figure. On the top of (a) there are two commas followed by 1, thus the third element of $v$ is 1. Now we have constructed $v = (3,2,1)$, then we minus 1 on each element we get $(2,1,0)=\xvec'$ which is the corresponding probability mass point. So far we can get the element that has location indicated by $v=(3,2,1)$ is 0.022 and we have $\Pr(X=(2,1,0)')=0.022$. In the other direction, if we want to know the probability of $X=\xvec=(0,3,0)'$ we need to construct its corresponding $v$, which can be computed by plus 1 to each element in $\xvec$ so that we get $v=(1,4,1)$. The $v$ we just constructed indicates a location of (1,4,1) of our array. That location is the first row, 4th column in the $\text{, , 1}$ figure which has value 0.006. 
+The $\Pmat$ is $3 \times 4$ so the output of $\code{dpmd}$ is a $4 \times 4 \times 4$ dimensional array listed in figure (a), (b), (c), (d). Since the input $\code{pp}$ is dimension $3 \times 4$, the output is an $4 \times 4 \times 4$ array. First consider the element of row 3 column 2in (a). Then the first two elements of $v$ is 3 and 2. the third element depends on the comma number on the top of each figure. On the top of (a) there are two commas followed by 1, thus the third element of $v$ is 1. Now we have constructed $v = (3,2,1)$, then we minus 1 on each element we get $(2,1,0)=\xvec'$ which is the corresponding probability mass point. So far we can get the element that has location indicated by $v=(3,2,1)$ is 0.022 and we have $\Pr(X=(2,1,0)')=0.022$. In the other direction, if we want to know the probability of $X=\xvec=(0,3,0)'$ we need to construct its corresponding $v$, which can be computed by plus 1 to each element in $\xvec$ so that we get $v=(1,4,1)$. The $v$ we just constructed indicates a location of (1,4,1) of our array. That location is the first row, 4th column in the $\text{, , 1}$ figure which has value 0.006.
 \begin{figure}
   \begin{subfigure}{8cm}
     \centering
