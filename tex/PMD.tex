@@ -477,7 +477,7 @@ The equality will be achieved if $p_{\xvec_1} = \dots = p_{\xvec_N}$. For a fixe
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we compare the three methods in terms of numerical accuracy, and study the time efficiency of the method $\dft$. we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is maximum absolute error (MAE). Suppose we have an PMD matrix with $n\times m$ dimension. Denote the number of possible outcome as $N$ and the set of them as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
+In this section, we compare the three methods in terms of numerical accuracy, and study the time efficiency of the method $\dft$. we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is the maximum absolute error (MAE). Suppose we have a PMD with $n\times m$ SPM. Denote the number of possible outcomes as $N$. Also denote the set of all possible distinct outcomes as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
 \begin{center}
 $\mathrm{\MAE} = \underset{\xvec \in \chi}{\max}|p(\xvec) - p_{\text{true}}(\xvec)|$.
 \end{center}
@@ -488,22 +488,20 @@ We also use total absolute error ($\TAE$)  where
 \end{equation*}
 We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702 (128 cores, 2GHz) with 256GB RAM. 
 
-Since we are unable to compute true pmf of $\PMD$ unless $n$ and $m$ is small. We perform the accuracy tests as following. 
+Since there are no justified methods that can compute the true pmf of $\PMD$, we perform the accuracy tests as following. 
 
-First, we justify the accuracy of $\dft$ under special circumstances, the criterions we use here are $\MAE$ and $\TAE$. Then we use the pmf computed by $\dft$ as true pmf so that we can conduct accuracy tests for the other two methods.
+First, we justify the accuracy of $\dft$ using binomial distribution, Poisson binomial distribution and small dimensional PMD. The criterions we use here are $\MAE$ and $\TAE$. 
 
-First, let $n$ and $m$ be small enough so that the true pmf can be calculated by enumeration. We compute the $\MAE$ using the true pmf and pmf computed by $\dft$. Due to the limitation of enumeration method, we are unable to test the accuracy of $\dft$ when $n$ and $m$ are high. Instead, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution by $\MAE$ and $\TAE$.
+After the accuracy of $\dft$ is justified, we consider the pmf calculated by this method as true pmf so that we can study the accuracy of $\NA$ and $\SIM$. To test the accuracy of $\NA$, we set $m$ to be smaller than 10, and let $n$ grow to sufficiently large. For each $(n,m)$ pair, we measure the $\MAE$ to asses the accuracy of $\NA$.
 
-After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf so that we can study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate thousands of $\Pmat$'s randomly for a given $(n, m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
-
-
+For testing accuracy of the method $\SIM$, we set $m=3$ for computation efficiency, and let $n$ increase. Not like $\NA$ and $\dft$, we use absolute error as criterion. We calculate the absolute errors of maximum, 0.95 and 0.9 quantiles for each $(n,m)$ pair.
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Accuracy of $\dft$}
-As we know already, $\dft$ is an analytic proved method. Although it will be impossible to get the true pmf for large $n$ and $m$, some special cases can be considered. First of all we look at the Binomial distribution which is actually a particular case of $\PMD$ when all rows of $\Pmat$ are same and $m=2$. For large $n$ and $m=2$ and no constrain on $\Pmat$, which is a more general case called Poisson binomial distribution, a method based on one dimensional discrete Fourier transformation is justified by \citeN{Hong2013}, thus we can use it to test the accuracy of $\dft$. For $m \geq 3$, let $n$ be relatively small so that enumeration can be applied here. In this case, we can work out their probability densities by hand, and compare them with the results computed by $\dft$ method.
+As we know already, $\dft$ is an analytic proved method. Although it will be impossible to get the true pmf for large $n$ and $m$, some special cases can be considered. First, we look at the Binomial distribution which is a particular case of $\PMD$ when all rows of $\Pmat$ are same and $m=2$. For large $n$ and $m=2$ and no constrain on $\Pmat$, which is a more general case called Poisson binomial distribution. A method based on one dimensional discrete Fourier transformation is justified by \citeN{Hong2013}, thus we can use it to test the accuracy of $\dft$. For $m \geq 3$, let $n$ be relatively small so that enumeration can be applied here. Then we can work out their probability densities by hand, and compare them with the results computed by $\dft$ method.
 
 To show that $\dft$ is able to calculate pmf exactly under the situation when $(n,m)$ is small enough to be calculated by enumeration, we randomly generate multiple $\Pmat$s from dimension $2 \times 2$ to $6 \times 4$ with smallest probability $0.007$ and largest probability $0.97$. The detailed result is not listed since $\dft$ computes the pmfs exactly same as those computed by enumeration.
 
