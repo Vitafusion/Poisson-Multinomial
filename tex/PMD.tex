@@ -437,7 +437,7 @@ Where $\Zmat$ is CLT multivariate normal distribution of with 0 mean and covaria
 One can simulate $\Ivec_i$ from categorical distribution and then compute $\Xvec = \sum_{i=1}^{n}\Ivec_i$. Repeat this many times to generate enough samples from $\Xvec \sim \PMD(\Pmat)$. Then use the sample distribution to approximate the true distribution. To be specific, let $\xvec$ be a given realization of $\Xvec$, the probability $\Pr(\Xvec=\xvec)$ can be calculated by following steps,
 \begin{enumerate}[Step 1]
     \item for each $i=1,\dots,n$ randomly generate $\Ivec_i$ once with given $\pvec_i$ using multinomial distribution, calculate $\Xvec = \sum_{i=1}^{n}\Ivec_i$.
-    \item repeat step 1 $B$ times to get $\Xvec^{(1)},\dots,\Xvec^{(B)}$.
+    \item repeat step 1 $B$ times to get $\Xvec^{(1)},\dots,\Xvec^{(B)}.$
     \item count the frequency of $\xvec$ showing up in $\Xvec^{(1)},\dots,\Xvec^{(B)}$ as the desired probability.
 \end{enumerate}
 Consequently, we can calculate each point one by one and eventually the pmf can be calculated by this way. Alternatively, another scheme to do this is by
@@ -450,7 +450,7 @@ We design a C++ based algorithm to perform this simulation process. Our algorith
 
 The following theorem studies the expected error bound of the simulation method by given $\Pmat$ and $B$.
 \begin{thm}
-Given repeating time \mbox{B} and $n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\xvec_r, r=1,\dots,N$. Let the probability for a specific result $\xvec_{r}$ be $p_{\xvec_{r}}$, $i=1,\dots,N$. The estimate of  $p_{\xvec_{r}}$ using simulation method is $\wh{p}_{\xvec_r}$. We have the following expected error given by Central Limit Theory,
+Given repeating time \mbox{B} and $n \times m$ matrix $\Pmat$, there will be totally  $N=\binom{n+m-1}{m-1}$ different results, denote them as  $\xvec_r, r=1,\dots,N$. Let the probability for a specific result $\xvec_{r}$ be $p_{\xvec_{r}}$, $i=1,\dots,N$. The estimate of  $p_{\xvec_{r}}$ using simulation method is $\wh{p}_{\xvec_r}$. We have the following expected error,
 \begin{equation*}
     \EE|p_{\xvec_r} - \wh{p}_{\xvec_r}| =  \sqrt{\frac{2 p_{\xvec_r}(1-p_{\xvec_r})}{\pi B}}.
 \end{equation*}
@@ -458,9 +458,9 @@ The expected total absolute error,
 $$\sum_{r=1}^{N} \EE|p_{\xvec_r} - \wh{p}_{\xvec_r}| \leq \sqrt{\frac{2(N-1)}{\pi B}}.$$
 \end{thm}
 
-For any result $\xvec_r,i=1,\dots,N$. Consider a Bernoulli rv $Y_r$ with probability $p_{\xvec_r}$ to be 1, and $1-p_{\xvec_r}$ to be 0. By repeating the trail for $B$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(B)}$. By $\textrm{WLLN}$
+For any result $\xvec_r,i=1,\dots,N$. Consider a Bernoulli random variable $Y_r$ with probability $p_{\xvec_r}$ to be 1, and $1-p_{\xvec_r}$ to be 0. By repeating the trail for $B$ times, we obtain $\textbf{i.i.d}$ random variables $Y_r^{(1)},\dots,Y_r^{(B)}$. By weak law of large number (WLLN)
 \begin{equation*}
-    \Bar{Y_r}-p_{\xvec_r} \xrightarrow{d} N(0,\sigma^2),
+    \Bar{Y_r}-p_{\xvec_r} \xrightarrow{d} N(0,\sigma^2).
 \end{equation*}
 where $\sigma^2 = \frac{p_{\xvec_r}(1-p_{\xvec_r})}{B}$. Then the expectation of absolute error for a single $\xvec_r$
 \begin{equation*}
@@ -472,21 +472,22 @@ Let $c = \sqrt{\frac{2}{\pi B}}$ for simplicity, then
     & \leq c N \sqrt{\sum_{r}p_{\xvec_r}(1-p_{\xvec_r})/N} = c \sqrt{N} \sqrt{1-\sum p_{\xvec_{r}}^2}\\ &\leq c \sqrt{N} \sqrt{1-1/N} = c\sqrt{N-1}\\
     & = \sqrt{\frac{2(N-1)}{\pi B}}.
 \end{align*}
-The equality will be achieved if $p_{\xvec_1} = \dots = p_{\xvec_N}$. For a fixed $B$,because of the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $B$ to maintain accuracy regardless of time efficiency.
+The equality will be achieved if $p_{\xvec_1} = \dots = p_{\xvec_N}$. For a fixed $B$, due to the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $B$ to maintain accuracy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we compare the three methods in terms of numerical accuracy and the time efficiency, we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is maximum absolute error (MAE). Suppose we have an PMD matrix with $n\times m$ dimension. Denote the number of possible outcome as $N$ and the set of them as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
+In this section, we compare the three methods in terms of numerical accuracy, and study the time efficiency of the method $\dft$. we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is maximum absolute error (MAE). Suppose we have an PMD matrix with $n\times m$ dimension. Denote the number of possible outcome as $N$ and the set of them as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
 \begin{center}
-$\mathrm{\MAE} = \underset{\chi}{\max}|p(\xvec) - p_{\text{true}}(\xvec)|$
+$\mathrm{\MAE} = \underset{\xvec \in \chi}{\max}|p(\xvec) - p_{\text{true}}(\xvec)|$.
 \end{center}
 which is the max value of the differences between probability densities calculated by our methods and true ones.
 We also use total absolute error ($\TAE$)  where
 \begin{equation*}
-    \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|
+    \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|.
 \end{equation*}
-We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702(128 cores, 2GHz) and 256GB RAM. We first test the accuracy of our exact method $\dft$ with the true pmf small dimensional $\PMD$ calculated by enumeration. Due to the limitation of enumeration method, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution.
+We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702 (128 cores, 2GHz) and 256GB RAM. First, let $n$ and $m$ be small enough so that the true pmf can be calculated by enumeration. We compute the $\MAE$ using the true pmf and pmf computed by $\dft$. Due to the limitation of enumeration method, we are unable to test the accuracy of $\dft$ when $n$ and $m$ are high. Instead, we compare the accuracy of $\dft$ using Binomial distribution and Poisson Binomial Distribution.
+
 After we justify the accuracy of $\dft$, we consider the pmf calculated by this method as true pmf to study the accuracy of $\NA$ and $\SIM$. The detailed procedure is to generate thousands of $\Pmat$'s randomly for a given $(n, m)$ and calculate the mean accuracy criterions except when using results computed by enumeration method.
 
 
