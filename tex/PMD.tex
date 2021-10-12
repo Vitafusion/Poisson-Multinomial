@@ -447,29 +447,31 @@ We design a C++ based algorithm to perform this simulation process. Our algorith
 
 The following theorem studies the expected error bound of the simulation method by given $\Pmat$ and $B$.
 \begin{thm}
-Given repeating time \mbox{B} and $n \times m$ matrix $\Pmat$, there will be totally  $h=\binom{n+m-1}{m-1}$ different results denoted as $\xvec_r, r=1,\dots,h$. The probability for a specific result $\xvec_{r}$ to happen is $p(\xvec_{r})$, $i=1,\dots,h$. The estimate of  $p(\xvec_r)$ using simulation method is $\wh{p}(\xvec_r)$. We have the following expected error,
+Given repeating time \mbox{B}=b and $n \times m$ matrix $\Pmat$, there will be totally  $h=\binom{n+m-1}{m-1}$ different results denoted as $\xvec_r, r=1,\dots,h$. The probability for a specific result $\xvec_{r}$ to happen is $p(\xvec_{r})$, $i=1,\dots,h$. The estimate of  $p(\xvec_r)$ using simulation method is $\wh{p}(\xvec_r)$. We have the following expected error,
 \begin{equation*}
-    \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| =  \sqrt{\frac{2 p(\xvec_r)(1-p(\xvec_r))}{\pi B}}.
+    \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| =  \sqrt{\frac{2 p(\xvec_r)(1-p(\xvec_r))}{\pi b}}.
 \end{equation*}
 The expected total absolute error,
-$$\sum_{r=1}^{h} \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| \leq \sqrt{\frac{2(h-1)}{\pi B}}.$$
+$$\sum_{r=1}^{h} \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| \leq \sqrt{\frac{2(h-1)}{\pi b}}.$$
 \end{thm}
 
-For any result $\xvec_r,i=1,\dots,h$. Consider a Bernoulli random variable $Y_r$ with probability $p(\xvec_r)$ to be 1, and $1-p(\xvec_r)$ to be 0. By repeating the trail for $B$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(B)}$. By weak law of large number (WLLN)
+For any result $\xvec_r,i=1,\dots,h$. Consider a Bernoulli random variable $Y_r$ with probability $p(\xvec_r)$ to be 1, and $1-p(\xvec_r)$ to be 0. By repeating the trail for $b$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(b)}$. By weak law of large number (WLLN)
 \begin{equation*}
     \Bar{Y_r}-p(\xvec_r) \xrightarrow{d} \textrm{N}(0,\sigma^2).
 \end{equation*}
-where $\sigma^2 = \frac{p(\xvec_r)(1-p(\xvec_r))}{B}$. Then the expectation of absolute error for a single $\xvec_r$
+where $\sigma^2 = p(\xvec_r)(1-p(\xvec_r))/b$. Then the expectation of absolute error for a single $\xvec_r$
 \begin{equation*}
-    \EE |\Bar{Y}-p(\xvec_r)| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi B}p(\xvec_r)(1-p(\xvec_r))}.
+    \EE |\Bar{Y}-p(\xvec_r)| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi b}p(\xvec_r)(1-p(\xvec_r))}.
 \end{equation*}
-Let $c = \sqrt{2/(\pi B)}$ for simplicity, then
+Let $c = \sqrt{2/(\pi b)}$ for simplicity, then
 \begin{align*}
     & \sum_{r=1}^{h}\EE |\Bar{Y_r}-p(\xvec_r)| = c \sum_{r=1}^{h} \sqrt{p(\xvec_r)(1-p(\xvec_r))}  = c h \sum_{r=1}^{h}\frac{\sqrt{p(\xvec_r)(1-p(\xvec_r))}}{h} \\
     & \leq c h \sqrt{\sum_{r}p(\xvec_r)(1-p(\xvec_r))/h} = c \sqrt{h} \sqrt{1-\sum p_{\xvec_{r}}^2}\\ &\leq c \sqrt{h} \sqrt{1-1/h} = c\sqrt{h-1}\\
-    & = \sqrt{\frac{2(h-1)}{\pi B}}.
+    & = \sqrt{\frac{2(h-1)}{\pi b}}.
 \end{align*}
-The equality will be achieved if $p(\xvec_1) = \dots = p(\xvec_h)$. For a fixed $B$, due to the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $B$ to maintain accuracy.
+The equality will be achieved if $p(\xvec_1) = \dots = p(\xvec_h)$. 
+
+For a fixed repeating time $B=b$, due to the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $B$ to maintain accuracy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
