@@ -3,6 +3,7 @@
 \usepackage{latexsym,epsfig,graphicx,epstopdf,amsmath,amssymb,amscd,pifont, multirow,chicago,psfrag,paralist,dsfont,url}
 \usepackage[titletoc]{appendix}
 \usepackage{listings}
+\usepackage{graphics} 
 
 \usepackage{subcaption}
 %\usepackage[labelformat=parens,labelsep=quad,skip=3pt]{caption}
@@ -507,22 +508,34 @@ To show that $\dft$ is able to calculate pmf exactly under the situation when $(
 From Figure~\ref{fig:mae.tae}, one can tell $\dft$ is reliable. The error is well controlled and smaller than $10^{-9}$ generally. The possible source of error is the machine error from inside of the C++ interface of multi dimensional fast Fourier transformation algorithm. As dimension increases, the Fast Fourier transformation algorithm become imprecise. This is also the why compare with the result from \citeN{Hong2013} our algorithm is less accurate. Figure~\ref{fig:dft.vs.pb} shows us similar results when the binomial is replaced by Poisson binomial, the error is small and due to FFT algorithm itself. Overall, it suffices to conclude that our $\dft$ algorithm is accurate and it can be used to compute true pmf.
 
 
-\begin{figure}%[h!]
-\begin{center}
-\includegraphics[width=0.95\textwidth]{figures/binom.pdf}
-\caption{As $n$ increasing to 1000, the MAE is around $10^{-11}$ and the TAE is around $10^{-9}$.} \label{fig:mae.tae}
-\end{center}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{figures/bino_mae.eps} 
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{figures/bino_tae.eps} 
+    \end{minipage}
+    \caption{As $n$ increasing to 1000, the MAE is around $10^{-11}$ and the TAE is around $10^{-9}$.}
+    \label{fig:mae.tae.bino}
 \end{figure}
 
 
-\begin{figure}%[h]
-\begin{center}
-	\includegraphics[width=0.95\textwidth]{figures/poib.pdf}
-	\caption{Accuracy result of $\dft$ under Poisson binomial scenario.}
-	\label{fig:dft.vs.pb}
-\end{center}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{figures/poi_mae.eps} 
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{figures/poi_tae.eps} 
+    \end{minipage}
+    \caption{Accuracy result of $\dft$ under Poisson binomial scenario.}
+    \label{fig:mae.tae.poi}
 \end{figure}
-
 
 \subsection{Accuracy of Normal Approximation and Simulation Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
