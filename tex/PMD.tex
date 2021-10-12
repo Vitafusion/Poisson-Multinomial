@@ -55,6 +55,7 @@
 \newcommand{\Zmat}{\mathbf{Z}}
 \newcommand{\Pmat}{\mathbf{P}}
 \newcommand{\Hmat}{\mathbf{H}}
+\newcommand{\Gmat}{\mathbf{G}}
 \newcommand{\pvec}{\boldsymbol{p}}
 \newcommand{\Sset}{\mathbf{S}}
 \newcommand{\cp}{{\textrm{CP}}}
@@ -99,6 +100,7 @@
 \newcommand{\Xvec}{\boldsymbol{X}}
 \newcommand{\Zvec}{\boldsymbol{Z}}
 \newcommand{\xvec}{\boldsymbol{x}}
+\newcommand{\gvec}{\boldsymbol{g}}
 \newcommand{\kvec}{\boldsymbol{k}}
 \newcommand{\rvec}{\boldsymbol{r}}
 \newcommand{\hvec}{\boldsymbol{h}}
@@ -627,20 +629,24 @@ Similarly, the probabilities for the second candidate and the third candidate to
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Statistical Inference for Aggregated Data}\label{sec:model.est.inf}	
-First introduce the logistic type model to fit a given aggregated dataset with selected features and a categorical response variable that has $m$ categories.
+First introduce the logistic type model to fit a given aggregated dataset with selected covariates and a categorical response variable that has $m$ categories.
 
-By dividing the rows of our data into $h$ groups $G_1,\dots,G_{S}$ via some given criterion, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily equal to each other. Let the quantity for each category of group $G_i$ be $\xvec^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\Hmat^{(i)}$ to be the covariate matrix of $G_i$, then $\Hmat^{(i)} = (\onevec, \hvec_{1}^{(i)},\dots,\hvec_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\onevec$, where $v$ equals to the number of covariates plus one. Let $\Pmat^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\xvec^{(i)}$ for group $G_i$ be $p(\xvec^{(i)})$. The total log-likelihood for all groups can be computed as
+By dividing the rows of our data into $h$ groups via some given criterion, the group size of each group is $n_i,i=1,\dots,h$. Each $n_i$ are positive integer but not necessarily equal to each other. Let the counts for the aggregated response variable of the $i$th group be 
+$\xvec_i = (x_{i1}, \dots,x_{im})'$, where $m$ is the category number. Denote $\Gmat_i$ to be the covariate matrix of the $i$th group, then $\Gmat_i = (\onevec', \gvec_{i 1}',\dots,\gvec_{i n_i}')'$ is a $n_i \times (v+1)$ matrix with first column being $\onevec$, where $v$ is the number of covariates. Let $\Pmat_i = (p_{ijk})$ be the SPM for the $i$th group, $i = 1, \dots, h$, $j = 1,\dots ,n_i$ and $k = 1,\dots, m$. Let the probability of getting $\xvec_i$ for the $i$th group be $p(\xvec_i)$. The total log-likelihood for all groups can be computed as
 \begin{equation*}
-\loglik = \sum_{i=1}^{S}\loglik_i = \sum_{i=1}^{S}\log p(\xvec^{(i)})
+\loglik = \sum_{i=1}^{h}\loglik_i = \sum_{i=1}^{h}\log p(\xvec_i).
 \end{equation*}
-Where $p(\xvec^{(i)})$ can be computed via Poisson Multinomial distribution with SPM $\Pmat^{(i)}$. Set category $m$ as baseline and use softmax function to form the $\Pmat^{(i)}$ for each group through parameter $\betavec = (\betavec_1, \dots, \betavec_{m-1})$ as
+Where $p(\xvec_i)$ can be computed via $\PMD$ with SPM $\Pmat_i$. Set category $m$ as baseline and use softmax function to form the $\Pmat_i$ for each group through parameter $\betavec = (\betavec_1', \dots, \betavec_{m-1}')'$ as
 \begin{align*}
-    p_{j k}^{(i)} = \frac{\exp{\left(\hvec_{j}^{(i)} \betavec_{k}\right)}}{1 + \sum_{k=1}^{m-1}\exp{\left( \hvec_{j}^{(i)} \betavec_{k} \right)}}
+    p_{i j k} = \frac{\exp{\left(\gvec_{ij}' \betavec_{k}\right)}}{1 + \sum_{k=1}^{m-1}\exp{\left( \gvec_{ij}' \betavec_{k} \right)}}
     \quad k \neq m \quad \text{and } \quad
-    p_{i,m}^{(i)} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \hvec_{j}^{(i)} \betavec_{k} \right)}}
+    p_{i j m} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \gvec_{ij}' \betavec_{k} \right)}}.
 \end{align*}
-
-Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}^{(i)}$.
+The likelihood will become
+\begin{equation*}
+\loglik (\betavec) = \sum_{i=1}^{h}\loglik_i (\betavec)= \sum_{i=1}^{h}\log p(\xvec_i).
+\end{equation*}
+Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}_i$.
 
 In the rest of this part, we apply the model to the 
 AI4I 2020 Predictive Maintenance Dataset ``ai4i"  \cite{Dua:2019}. The dataset ``ai4i" is a synthetic machine failure dataset that reflects real predictive maintenance data encountered in industry. The data consists of 10000 products (rows) and 14 features (columns) including Product type, Air temperature, Process temperature, Rotational speed and others.
@@ -648,7 +654,7 @@ AI4I 2020 Predictive Maintenance Dataset ``ai4i"  \cite{Dua:2019}. The dataset `
 For demonstration purpose, here we only use the first 1000 rows and Product type as response variable, Air temperature and Process temperature as covariates. The feature Product type is categorical and has three levels, ``M", ``L", ``H", we denote them as category 1, 2, 3 for simplicity. The number of products that fall in category 1, 2, and 3 are 285, 601, and 114. The other two features are continuous.
 
 
-We randomly divide the dataset into 100 groups $G_1,\dots,G_{100}$, the smallest group has size of three rows and the largest one has 18 rows. Note that readers can use other criterion to divide the dataset by their own. Notice the covariate number is three including intercept and the response has three categories, thus the dimension of our parameter matrix $\betavec$ will be $3 \times 2$ if we set category 3 as baseline.
+We randomly divide the dataset into 100 groups, the smallest group has size of three rows and the largest one has 18 rows. Note that readers can use other criterion to divide the dataset by their own. Notice the covariate number is three including intercept and the response has three categories, thus the dimension of our parameter matrix $\betavec$ will be $3 \times 2$ if we set category 3 as baseline.
 
 The estimates of the parameters are
 \begin{equation*}
@@ -659,9 +665,9 @@ The estimates of the parameters are
  -0.06277732 &-0.8455964\\
 \end{pmatrix}
 \end{equation*}
-The corresponding $\wh{\Pmat}^{(1)}$ and $\wh{\Pmat}^{(5)}$ for group 1 and group 5 are
+The corresponding $\wh{\Pmat}_1$ and $\wh{\Pmat}_5$ for group 1 and group 5 are
 \begin{equation*}
-    \wh{\Pmat}^{(1)} = \begin{pmatrix}
+    \wh{\Pmat}_1 = \begin{pmatrix}
 
  0.11914 & 0.63310 & 0.24776\\
  0.12326 & 0.57268 & 0.30406\\
@@ -672,7 +678,7 @@ The corresponding $\wh{\Pmat}^{(1)}$ and $\wh{\Pmat}^{(5)}$ for group 1 and grou
  0.03559 & 0.53568 & 0.42873\\
  0.04890 & 0.54668 & 0.40442
     \end{pmatrix}, \quad
-    \wh{\Pmat}^{(5)} = \begin{pmatrix}
+    \wh{\Pmat}_5= \begin{pmatrix}
  0.15604 & 0.70766 & 0.13630\\
  0.14469 & 0.73976 & 0.11555\\
  0.11246 & 0.67372 & 0.21382\\
@@ -686,7 +692,7 @@ The corresponding $\wh{\Pmat}^{(1)}$ and $\wh{\Pmat}^{(5)}$ for group 1 and grou
  0.06307 & 0.58191 & 0.35502
     \end{pmatrix}
 \end{equation*}
-For group 1 and 5, $\xvec^{(1)} = (1,5,2)'$ and $\xvec^{(5)} = (2,6,3)'$, so $p(\xvec^{(1)}) = 0.070$, $p(\xvec^{(5)}) = 0.067$.
+For group 1 and 5, $\xvec_1 = (1,5,2)'$ and $\xvec_5 = (2,6,3)'$, so $p(\xvec_1) = 0.070$, $p(\xvec_5) = 0.067$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -717,7 +723,7 @@ The work of \shortciteN{Deitsch2019}, \shortciteN{Buerhop2018}, and \shortciteN{
 \end{table}
 %According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
 
-We split our data to training data (80\%) and test data (20\%), then train a CNN model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class. Table~\ref{tbl:elpmat} provides a subset of the CNN model output. For true class for the first sample in Table~\ref{tbl:elpmat} is A. If we predict the class of the first sample using the highest probability, then the prediction is A and there's no randomness. If we allow the model to make predictions based on the probability vector as shown in the first row then there are randomness in the confusion matrix. We can consider the confusion matrix to follow a PMD distribution then we can quantify the uncertainty in confusion matrix using PMD.
+We split our data to training data (80\%) and test data (20\%), then train a CNN \cite{DBLP:journals/corr/LongSD14} model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class. Table~\ref{tbl:elpmat} provides a subset of the CNN model output. For true class for the first sample in Table~\ref{tbl:elpmat} is A. If we predict the class of the first sample using the highest probability, then the prediction is A and there's no randomness. If we allow the model to make predictions based on the probability vector as shown in the first row then there are randomness in the confusion matrix. We can consider the confusion matrix to follow a PMD distribution then we can quantify the uncertainty in confusion matrix using PMD.
 
 Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. For example, in the first row first column panel cell in Figure~\ref{fig:confusion.hist}, we know the possible counts that the model correctly predict class A as well as the corresponding probability. In this way, we have a uncertainty quantification in the confusion matrix.
 
@@ -784,9 +790,9 @@ The first line computes the whole pmf, the second one computes partial pmf of gi
 
 We shall demonstrate the one to one map between the output and the pmf of an $n \times m$ $\PMD$. First we have a location indicator vector $v = (v_1, \dots, v_{m-1})'$ and an $\xvec=(x_1,\dots,x_m)'$, let $v_j-1 = x_j, j =1,\dots,m-1$ then the array element with location $v$ has the value of $\Pr(X=\xvec)$. We further illustrate this map via the $\Pmat$ given above.
 
-The $\Pmat$ is $3 \times 4$ so the output of $\code{dpmd}$ is a $4 \times 4 \times 4$ dimensional array listed in the following matrices~\ref{verba:1}. Since the input $\code{pp}$ is dimension $3 \times 4$, the output is an $4 \times 4 \times 4$ array. First consider the element of row 3 column 2 in the first matrix of the matrices~\ref{verba:1}. Then the first two elements of $v$ is 3 and 2. The third element depends on the comma number on the top of each figure. On the top of the first matrix there are two commas followed by 1, thus the third element of $v$ is 1. Now we have constructed $v = (3,2,1)$, then we minus 1 on each element we get $(2,1,0)=\xvec'$ which is the corresponding probability mass point. So far we can get the element that has location indicated by $v=(3,2,1)$ is 0.022 and we have $\Pr(X=(2,1,0)')=0.022$. 
+The $\Pmat$ is $3 \times 4$ so the output of $\code{dpmd}$ is a $4 \times 4 \times 4$ dimensional array listed in the following matrices~\ref{verba:1}. Since the input $\code{pp}$ is dimension $3 \times 4$, the output is an $4 \times 4 \times 4$ array. First consider the element of row 3 column 2 in the first matrix of the matrices~\ref{verba:1}. Then the first two elements of $v$ is 3 and 2. The third element depends on the comma number on the top of each figure. On the top of the first matrix there are two commas followed by 1, thus the third element of $v$ is 1. Now we have constructed $v = (3,2,1)$, then we minus 1 on each element we get $\xvec=(2,1,0)'$ which is the corresponding probability mass point. So far we can get the element that has location indicated by $v=(3,2,1)$ is 0.022 and we have $\Pr(X=(2,1,0)')=0.022$. 
 
-In the other direction, if we want to know the probability of $X=\xvec=(0,3,0)'$ we need to construct its corresponding $v$, which can be computed by plus 1 to each element in $\xvec$ so that we get $v=(1,4,1)$. The $v$ we just constructed indicates a location of (1,4,1) of our array. That location is the first row, 4th column in the $\text{, , 1}$ figure which has value 0.006.
+In the other direction, if we want to know the probability of $\Xvec=\xvec$, where $\xvec=(0,3,0)'$. we need to construct its corresponding $v$, which can be computed by plus 1 to each element in $\xvec$ so that we get $v=(1,4,1)$. The $v$ we just constructed indicates a location of (1,4,1) of our array. That location is the first row, 4th column in the $\text{, , 1}$ placement of the $\code{res}$, which has value 0.006.
 
 \begin{verbatim}
  > res <- dpmd(pmat=pp)
