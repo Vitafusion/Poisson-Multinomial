@@ -553,7 +553,7 @@ Specifically, for $\NA$ we introduce a baseline called the Original to express t
 
 \begin{figure}%[h]
 \begin{center}
-	\includegraphics[width=0.95\textwidth]{figures/simulation.pdf}
+	\includegraphics[width=0.95\textwidth]{figures/sim.eps}
 	\caption{Accuracy of $\SIM$ method based on quantile of $\PMD$ when $m=3$.}
 	\label{fig:accuracy.sim}
 \end{center}
@@ -561,8 +561,8 @@ Specifically, for $\NA$ we introduce a baseline called the Original to express t
 
 \begin{figure}%[h]
 \begin{center}
-	\includegraphics[width=0.95\textwidth]{figures/mae.pdf}
-	\caption{$\MAE$ of $\NA$ compared with baseline (Original).}
+	\includegraphics[width=0.95\textwidth]{figures/normal_mae.eps}
+	\caption{$\MAE$ of $\NA$ compared with Baseline.}
 	\label{fig:mae.na}
 \end{center}
 \end{figure}
@@ -578,7 +578,7 @@ We use the same device as for accuracy study to test the time efficiency of $\df
 
 \begin{figure}%[h]
 \begin{center}
-	\includegraphics[width=0.95\textwidth]{figures/effi.pdf}
+	\includegraphics[width=0.95\textwidth]{figures/effi.eps}
 	\caption{Time efficiency study of $\dft$.}
 	\label{fig:time.eff}
 \end{center}
@@ -629,7 +629,7 @@ Similarly, the probabilities for the second candidate and the third candidate to
 \subsection{Statistical Inference for Aggregated Data}\label{sec:model.est.inf}	
 First introduce the logistic type model to fit a given aggregated dataset with selected features and a categorical response variable that has $m$ categories.
 
-By dividing the rows of our data into $H$ groups $G_1,\dots,G_{S}$ via some given criterion, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily equal to each other. Let the quantity for each category of group $G_i$ be $\xvec^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\Hmat^{(i)}$ to be the covariate matrix of $G_i$, then $\Hmat^{(i)} = (\onevec, \hvec_{1}^{(i)},\dots,\hvec_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\onevec$, where $v$ equals to the number of covariates plus one. Let $\Pmat^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\xvec^{(i)}$ for group $G_i$ be $p(\xvec^{(i)})$. The total log-likelihood for all groups can be computed as
+By dividing the rows of our data into $h$ groups $G_1,\dots,G_{S}$ via some given criterion, the group size of each group is $s_i,i=1,\dots,S$. Each $s_i$ are positive integer but not necessarily equal to each other. Let the quantity for each category of group $G_i$ be $\xvec^{(i)} = (x_1^{(i)}, \dots, x_m^{(i)})'$, $m$ is the category number. Denote $\Hmat^{(i)}$ to be the covariate matrix of $G_i$, then $\Hmat^{(i)} = (\onevec, \hvec_{1}^{(i)},\dots,\hvec_{s_i}^{(i)})'$ is a $s_i \times v$ matrix with first column being $\onevec$, where $v$ equals to the number of covariates plus one. Let $\Pmat^{(i)} = (p_{jk}^{(i)})$ be the SPM for group $G_i$, $i = 1, \dots, S$, $j = 1,\dots ,s_i$ and $k = 1,\dots, m$. Let the probability of getting $\xvec^{(i)}$ for group $G_i$ be $p(\xvec^{(i)})$. The total log-likelihood for all groups can be computed as
 \begin{equation*}
 \loglik = \sum_{i=1}^{S}\loglik_i = \sum_{i=1}^{S}\log p(\xvec^{(i)})
 \end{equation*}
