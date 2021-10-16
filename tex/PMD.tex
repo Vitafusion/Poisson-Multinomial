@@ -434,16 +434,16 @@ Where $\Zmat$ is CLT multivariate normal distribution of with 0 mean and covaria
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation-Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-One can simulate $\Ivec_i$ from categorical distribution and then compute $\Xvec = \sum_{i=1}^{n}\Ivec_i$. Repeat this many times to generate enough samples from $\Xvec \sim \PMD(\Pmat)$. Then use the sample distribution to approximate the true distribution. To be specific, let $\xvec$ be a given realization of $\Xvec$, the probability $\Pr(\Xvec=\xvec)$ can be calculated by following steps,
+As we know, $\Ivec_i, i=1,\dots,n$ is a $m$ dimensional random indicator. In fact, it follows a multinomial distribution that has only one trial with probability $\pvec_i$. Therefore, for all $i=1,\dots, n$, one can simulate $\Ivec_i$ from such multinomial distributions. Then $\Xvec = \sum_{i=1}^{n}\Ivec_i$ is a random sample from $\PMD$ with $\Pmat = (\pvec_1, \dots,\pvec_n)'$. Repeat this many times to generate enough samples from $\Xvec \sim \PMD(\Pmat)$. Then use the sample distribution to approximate the true distribution. To be specific, let $\xvec$ be a given realization of $\Xvec$, the probability $\Pr(\Xvec=\xvec)$ can be simulated by following steps,
 \begin{enumerate}[Step 1]
-    \item for each $i=1,\dots,n$ randomly generate $\Ivec_i$ once with given $\pvec_i$ using multinomial distribution, calculate $\Xvec = \sum_{i=1}^{n}\Ivec_i$.
-    \item repeat step 1 $B$ times to get $\Xvec^{(1)},\dots,\Xvec^{(B)}.$
-    \item count the frequency of $\xvec$ showing up in $\Xvec^{(1)},\dots,\Xvec^{(B)}$ as the desired probability.
+    \item for each $i=1,\dots,n$,  randomly generate $\Ivec_i$ once with given $\pvec_i$ using multinomial distribution, calculate $\Xvec = \sum_{i=1}^{n}\Ivec_i$.
+    \item repeat step 1 $B$ times to get $\Xvec_{1},\dots,\Xvec_{B}.$
+    \item count the frequency of $\xvec$ showing up in $\Xvec_{1},\dots,\Xvec_{B}$ as the desired probability.
 \end{enumerate}
-Consequently, we can calculate each point one by one and eventually the pmf can be calculated by this way. Alternatively, another scheme to do this is by
+Consequently, we can simulate each mass point one by one and eventually the pmf can be approximated by this way. Alternatively, another scheme to do this is by
 \begin{enumerate}[Step 1]
-	\item generate $\Xvec^{(1)},\dots,\Xvec^{(B)}$.
-	\item calculate the frequency of each probability mass point showing up in $\Xvec^{(1)},\dots,\Xvec^{(B)}$ as the pmf.
+	\item generate $\Xvec_{1},\dots,\Xvec_{B}$.
+	\item count the frequency of each probability mass point showing up in $\Xvec_{1},\dots,\Xvec_{B}$ as the pmf.
 \end{enumerate}
 
 We design a C++ based algorithm to perform this simulation process. Our algorithm uses the first scheme to calculate probabilities of $\xvec$s as user input  and use the second scheme to calculate pmf if $\xvec$ is no specified.
@@ -458,7 +458,7 @@ The expected total absolute error,
 $$\sum_{r=1}^{h} \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| \leq \sqrt{\frac{2(h-1)}{\pi b}}.$$
 \end{thm}
 
-For any result $\xvec_r,i=1,\dots,h$. Consider a Bernoulli random variable $Y_r$ with probability $p(\xvec_r)$ to be 1, and $1-p(\xvec_r)$ to be 0. By repeating the trail for $b$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(b)}$. By weak law of large number (WLLN)
+For any result $\xvec_r,i=1,\dots,h$. Consider a Bernoulli random variable $Y_r$ with probability $p(\xvec_r)$ to be 1, and $1-p(\xvec_r)$ to be 0. By repeating the trial for $b$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(b)}$. By weak law of large number (WLLN)
 \begin{equation*}
     \Bar{Y_r}-p(\xvec_r) \xrightarrow{d} \textrm{N}(0,\sigma^2).
 \end{equation*}
@@ -479,18 +479,18 @@ For a fixed repeating time $B=b$, due to the sparsity of $\PMD$, the expected to
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we compare the three methods in terms of numerical accuracy, and study the time efficiency of the method $\dft$. we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is the maximum absolute error (MAE). Suppose we have a PMD with $n\times m$ SPM. Denote the number of possible outcomes as $N$. Also denote the set of all possible distinct outcomes as $\chi = \left\{\xvec_1,\dots, \xvec_{N}\right\}$. $\MAE$ is defined as following,
+In this section, we compare the three methods in terms of numerical accuracy, and study the time efficiency of the method $\dft$. we also give out recommendations of under what condition which method will be preferred. We employ multiple criterions to show the accuracy, the major one is the maximum absolute error (MAE). Suppose we have a PMD with $n\times m$ SPM. Denote the number of possible outcomes as $h$. Also denote the set of all possible distinct outcomes as $\chi = \left\{\xvec_1,\dots, \xvec_{h}\right\}$. $\MAE$ is defined as,
 \begin{center}
 $\mathrm{\MAE} = \underset{\xvec \in \chi}{\max}|p(\xvec) - p_{\text{true}}(\xvec)|$.
 \end{center}
-which is the max value of the differences between probability densities calculated by our methods and true ones.
-We also use total absolute error ($\TAE$)  where
+which is the max value of the differences between probability densities computed by our methods and true ones.
+We also use total absolute error ($\TAE$) which is defined as,
 \begin{equation*}
     \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|.
 \end{equation*}
 We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702 (128 cores, 2GHz) with 256GB RAM. 
 
-Since there are no justified methods that can compute the true pmf of $\PMD$, we perform the accuracy tests as following. 
+Since there are no justified methods that can compute the true pmf for $\PMD$ precisely, we perform the accuracy tests as following. 
 
 First, we justify the accuracy of $\dft$ using binomial distribution, Poisson binomial distribution and small dimensional PMD. The criterions we use here are $\MAE$ and $\TAE$. 
 
@@ -503,13 +503,7 @@ For testing accuracy of the method $\SIM$, we set $m=3$ for computation efficien
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Accuracy of $\dft$}
-As we know already, $\dft$ is an analytic proved method. Although it will be impossible to get the true pmf for large $n$ and $m$, some special cases can be considered. First, we look at the Binomial distribution which is a particular case of $\PMD$ when all rows of $\Pmat$ are same and $m=2$. For large $n$ and $m=2$ and no constrain on $\Pmat$, which is a more general case called Poisson binomial distribution. A method based on one dimensional discrete Fourier transformation is justified by \citeN{Hong2013}, thus we can use it to test the accuracy of $\dft$. For $m \geq 3$, let $n$ be relatively small so that enumeration can be applied here. Then we can work out their probability densities by hand, and compare them with the results computed by $\dft$ method.
-
-To show that $\dft$ is able to calculate pmf exactly under the situation when $(n,m)$ is small enough to be calculated by enumeration, we randomly generate multiple $\Pmat$s from dimension $2 \times 2$ to $6 \times 4$ with smallest probability $0.007$ and largest probability $0.97$. The detailed result is not listed since $\dft$ computes the pmfs exactly same as those computed by enumeration.
-
-From Figure~\ref{fig:mae.tae}, one can tell $\dft$ is reliable. The error is well controlled and smaller than $10^{-9}$ generally. The possible source of error is the machine error from inside of the C++ interface of multi dimensional fast Fourier transformation algorithm. As dimension increases, the Fast Fourier transformation algorithm become imprecise. This is also the why compare with the result from \citeN{Hong2013} our algorithm is less accurate. Figure~\ref{fig:dft.vs.pb} shows us similar results when the binomial is replaced by Poisson binomial, the error is small and due to FFT algorithm itself. Overall, it suffices to conclude that our $\dft$ algorithm is accurate and it can be used to compute true pmf.
-
-
+As we know already, $\dft$ is an analytic proved method. Although it will be impossible to get the true pmf for large $n$ and $m$, some special cases can be considered. First, we look at the Binomial distribution which is a particular case of $\PMD$ when all rows of $\Pmat$ are same and $m=2$. For any positive integer $n$ and $m=2$ and no constrain on $\Pmat$, which is a more general case called Poisson binomial distribution. A method based on one dimensional discrete Fourier transformation is justified by \citeN{Hong2013}, thus we can use it to test the accuracy of $\dft$. For $m \geq 3$, let $n$ be relatively small so that enumeration can be applied here. Then we can work out their probability densities by hand, and compare them with the results computed by $\dft$ method.
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -520,11 +514,10 @@ From Figure~\ref{fig:mae.tae}, one can tell $\dft$ is reliable. The error is wel
         \centering
         \includegraphics[width=1\textwidth]{figures/bino_tae.eps} 
     \end{minipage}
-    \caption{As $n$ increasing to 1000, the MAE is around $10^{-11}$ and the TAE is around $10^{-9}$.}
+    \caption{$\MAE$/$\TAE$ plots for the method $\dft$ using binomial distribution, $n$ increases up to 1000.}
     \label{fig:mae.tae.bino}
 \end{figure}
-
-
+To show that $\dft$ is able to calculate pmf exactly under the situation when $(n,m)$ is small enough to be calculated by enumeration, we randomly generate multiple $\Pmat$s from dimension $2 \times 2$ to $6 \times 4$ with smallest probability $0.007$ and largest probability $0.97$. The result shows that $\dft$ computes the pmfs exactly same as those computed by enumeration.
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -535,39 +528,46 @@ From Figure~\ref{fig:mae.tae}, one can tell $\dft$ is reliable. The error is wel
         \centering
         \includegraphics[width=1\textwidth]{figures/poi_tae.eps} 
     \end{minipage}
-    \caption{Accuracy result of $\dft$ under Poisson binomial scenario.}
+    \caption{$\MAE$/$\TAE$ plots for the method $\dft$ using Poisson binomial distribution as $n$ increases up to 1000.}
     \label{fig:mae.tae.poi}
 \end{figure}
 
+Figure~\ref{fig:mae.tae.bino} and Figure~\ref{fig:mae.tae.poi} show the accuracy test result for the method $\dft$. In both plots, the $\MAE$ is smaller than $10^{-10}$. Also the total absolute error ($\TAE$) is well controlled and smaller than $10^{-9}$ generally. The error might come from the inside of the multi-dimensional discrete fast Fourier transformation algorithm. The multi-dimensional discrete fast Fourier transformation algorithms are usually less precise than the one dimensional discrete fast Fourier transformation algorithms.This is why when comparing with the result from \citeN{Hong2013}, our algorithm has larger $\MAE$ and $\TAE$. Figure~\ref{fig:mae.tae.poi} shows us similar results when the binomial is replaced by Poisson binomial, the patterns of $\MAE$ and $\TAE$ are almost looked same to the ones for binomial distribution. Therefore, changing distributions from special cases to general cases doesn't affect the accuracy of $\dft$. With respect to that, we can conclude that our $\dft$ algorithm is able to precisely compute pmf for $\PMD$ when $m$ and $n$ is large.
+
+
+
 \subsection{Accuracy of Normal Approximation and Simulation Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Among the three computing algorithms we proposed, one of them is able to calculate the exact probability while the other two are approximation methods. Therefore, it is necessary to explore accuracy of the approximation methods under different circumstances. The accuracy metric for $\NA$ is $\MAE$. For $\SIM$ we only consider the maximum probability and probability mass points of 0.95, 0.90 quantiles due to computation limit of device. Probability mass points computed by $\dft$ are considered as true probabilities, denote it as $p_{\textrm{true}}$.
-$\MAE$ and $\TAE$ for normal approximation are given by
+Among the three computing algorithms we proposed, one of them is able to calculate the exact probability while the other two are approximation methods. Therefore, it is necessary to explore accuracy of the approximation methods under different circumstances. The accuracy metric for $\NA$ is $\MAE$. Probability mass points computed by $\dft$ are considered as true probabilities, denote it as $p_{\textrm{true}}$.
+$\MAE$ for normal approximation is given by
 \begin{equation*}
-    \MAE = \max_{\xvec \in \chi}|p_{\NA}(\xvec)-p_{\textrm{true}}(\xvec)|,
+    \MAE = \max_{\xvec \in \chi}|p_{\NA}(\xvec)-p_{\textrm{true}}(\xvec)|.
 \end{equation*}
-For simulation method the error metric is given via the difference between the selected probability mass points (maximum, 0.95 and 0.90 quantiles) calculated by $\SIM$ and $\dft$.
+Figure~\ref{fig:mae.na} illustrates the accuracy of the $\NA$ method. Specifically, in the plot we introduce a pattern called baseline to express the sparsity of $\PMD$ as $n$ and $m$ increase. The baseline is the $\MAE$ if we estimate all probability mass points at 0. Then for a given $\Pmat$, the value of baseline will be the max probability. Given $n$ and $m$,  randomly generate 5000 $\Pmat$s and use their average maximum probability as the value of baseline that showed in Figure~\ref{fig:mae.na} so that the effect of noise will be eliminated. It shows that the pattern of baseline is decreasing as $n$ increases, which describes the sparsity. 
+\begin{figure}%[h]
+\begin{center}
+	\includegraphics[width=0.95\textwidth]{figures/normal_mae.eps}
+	\caption{$\MAE$ of $\NA$ compared with baseline when $m=3,5,7$}
+	\label{fig:mae.na}
+\end{center}
+\end{figure}
+From Figure~\ref{fig:accuracy.sim}, for given $m$, as $n$ increase the solid line which represents the method $\NA$ is always under the dashed baseline. The gap between the two lines grows wider as $n$ gets larger for fixed $m$, which indicates that $\NA$ gets more accurate when $n$ gets large despite of sparsity.
 
-For fixed $n$ from 1 to 75 and $m=3$, randomly generate 5000 $\Pmat$'s to exclude the noise effect. The we calculate error metrics with respect to each methods. The results are shown via Figures~\ref{fig:accuracy.sim} and~\ref{fig:mae.na}. In Figure~\ref{fig:accuracy.sim}, we mainly study the relationship between accuracy and simulation times $\mbox{B}$. The top lines in three plots are of $B=10$,  the middle lines are of $B=10^5$ and the rest are of $B=10^7$. Observe that the gap between lines reduces as $n$ increases possibly due to sparsity. The accuracy performance when $B$ is evidently better than when $B$ is small. We can tell from the plots that $B=10^7$ might be a good choice for user since it provide an accuracy error as small as $10^{-5}$.
+For $\SIM$ we only consider the probabilities at max, 0.95, and 0.90 quantiles due to computation limit of device. The accuracy metric for $\SIM$ is the absolute error. The absolute error metric is given by the absolute difference between the selected probability mass points (maximum, 0.95 and 0.90 quantiles) calculated by $\SIM$ and $\dft$.
 
+For each $n$ from 1 to 75 and $m=3$, randomly generate 5000 $\Pmat$'s to exclude the noise effect. Then we calculate error metrics with respect to each methods. In this part, we mainly study the relation between accuracy and simulation $B$. The result is showed in Figure~\ref{fig:accuracy.sim}. In Figure~\ref{fig:accuracy.sim}, The solid lines represent the absolute error pattern of $B=10$, the dashed lines represents $B=10^5$ and the longdashed lines represent $B=10^7$. For each line, the pattern goes down as $n$ increases due to sparsity. Figure~\ref{fig:accuracy.sim} shows that $B=10$ is in general not precise while $B=10^7$ will have absolute error between $10^{-4}$ and $10^{-5}$, which is pretty accurate. Setting $B=10^5$ will have absolute error between $10^{-3}$ and $10^{-4}$. 
 
-Specifically, for $\NA$ we introduce a baseline called the Original to express the sparsity of $\PMD$ as $n$ and $m$ increase. The Original is just to estimate all probability mass points by 0's. We can see through the plot the baseline is decreasing which is resulting from sparsity. From Figure~\ref{fig:accuracy.sim}, for given $m$, as $n$ increase the solid line which represent $\NA$ is always under the dashed baseline. The gap between the two lines grows wider as $n$ gets larger for fixed $m$ indicates that $\NA$ is more accurate when $n$ is large regardless of sparsity.
+Observe that the gap between lines reduces as $n$ increases possibly due to sparsity. The accuracy performance when $B$ is evidently better than when $B$ is small. We can tell from the plots that $B=10^7$ might be a good choice for user since it provide an accuracy error as small as $10^{-5}$.
 
 \begin{figure}%[h]
 \begin{center}
 	\includegraphics[width=0.95\textwidth]{figures/sim.eps}
-	\caption{Accuracy of $\SIM$ method based on quantile of $\PMD$ when $m=3$.}
+	\caption{Absolute error of $\SIM$ method for $\PMD$ when $m=3$. The left plot compare the accuracy of different $B$ at maximum, the middle one and the right one do the same job at quantile 0.95 and 0.9 respectively. }
 	\label{fig:accuracy.sim}
 \end{center}
 \end{figure}
 
-\begin{figure}%[h]
-\begin{center}
-	\includegraphics[width=0.95\textwidth]{figures/normal_mae.eps}
-	\caption{$\MAE$ of $\NA$ compared with Baseline.}
-	\label{fig:mae.na}
-\end{center}
-\end{figure}
+
 
 
 
