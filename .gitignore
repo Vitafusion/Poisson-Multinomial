@@ -14,4 +14,6 @@ tex/PMD.toc
 *.synctex
 *.synctex.gz
 .DS_Store
+*.synctex(busy)
+
 
