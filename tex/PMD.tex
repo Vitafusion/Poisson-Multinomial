@@ -328,7 +328,7 @@ where $\pvec_{i}^{\ast} = \left(p_{i1},\dots,p_{i,m-1} \right)', i = 1,\dots,n$.
 
 Then we denote the non-singular $(m-1) \times (m-1)$ covariance matrix of $\Xvec^{\ast}$ as $\Sigmavec^{\ast}$. We have
  $$\Var(\Xvec^{\ast}) =\Sig^{\ast}=\sum_{i=1}^n[\diag(\pvec_i^{\ast})-\pvec_i^{\ast} \pvec_i^{\ast \prime} ].$$
-where $\pvec_i^{\ast}$ is the $i$th row of $\Pmat^{\ast}$. Also, we denote the mean of $\Xvec^{\ast}$ as $\mu^{\ast}$, then
+where $\pvec_i^{\ast}$ is the $i$th row of $\Pmat^{\ast}$. Also, we denote the mean of $\Xvec^{\ast}$ as $\muvec^{\ast}$, then
   $$\EE(\Xvec^{\ast}) =\muvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'.$$
  In addition, the cf of $\Xvec^{\ast}$ is
  \begin{equation*}
@@ -413,7 +413,7 @@ Since covariance matrix of any $\Xvec \sim \PMD$ is singular, we use the reduced
 \begin{thm}
 Suppose a random variable $\Xvec \sim \PMD(\Pmat)$. Correspondingly, we have $\Xvec^{\ast}$ with mean vector $\mvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$ and non-singular covariance matrix $\Sig^{\ast}$. For each possible outcome $\xvec_r^{\ast}$, and its neighbourhood interval $\mathcal{A}_{\xvec_r^{\ast}} = [\xvec_r^{\ast}-0.5, \xvec_r^{\ast}+0.5]$. There exists a non-singular matrix $\Cmat$ such that $\Sig^{\ast} = \Cmat\Cmat'$ and the error bound of the approximation by the theorem (CLT) is
 \begin{equation*}
-    |\Pr(\Xvec^{\ast} \in \mathcal{A}_{\xvec_r^{\ast}}) - \Pr(\Zvec \in \mathcal{A}_{\xvec_r^{\ast}-\mvec^{\ast}})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE|\Cmat^{-1}(\Ivec_{i}^{\ast}-\pvec_{i}^{\ast})|^3,
+    |\Pr(\Xvec^{\ast} \in \mathcal{A}_{\xvec_r^{\ast}}) - \Pr(\Zvec \in \mathcal{A}_{\xvec_r^{\ast}-\mvec^{\ast}})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE\|\Cmat^{-1}(\Ivec_{i}^{\ast}-\pvec_{i}^{\ast})\|_1^3,
 \end{equation*}
 where $\Zvec$ is multivariate normal with mean $\zerovec$ and covariance matrix $\Sig^{\ast}$.
 \end{thm}
@@ -428,7 +428,7 @@ Intuitionally, $\Ivec_i^{\ast} - \EE(\Ivec_i^{\ast})$ has mean 0. Hereby $\Xvec^
 
 Since $\Sig^{\ast}$ is non-singular, there exists a non-singular matrix $\Cmat$ such that the covariance of $\Xvec^{\ast}$ is $\Sig^{\ast} = \Cmat\Cmat'$. By extending Berry-Esseen theory to nonidentical distributed case \cite{article}, there existing  a constant $c$ such that
 \begin{equation*}
-    |\Pr\left(\Xvec^{\ast} \in \mathcal{A}_{\xvec_i^{\ast}}\right) - \Pr\left(\Zvec \in \mathcal{A}_{\xvec_i^{\ast}-\muvec^{\ast}} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left|\Cmat^{-1}(\Ivec_{i}^{\ast}-\pvec_{i}^{\ast})\right|^3,
+    |\Pr\left(\Xvec^{\ast} \in \mathcal{A}_{\xvec_i^{\ast}}\right) - \Pr\left(\Zvec \in \mathcal{A}_{\xvec_i^{\ast}-\muvec^{\ast}} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left\|\Cmat^{-1}(\Ivec_{i}^{\ast}-\pvec_{i}^{\ast})\right\|_1^3,
 \end{equation*}
 where $\Zvec$ is CLT multivariate normal distribution of with $\zerovec$ mean and covariance $\Sig^{\ast}$.
 
@@ -447,19 +447,19 @@ Consequently, we can simulate each mass point one by one and eventually the pmf 
 	\item count the frequency of each probability mass point showing up in $\Xvec_{1},\dots,\Xvec_{B}$ as the pmf.
 \end{enumerate}
 
-We design a C++ based algorithm to perform this simulation process. Our algorithm uses the first scheme to calculate probabilities of $\xvec$s as user input  and use the second scheme to calculate pmf if $\xvec$ is not specified.
+We design a C++ based algorithm to perform this simulation process. Our algorithm uses the first scheme to calculate probabilities of $\xvec$'s as user input  and use the second scheme to calculate pmf if $\xvec$ is not specified.
 
 The following theorem studies the expected error bound of the simulation method by given $\Pmat$ and $B$.
 \begin{thm}
-Given repeating time \mbox{B}=b and $n \times m$ matrix $\Pmat$, there will be totally  $h=\binom{n+m-1}{m-1}$ different results denoted as $\xvec_r, r=1,\dots,h$. The probability for a specific result $\xvec_{r}$ to happen is $p(\xvec_{r})$, $i=1,\dots,h$. The estimate of  $p(\xvec_r)$ using simulation method is $\wh{p}(\xvec_r)$. We have the following expected error,
+Given repeating time $B$ and $n \times m$ matrix $\Pmat$, there will be totally  $h=\binom{n+m-1}{m-1}$ different results denoted as $\xvec_r, r=1,\dots,h$. The probability for a specific result $\xvec_{r}$ to happen is $p(\xvec_{r})$, $i=1,\dots,h$. The estimate of  $p(\xvec_r)$ using simulation method is $\wh{p}(\xvec_r)$. We have the following expected error,
 \begin{equation*}
-    \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| =  \sqrt{\frac{2 p(\xvec_r)(1-p(\xvec_r))}{\pi b}}.
+\EE|p(\xvec_r) - \wh{p}_{\xvec_r}| \approx  \sqrt{\frac{2 p(\xvec_r)(1-p(\xvec_r))}{\pi b}}.
 \end{equation*}
 The expected total absolute error,
 $$\sum_{r=1}^{h} \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| \leq \sqrt{\frac{2(h-1)}{\pi b}}.$$
 \end{thm}
 
-For any result $\xvec_r,i=1,\dots,h$. Consider a Bernoulli random variable $Y_r$ with probability $p(\xvec_r)$ to be 1, and $1-p(\xvec_r)$ to be 0. By repeating the trial for $b$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(b)}$. By weak law of large number (WLLN)
+For any result $\xvec_r,i=1,\dots,h$. Consider a Bernoulli random variable $Y_r$ with probability $p(\xvec_r)$ to be 1, and $1-p(\xvec_r)$ to be 0. By repeating the trial for $b$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(b)}$. By CLT,
 \begin{equation*}
     \Bar{Y_r}-p(\xvec_r) \xrightarrow{d} \textrm{N}(0,\sigma^2).
 \end{equation*}
@@ -470,12 +470,11 @@ where $\sigma^2 = p(\xvec_r)(1-p(\xvec_r))/b$. Then the expectation of absolute 
 Let $c = \sqrt{2/(\pi b)}$ for simplicity, then
 \begin{align*}
     & \sum_{r=1}^{h}\EE |\Bar{Y_r}-p(\xvec_r)| = c \sum_{r=1}^{h} \sqrt{p(\xvec_r)(1-p(\xvec_r))}  = c h \sum_{r=1}^{h}\frac{\sqrt{p(\xvec_r)(1-p(\xvec_r))}}{h} \\
-    & \leq c h \sqrt{\sum_{r}p(\xvec_r)(1-p(\xvec_r))/h} = c \sqrt{h} \sqrt{1-\sum p_{\xvec_{r}}^2}\\ &\leq c \sqrt{h} \sqrt{1-1/h} = c\sqrt{h-1}\\
-    & = \sqrt{\frac{2(h-1)}{\pi b}}.
+    & \leq c h \sqrt{\sum_{r}p(\xvec_r)(1-p(\xvec_r))/h} = c \sqrt{h} \sqrt{1-\sum p_{\xvec_{r}}^2}\\ &\leq c \sqrt{h} \sqrt{1-1/h} = c\sqrt{h-1} = \sqrt{\frac{2(h-1)}{\pi b}}.
 \end{align*}
-The equality will be achieved if $p(\xvec_1) = \dots = p(\xvec_h)$.
+%The equality will be achieved if $p(\xvec_1) = \dots = p(\xvec_h)$.
 
-For a fixed repeating time $B=b$, due to the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $B$ to maintain accuracy.
+For a fixed repeating time $B$, due to the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $B$ to maintain accuracy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method Comparisons}\label{sec:Method Comparisons}
@@ -607,7 +606,7 @@ In classification, we illustrate an application of $\PMD$ in soft classification
 \subsection{Calculation of Voting Probability}
 In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson multinomial distribution can fit the situation perfectly under some assumptions.
 
-Suppose a election has $n$ voters and $m$ candidates, there will be $N = \binom{n+m-1}{m-1}$ possible outcomes denoted as $\xvec_r, r = 1, \dots, N$, respectively. Each $\xvec_r$ is a $m$ dimension vector that has three elements denoting the number of votes each candidate gets. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.
+Suppose a election has $n$ voters and $m$ candidates, there will be $h = \binom{n+m-1}{m-1}$ possible outcomes denoted as $\xvec_r, r = 1, \dots, h$, respectively. Each $\xvec_r$ is a $m$ dimension vector that has three elements denoting the number of votes each candidate gets. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.
 
 To demonstrate that, suppose we have $n=10$ electoral voters and $m=3$ candidates with $\Pmat$ matrix that has means of column 1, 2 and 3 to be $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
 \begin{equation*}
