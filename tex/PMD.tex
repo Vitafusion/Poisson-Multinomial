@@ -232,8 +232,7 @@ The contributions of this paper are as follows. We develop an exact method to co
 
 
 \subsection{Overview}
-The rest of the paper is organized as follows. In Section \ref{sec:pmd}, we describe the formal definition of the PMD and discuss its statistical properties. In Section \ref{sec:cmpt.pmf}, we demonstrate the details of  the three methods that we develop to compute $\PMD$'s pmf and provide theorems to study the error bound of $\NA$ and $\SIM$ methods. Section \ref{sec:Method Comparisons} studies the accuracy and time efficiency of the three methods, and give out recommendations of preferred situations for each method. In Section \ref{sec:applications}, we illustrate applications of our methods via three examples respectively in the fields of voting theory, ecological inference and soft classification. In Section \ref{sec:rpackage}, we introduce our R package and show its basic usage. Section \ref{sec:conclusion} concludes the paper and lists prospective research areas.
-
+The rest of the paper is organized as follows. In Section~\ref{sec:pmd}, we describe the formal definition of the PMD and discuss its properties. In Section~\ref{sec:cmpt.pmf}, we develop three methods to compute pmf of the $\PMD$ and provide some theoretical results that provide insights on the error bounds of approximation methods. Section~\ref{sec:Method Comparisons} studies the accuracy and time efficiency of the three methods, and provides recommendations on the use of each method. In Section~\ref{sec:applications}, we illustrate our methods via three applications in voting theory, ecological inference, and machine learning. In Section~\ref{sec:rpackage}, we introduce the R package for the PMD and illustrate its usage. Section~\ref{sec:conclusion} concludes the paper and describes some ares for future research.
 
 
 
@@ -241,18 +240,17 @@ The rest of the paper is organized as follows. In Section \ref{sec:pmd}, we desc
 \section{Poisson Multinomial Distribution} \label{sec:pmd}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
-Suppose there are $n$ mutually independent vector random indicators. Each of them has $m$ elements that are 0/1 valued with certain probabilities. Each of the vector random indicator can only have one element to be 1 and others are 0. To put it into a mathematical form, let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be random indicator vectors that denote the outcomes of the multinomial experiments described above. Also, let the associated probability vectors be $\pvec_{i} = (p_{i1}, \dots, p_{im})'$. Correspondingly, for a fixed $i$ we have $\sum_{j=1}^{m}p_{ij}=1$ and $\sum_{j=1}^{m}I_{ij}=1$.
+Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be independent vectors of random indicators (i.e., 0/1 valued). Let the associated probabilities be $\pvec_{i} = (p_{i1}, \dots, p_{im})'$. For a fixed $i$, we have $\sum_{j=1}^{m}p_{ij}=1$ and $\sum_{j=1}^{m}I_{ij}=1$. Note that $\pr(I_{ij}=1)=p_{ij}$, $i=1,\ldots, n,$ and  $j=1, \ldots, m$. 
 
- The distribution of the sum $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$ follows a PMD. We denote it as
-$$\Xvec \sim \PMD(\Pmat).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. \\
-The $n \times m$ matrix $\Pmat$ is called the success probability matrix (SPM).
+The sum of the random vectors, $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$, follows a PMD. We denote it as
+$$\Xvec \sim \PMD(\Pmat).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. Here, the $n \times m$ matrix $\Pmat$ is called the success probability matrix (SPM), which is,
 \begin{equation*}
 \Pmat = (\pvec_{1}, \dots, \pvec_{n} )'.
 \end{equation*}
 Note that the random variables, $X_1, \dots, X_{m}$ satisfy the following constraint $$\sum_{j=1}^{m}X_{j} = n.$$ Hence we can replace one of them, for example, $X_m$ with $n-\sum_{j=1}^{m-1}X_j$.
 
 Let $\xvec = (x_1,\dots,x_m)'$ be any element from the support of a $\PMD$ random variable $\Xvec$. The probability mass function (pmf) of PMD is defined as,
-$$\text{Pr}(\Xvec=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right).$$
+$$\pr(\Xvec=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right).$$
 
 Here we give a simple example in election to illustrate the calculation of the pmf by enumeration.
 \begin{example}%\normalfont
@@ -296,7 +294,7 @@ The variance-covariance matrix of $\Xvec$ denoted by $\Sig$ is an $m \times m$ m
              \sum_{k=1}^{n}p_{ki}(1-p_{ki}) & \quad \text{if } i=j\\
              -\sum_{k=1}^{n}p_{ki}p_{kj} & \quad \text{if } i \neq j\\
            \end{cases}.
-\end{equation*}\\
+\end{equation*}
 For $\xvec = (x_1, \dots, x_m)'$, let $p(x_1,\ldots,x_{m})$ and $p(\xvec)$ both denote the probability $\Pr \left(\Xvec = \xvec \right)$. The characteristic function (cf) for the $\PMD$ is
 %\begin{equation*}
 %\phi_{\xvec}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n} \cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
@@ -411,7 +409,7 @@ Suppose a random variable $\Xvec \sim \PMD(\Pmat)$. Correspondingly, we have $\X
 where $\Zvec$ is multivariate normal with mean $\zerovec$ and covariance matrix $\Sig^{\ast}$.
 \end{thm}
 By CLT,
-$$\left(\frac{\Xvec^{\ast}}{n}-\pvec^{\ast}\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\Sig^{\ast}\right).$$\\
+$$\left(\frac{\Xvec^{\ast}}{n}-\pvec^{\ast}\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\Sig^{\ast}\right).$$
 where $\pvec^{\ast} = \frac{1}{n}\sum_{i=1}^{n}\pvec_i^{\ast}$.
 To show Theorem 1, notice
 \begin{align*}
