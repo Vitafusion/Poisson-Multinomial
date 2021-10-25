@@ -49,7 +49,7 @@
 \newcommand{\thetavecb}{\thetavec_{2}}
 \newcommand{\EE}{\mathbb{E}}
 \newcommand{\Bset}{\mathbf{B}}
-\newcommand{\Xset}{\mathbf{X}}
+\newcommand{\Xset}{\mathcal{X}}
 \newcommand{\Xmat}{\mathbf{X}}
 \newcommand{\Cmat}{\mathbf{C}}
 \newcommand{\Zmat}{\mathbf{Z}}
@@ -197,7 +197,7 @@ In an election scenario, suppose a committee with $n$ members needs to elect a c
 
 In ecological inference, the goal is to draw conclusions about individual-level behavior using aggregate-level data (e.g., \citeNP{Schuessler1999}). Thus, statistical models are often used in making inference from aggregated data. An aggregated dataset is obtained by combined raw data into groups. The aggregated data no longer present the individual information. Instead, the data contain summary information of groups (e.g., the counts for each group). For example, we consider an application with categorical response variable. The raw data are separated into groups. Then in each group, the counts of each category are available for analysis, which can be described by a random variable that follows a $\PMD$. If one can calculate the likelihood based on the $\PMD$, then the statistical inference can be carried out based on the aggregated data.
 
-In machine learning, people often encounter the needs of classifying observation into different categories. Suppose a machine learning model computes the probabilities of an observation falling into one of the $m$ categories. Although the decision is usually made by selecting the category that has the highest probability, in some scenarios, the category is assigned according to the computed probability for each category. That is, the decision is made by drawing a random sample from a one-hot random vector with respect to the computed probabilities. If we have $n$ observations, there will be $n$ independent categorical distributions. In uncertainty quantification context, one can consider the counts that the classifier put into each category and form a confusion matrix. The $\PMD$ characterizes the probability distribution of the counts in the confusion matrix. Thus, the PMD can be used if one is interested in understanding the uncertainty in the confusion matrix. 
+In machine learning, people often encounter the needs of classifying observation into different categories. Suppose a machine learning model computes the probabilities of an observation falling into one of the $m$ categories. Although the decision is usually made by selecting the category that has the highest probability, in some scenarios, the category is assigned according to the computed probability for each category. That is, the decision is made by drawing a random sample from a one-hot random vector with respect to the computed probabilities. If we have $n$ observations, there will be $n$ independent categorical distributions. In uncertainty quantification context, one can consider the counts that the classifier put into each category and form a confusion matrix. The $\PMD$ characterizes the probability distribution of the counts in the confusion matrix. Thus, the PMD can be used if one is interested in understanding the uncertainty in the confusion matrix.
 
 From the above discussion, we can see that the $\PMD$ has potential applications in many areas. However, the computing of its pmf is non-trivial, and there is no efficient algorithm available to compute the pmf. In theory, enumeration can be a way because we can list all possible outcomes.  However, enumeration is only feasible when $n$ and $m$ are small. When $n$ and $m$ increase, the computing by enumeration will be impractical. There is a need for methods that are computationally efficient.  Therefore, we are motivated to develop methods that can compute pmf of $\PMD$ efficiently.
 
@@ -240,53 +240,63 @@ The rest of the paper is organized as follows. In Section~\ref{sec:pmd}, we desc
 \section{Poisson Multinomial Distribution} \label{sec:pmd}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Definition of the Distribution}
-Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be independent vectors of random indicators (i.e., 0/1 valued). Let the associated probabilities be $\pvec_{i} = (p_{i1}, \dots, p_{im})'$. For a fixed $i$, we have $\sum_{j=1}^{m}p_{ij}=1$ and $\sum_{j=1}^{m}I_{ij}=1$. Note that $\pr(I_{ij}=1)=p_{ij}$, $i=1,\ldots, n,$ and  $j=1, \ldots, m$. 
+Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be independent vectors of random indicators (i.e., 0/1 valued). Let the associated probabilities be $\pvec_{i} = (p_{i1}, \dots, p_{im})'$. That is, $\pr(I_{ij}=1)=p_{ij}$, $i=1,\ldots, n,$ and  $j=1, \ldots, m$. Note that, for a given $i$, we have $\sum_{j=1}^{m}p_{ij}=1$ and $\sum_{j=1}^{m}I_{ij}=1$.
 
 The sum of the random vectors, $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$, follows a PMD. We denote it as
 $$\Xvec \sim \PMD(\Pmat).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. Here, the $n \times m$ matrix $\Pmat$ is called the success probability matrix (SPM), which is,
 \begin{equation*}
 \Pmat = (\pvec_{1}, \dots, \pvec_{n} )'.
 \end{equation*}
-Note that the random variables, $X_1, \dots, X_{m}$ satisfy the following constraint $$\sum_{j=1}^{m}X_{j} = n.$$ Hence we can replace one of them, for example, $X_m$ with $n-\sum_{j=1}^{m-1}X_j$.
+Note that the random variables, $X_1, \dots, X_{m}$ satisfy the following constraint $\sum_{j=1}^{m}X_{j} = n.$ Hence we can replace one of them, for example, $X_m$ with $n-\sum_{j=1}^{m-1}X_j$.
 
-Let $\xvec = (x_1,\dots,x_m)'$ be any element from the support of a $\PMD$ random variable $\Xvec$. The probability mass function (pmf) of PMD is defined as,
-$$\pr(\Xvec=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right).$$
+For some special cases, when the SPM is identical across all rows, that is the $\Ivec_{i}$'s are identically distributed, the distribution of $\Xvec$ reduces to the multinomial distribution. Hence, the $\PMD$ is a generalization of the multinomial distribution. When $m=2$, the $\PMD$ reduces to the Poisson binomial distribution, which can be further reduced to the binomial distribution.
 
-Here we give a simple example in election to illustrate the calculation of the pmf by enumeration.
+
+Let $\xvec = (x_1,\dots,x_m)'$. The support set of the PMD is 
+\begin{align*}
+\Xset=\left\{\xvec\in \mathbb{N}^m: \sum_{j=1}^{m}x_j=n\right\}, 
+\end{align*}
+where $\mathbb{N}$ is the set of non-negative integers. Note that $\pr(\Xvec=\xvec)>0$ for $\xvec\in\Xset$, and the number of elements in $\Xset$ is $h(n,m)=\binom{n+m-1}{m-1}$.
+
+The probability mass function (pmf) of PMD is defined as,
+$$p(\xvec)=\pr(\Xvec=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right),$$
+for $\xvec\in\Xset$. Here we give a simple example in election to illustrate the calculation of the pmf by enumeration.
+
 \begin{example}%\normalfont
-Suppose there are three candidates and four voters. The result of voting is a random variable $\Xvec \sim \PMD(\Pmat)$. Based on historical information, the SPM is obtained as
+Suppose there are four voters and three candidates in an election. That is, $n=4$ and $m=3$.   The resulting vote counts can be modeled by a random vector $\Xvec \sim \PMD(\Pmat)$. Based on historical information, the SPM is obtained as,
 \begin{equation*}
-\Pmat_{4 \times 3} = \begin{pmatrix}
+\Pmat_{4 \times 3} = 
+\begin{pmatrix}
 0.1 &  0.2 & 0.7\\
 0.5 & 0.2 & 0.3\\
 0.4 &  0.5 & 0.1\\
 0.8 & 0.1 & 0.1
 \end{pmatrix}.
 \end{equation*}
-There are 15 distinct outcomes of the election. That is, the pmf is composed of 15 distinct non-zero mass points. It is trivial to compute the pmf of $\Xvec$ through enumeration. For example, let $\xvec =  (4,0,0)'$, the probability of a result that the first candidate gets 4 votes and others gets 0 vote is
+The number of distinct outcomes of the election is $h(n,m)=15$ in this case. The pmf of $\Xvec$ can be computed by enumeration. For example, let $\xvec = (4,0,0)'$. The probability of the outcome that the first candidate gets 4 votes and others gets 0 vote is $\pr(\Xvec=\xvec)$, which is,
 \begin{equation*}
-P\left( \Xvec = \xvec \right) = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016.
+\pr\left( \Xvec = \xvec \right) = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016.
 \end{equation*}
-Also, if we take $\xvec=(1,3,0)'$, the probability of $\Xvec = \xvec$ is
+For another example, if we take $\xvec=(1,3,0)'$, the probability of $\Xvec = \xvec$ is,
 \begin{align*}
-P\left( \Xvec = \xvec \right)  =  & 0.1\times 0.2 \times 0.5 \times 0.1 +
+\pr\left( \Xvec = \xvec \right)  =  & 0.1\times 0.2 \times 0.5 \times 0.1 +
  0.5\times0.2\times0.5 \times 0.1 \\
  & + 0.4\times0.2\times0.2\times0.1 + 0.8\times0.2\times0.2\times0.5 = 0.0236.
 \end{align*}
 %\qedw
 \end{example}
 
-Note that the total number of possible outcomes of $\PMD$ with $n \times m$ SPM is $\binom{n+m-1}{m-1}$, which is the number of non-negative integer solution for equation $x_1 + \dots + x_m = n$. When the dimension of $\Pmat$ is small, enumeration is an exact way to calculate the probability mass function. Nonetheless, as $n \times m$ gets large, it becomes impossible to enumerate all possible outcomes since $N$ will be enormous.
-
-For some special cases, when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the $\PMD$ is a generalization of the multinomial distribution. Similarly, when $m=2$, the $\PMD$ is reduced to the Poisson binomial distribution, which is a generalization of binomial distribution.
+In this example, $n$ and $m$ are small so that enumeration can be used to calculate the exact probability. A $n$ and $m$ get large, it becomes impractical to enumerate all possible outcomes because $h(n, m)$ explodes as $n$ and $m$, even for moderate values of $n$ and $m$. For example, when $n=20$ and $m=5$, there will be $h(20, 5)=10626$ possible outcomes to enumerate.  
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Properties of the Distribution}
-Now let us study some basic properties of $\PMD$.
+Now let us study some basic properties of the $\PMD$.
 
 \begin{ppt}%\normalfont
-Suppose $\Xmat \sim \PMD (\Pmat)$, the mean of $\Xmat$ is
-   $$\EE(\Xmat) = \muvec = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$$ where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$.
+Suppose $\Xvec \sim \PMD (\Pmat)$, the mean of $\Xvec$ is
+   $$\EE(\Xvec) = \muvec = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$$ where $p_{\cdot j} = \sum_{i=1}^{n}p_{ij}$.
 The variance-covariance matrix of $\Xvec$ denoted by $\Sig$ is an $m \times m$ matrix that has entries $\sigma_{ij}$ defined as
 \begin{equation*}
    \sigma_{ij} =
