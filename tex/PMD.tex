@@ -470,7 +470,6 @@ Consequently, we can simulate each mass point one by one and eventually the pmf 
 	\item generate $\Xvec_{1},\dots,\Xvec_{B}$.
 	\item count the frequency of each probability mass point showing up in $\Xvec_{1},\dots,\Xvec_{B}$ as the pmf.
 \end{enumerate}
- We design the Algorithm 1, which is a C++ based algorithm to perform this simulation process as we demonstrated above. Our algorithm uses the first scheme to calculate probabilities of $\xvec$'s as user input  and use the second scheme to calculate pmf if $\xvec$ is not specified. For conveniency, denote the elements in $\chi$ as $\xvec_1, \dots, \xvec_h$, where $h=\binom{n+m-1}{m-1}$.
 
 \begin{algorithm}
 \caption{Simulation method}
@@ -505,7 +504,7 @@ Consequently, we can simulate each mass point one by one and eventually the pmf 
 \end{algorithmic}
 \end{algorithm}
 
-
+We design the Algorithm 1, which is a C++ based algorithm to perform this simulation process as we demonstrated above. Our algorithm uses the first scheme to calculate probabilities of $\xvec$'s as user input  and use the second scheme to calculate pmf if $\xvec$ is not specified. For conveniency, denote the elements in $\chi$ as $\xvec_1, \dots, \xvec_h$, where $h=\binom{n+m-1}{m-1}$.
 
 The following theorem studies the expected error bound of the simulation method by given $\Pmat$ and $B$.
 \begin{thm}
@@ -519,7 +518,7 @@ $$\sum_{\xvec \in \chi}\EE|p(\xvec) - \wh{p}_{\xvec}| \leq \sqrt{\frac{2(h-1)}{\
 
 For any result $\xvec \in \chi$. Consider a Bernoulli random variable $Y_{\xvec}$ with probability $p(\xvec)$ to be 1, and $1-p(\xvec)$ to be 0. By repeating the trial for $b$ times, we obtain iid random variables $Y_{\xvec}^{(1)},\dots,Y_{\xvec}^{(b)}$. By CLT,
 \begin{equation*}
-    \sqrt{b} \left(\Bar{Y_{\xvec}}-p(\xvec) \right)\xrightarrow{d} \textrm{N}(0,\sigma^2).
+    \sqrt{b} \left(\overline{Y}_{\xvec}-p(\xvec) \right)\xrightarrow{d} \textrm{N}(0,\sigma^2).
 \end{equation*}
 where $\sigma^2 = p(\xvec)(1-p(\xvec))$. Then the expectation of absolute error for a single $\xvec$
 \begin{equation*}
@@ -527,7 +526,7 @@ where $\sigma^2 = p(\xvec)(1-p(\xvec))$. Then the expectation of absolute error 
 \end{equation*}
 Let $c = \sqrt{2/(\pi b)}$ for simplicity, then by the inequalities between arithmetic mean and quadratic mean, we have
 \begin{align*}
-    & \sum_{\xvec \in \chi}\EE |\Bar{Y_{\xvec}}-p(\xvec)| = c \sum_{r=1}^{h} \sqrt{p(\xvec)(1-p(\xvec))}  = c h \sum_{\xvec\in\chi}\frac{\sqrt{p(\xvec)(1-p(\xvec))}}{h} \\
+    & \sum_{\xvec \in \chi}\EE |\overline{Y}_{\xvec}-p(\xvec)| = c \sum_{r=1}^{h} \sqrt{p(\xvec)(1-p(\xvec))}  = c h \sum_{\xvec\in\chi}\frac{\sqrt{p(\xvec)(1-p(\xvec))}}{h} \\
     & \leq c h \sqrt{\sum_{\xvec \in \chi}p(\xvec)(1-p(\xvec))/h} = c \sqrt{h} \sqrt{1-\sum p_{\xvec}^2} \\ &\leq c \sqrt{h} \sqrt{1-1/h} = c\sqrt{h-1} = \sqrt{\frac{2(h-1)}{\pi b}}.
 \end{align*}
 %The equality will be achieved if $p(\xvec_1) = \dots = p(\xvec_h)$.
