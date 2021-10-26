@@ -519,9 +519,9 @@ $$\sum_{\xvec \in \chi}\EE|p(\xvec) - \wh{p}_{\xvec}| \leq \sqrt{\frac{2(h-1)}{\
 
 For any result $\xvec \in \chi$. Consider a Bernoulli random variable $Y_{\xvec}$ with probability $p(\xvec)$ to be 1, and $1-p(\xvec)$ to be 0. By repeating the trial for $b$ times, we obtain iid random variables $Y_{\xvec}^{(1)},\dots,Y_{\xvec}^{(b)}$. By CLT,
 \begin{equation*}
-    \Bar{Y_{\xvec}}-p(\xvec) \xrightarrow{d} \textrm{N}(0,\sigma^2).
+    \sqrt{b} \left(\Bar{Y_{\xvec}}-p(\xvec) \right)\xrightarrow{d} \textrm{N}(0,\sigma^2).
 \end{equation*}
-where $\sigma^2 = p(\xvec)(1-p(\xvec))/b$. Then the expectation of absolute error for a single $\xvec$
+where $\sigma^2 = p(\xvec)(1-p(\xvec))$. Then the expectation of absolute error for a single $\xvec$
 \begin{equation*}
     \EE |\Bar{Y}-p(\xvec)| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi b}p(\xvec)(1-p(\xvec))}.
 \end{equation*}
