@@ -53,13 +53,14 @@
 \newcommand{\thetavecb}{\thetavec_{2}}
 \newcommand{\EE}{\mathbb{E}}
 \newcommand{\Bset}{\mathbf{B}}
-\newcommand{\Xset}{\mathbf{X}}
+\newcommand{\Xset}{\mathcal{X}}
 \newcommand{\Xmat}{\mathbf{X}}
 \newcommand{\Cmat}{\mathbf{C}}
 \newcommand{\Zmat}{\mathbf{Z}}
 \newcommand{\Pmat}{\mathbf{P}}
 \newcommand{\Hmat}{\mathbf{H}}
 \newcommand{\Gmat}{\mathbf{G}}
+\newcommand{\zeromat}{\mathbf{0}}
 \newcommand{\pvec}{\boldsymbol{p}}
 \newcommand{\Sset}{\mathbf{S}}
 \newcommand{\cp}{{\textrm{CP}}}
@@ -96,7 +97,7 @@
 \newcommand{\nor}{\textrm{nor}}
 \newcommand{\N}{\textrm{N}}
 \newcommand{\diag}{\textrm{Diag}}
-\newcommand{\PMD}{\textrm{PMD}}
+\newcommand{\PMD}{{\normalfont\textrm{PMD}}}
 \newcommand{\wh}{\widehat}
 \newcommand{\sigmaR}{\sigma_{R}}
 \newcommand{\muR}{\mu_{R}}
@@ -195,7 +196,7 @@ The Poisson multinomial distribution (PMD) describes the distribution of the sum
 \subsection{Motivation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Suppose there are $n$ independent but non-identically distributed random vectors. Each of the vectors is of length $m$ with 0/1 valued elements. For each vector, only one of its elements can take value 1 with a certain success probability. Those success probabilities vary from elements across those $n$ random vectors. The Poisson multinomial distribution (PMD) describes the distribution of the sum of those $n$ random vectors. Those success probabilities can be arranged into an $n \times m$ matrix, which we call the success probability matrix (SPM), and the sum of each row of the SPM is one. Each SPM uniquely defines a PMD $\PMD$.
+Suppose there are $n$ independent but non-identically distributed random vectors. Each of the vectors is of length $m$ with 0/1 valued elements. For each vector, only one of its elements can take value 1 with a certain success probability. Those success probabilities vary from elements across those $n$ random vectors. The Poisson multinomial distribution (PMD) describes the distribution of the sum of those $n$ random vectors. Those success probabilities can be arranged into an $n \times m$ matrix, which we call the success probability matrix (SPM), and the sum of each row of the SPM is one. Each SPM uniquely defines a $\PMD$.
 
 For example, there are $n$ balls, and one needs to throw them into $m$ different bins. For each ball, it will fall into one of those $m$ bins but the probabilities are different from bin to bin. In addition, each ball has its own probabilities of falling into a specific bin. Then the probability distribution of the ball counts in each bin is the $\PMD$. The $\PMD$ is a generalization of multinomial distribution in which the probabilities are identical from ball to ball. In addition, when $m=2$, the $\PMD$ reduces to the Poisson binomial distribution (e.g., \citeNP{Hong2013}). The $\PMD$ has applications in many fields including voting theory in political science, ecological inference, and uncertainty quantification in machine learning. We give some detailed examples below.
 
@@ -203,7 +204,7 @@ In an election scenario, suppose a committee with $n$ members needs to elect a c
 
 In ecological inference, the goal is to draw conclusions about individual-level behavior using aggregate-level data (e.g., \citeNP{Schuessler1999}). Thus, statistical models are often used in making inference from aggregated data. An aggregated dataset is obtained by combined raw data into groups. The aggregated data no longer present the individual information. Instead, the data contain summary information of groups (e.g., the counts for each group). For example, we consider an application with categorical response variable. The raw data are separated into groups. Then in each group, the counts of each category are available for analysis, which can be described by a random variable that follows a $\PMD$. If one can calculate the likelihood based on the $\PMD$, then the statistical inference can be carried out based on the aggregated data.
 
-In machine learning, people often encounter the needs of classifying observation into different categories. Suppose a machine learning model computes the probabilities of an observation falling into one of the $m$ categories. Although the decision is usually made by selecting the category that has the highest probability, in some scenarios, the category is assigned according to the computed probability for each category. That is, the decision is made by drawing a random sample from a one-hot random vector with respect to the computed probabilities. If we have $n$ observations, there will be $n$ independent categorical distributions. In uncertainty quantification context, one can consider the counts that the classifier put into each category and form a confusion matrix. The $\PMD$ characterizes the probability distribution of the counts in the confusion matrix. Thus, the PMD can be used if one is interested in understanding the uncertainty in the confusion matrix. 
+In machine learning, people often encounter the needs of classifying observation into different categories. Suppose a machine learning model computes the probabilities of an observation falling into one of the $m$ categories. Although the decision is usually made by selecting the category that has the highest probability, in some scenarios, the category is assigned according to the computed probability for each category. That is, the decision is made by drawing a random sample from a one-hot random vector with respect to the computed probabilities. If we have $n$ observations, there will be $n$ independent categorical distributions. In uncertainty quantification context, one can consider the counts that the classifier put into each category and form a confusion matrix. The $\PMD$ characterizes the probability distribution of the counts in the confusion matrix. Thus, the PMD can be used if one is interested in understanding the uncertainty in the confusion matrix.
 
 From the above discussion, we can see that the $\PMD$ has potential applications in many areas. However, the computing of its pmf is non-trivial, and there is no efficient algorithm available to compute the pmf. In theory, enumeration can be a way because we can list all possible outcomes.  However, enumeration is only feasible when $n$ and $m$ are small. When $n$ and $m$ increase, the computing by enumeration will be impractical. There is a need for methods that are computationally efficient.  Therefore, we are motivated to develop methods that can compute pmf of $\PMD$ efficiently.
 
@@ -245,109 +246,125 @@ The rest of the paper is organized as follows. In Section~\ref{sec:pmd}, we desc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Poisson Multinomial Distribution} \label{sec:pmd}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Definition of the Distribution} \label{subsec:def}
-Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be independent vectors of random indicators (i.e., 0/1 valued). Let the associated probabilities be $\pvec_{i} = (p_{i1}, \dots, p_{im})'$. For a fixed $i$, we have $\sum_{j=1}^{m}p_{ij}=1$ and $\sum_{j=1}^{m}I_{ij}=1$. Note that $\pr(I_{ij}=1)=p_{ij}$, $i=1,\ldots, n,$ and  $j=1, \ldots, m$. 
+\subsection{Definition of the Distribution}
+Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be independent vectors of random indicators (i.e., 0/1 valued). Let the associated probabilities be $\pvec_{i} = (p_{i1}, \dots, p_{im})'$. That is, $\Pr(I_{ij}=1)=p_{ij}$, $i=1,\ldots, n,$ and  $j=1, \ldots, m$. Note that, for a given $i$, we have $\sum_{j=1}^{m}p_{ij}=1$ and $\sum_{j=1}^{m}I_{ij}=1$.
 
 The sum of the random vectors, $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$, follows a PMD. We denote it as
 $$\Xvec \sim \PMD(\Pmat).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. Here, the $n \times m$ matrix $\Pmat$ is called the success probability matrix (SPM), which is,
-\begin{equation*}
+\begin{align*}
 \Pmat = (\pvec_{1}, \dots, \pvec_{n} )'.
-\end{equation*}
-Note that the random variables, $X_1, \dots, X_{m}$ satisfy the following constraint $$\sum_{j=1}^{m}X_{j} = n.$$ Hence we can replace one of them, for example, $X_m$ with $n-\sum_{j=1}^{m-1}X_j$.
+\end{align*}
+Note that the random variables, $X_1, \dots, X_{m}$ satisfy the following constraint $\sum_{j=1}^{m}X_{j} = n.$ Hence we can replace one of them, for example, $X_m$ with $n-\sum_{j=1}^{m-1}X_j$.
 
-Given a $\PMD$ with $n\times m $ SPM $\Pmat$, denote its support as $\chi$, which contains all distinct realizations that have positive probability. Then the number of elements for $\chi$ is $\binom{n+m-1}{m-1}$, which is the number of non-negative integer solution for equation $x_1 + \dots + x_m = n$.
+For some special cases, when the SPM is identical across all rows, that is the $\Ivec_{i}$'s are identically distributed, the distribution of $\Xvec$ reduces to the multinomial distribution. Hence, the $\PMD$ is a generalization of the multinomial distribution. When $m=2$, the $\PMD$ reduces to the Poisson binomial distribution, which can be further reduced to the binomial distribution.
 
- Let $\xvec = (x_1,\dots,x_m)'$ be any element from $\chi$. The probability mass function (pmf) of PMD is defined as,
-$$\pr(\Xvec=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right).$$
 
-Here we give a simple example in election to illustrate the calculation of the pmf by enumeration.
+Let $\xvec = (x_1,\dots,x_m)'$. The support set of the PMD is
+\begin{align*}
+\Xset=\left\{\xvec\in \mathbb{N}^m: \sum_{j=1}^{m}x_j=n\right\},
+\end{align*}
+where $\mathbb{N}$ is the set of non-negative integers. Note that $\Pr(\Xvec=\xvec)>0$ for $\xvec\in\Xset$, and the number of elements in $\Xset$ is $h(n,m)=\binom{n+m-1}{m-1}$.
+
+The probability mass function (pmf) of PMD is defined as,
+$$p(\xvec)=\Pr(\Xvec=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right),$$
+for $\xvec\in\Xset$. Here we give a simple example in election to illustrate the calculation of the pmf by enumeration.
+
 \begin{example}%\normalfont
-Suppose there are three candidates and four voters. The result of voting is a random variable $\Xvec \sim \PMD(\Pmat)$. Based on historical information, the SPM is obtained as
-\begin{equation*}
-\Pmat_{4 \times 3} = \begin{pmatrix}
+Suppose there are four voters and three candidates in an election. That is, $n=4$ and $m=3$.   The resulting vote counts can be modeled by a random vector $\Xvec \sim \PMD(\Pmat)$. Based on historical information, the SPM is obtained as,
+\begin{align*}
+\Pmat_{4 \times 3} =
+\begin{pmatrix}
 0.1 &  0.2 & 0.7\\
 0.5 & 0.2 & 0.3\\
 0.4 &  0.5 & 0.1\\
 0.8 & 0.1 & 0.1
 \end{pmatrix}.
-\end{equation*}
-There are 15 distinct outcomes of the election. That is, the pmf is composed of 15 distinct non-zero mass points. It is trivial to compute the pmf of $\Xvec$ through enumeration. For example, let $\xvec =  (4,0,0)'$, the probability of a result that the first candidate gets 4 votes and others gets 0 vote is
-\begin{equation*}
-P\left( \Xvec = \xvec \right) = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016.
-\end{equation*}
-Also, if we take $\xvec=(1,3,0)'$, the probability of $\Xvec = \xvec$ is
+\end{align*}
+The number of distinct outcomes of the election is $h(n,m)=15$ in this case. The pmf of $\Xvec$ can be computed by enumeration. For example, let $\xvec = (4,0,0)'$. The probability of the outcome that the first candidate gets 4 votes and others gets 0 vote is $\Pr(\Xvec=\xvec)$, which is,
 \begin{align*}
-P\left( \Xvec = \xvec \right)  =  & 0.1\times 0.2 \times 0.5 \times 0.1 +
+\Pr\left( \Xvec = \xvec \right) = 0.1\times 0.5 \times 0.4 \times 0.8 = 0.016.
+\end{align*}
+For another example, if we take $\xvec=(1,3,0)'$, the probability of $\Xvec = \xvec$ is,
+\begin{align*}
+\Pr\left( \Xvec = \xvec \right)  =  & 0.1\times 0.2 \times 0.5 \times 0.1 +
  0.5\times0.2\times0.5 \times 0.1 \\
  & + 0.4\times0.2\times0.2\times0.1 + 0.8\times0.2\times0.2\times0.5 = 0.0236.
 \end{align*}
 %\qedw
 \end{example}
 
-When the dimension of $\Pmat$ is small, enumeration is an exact way to calculate the probability mass function. Nonetheless, as $n \times m$ gets large, it becomes impossible to enumerate all possible outcomes since $N$ will be enormous.
-
-For some special cases, when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the $\PMD$ is a generalization of the multinomial distribution. Similarly, when $m=2$, the $\PMD$ is reduced to the Poisson binomial distribution, which is a generalization of binomial distribution.
+In this example, $n$ and $m$ are small so that enumeration can be used to calculate the exact probability. A $n$ and $m$ get large, it becomes impractical to enumerate all possible outcomes because $h(n, m)$ explodes as $n$ and $m$, even for moderate values of $n$ and $m$. For example, when $n=20$ and $m=5$, there will be $h(20, 5)=10626$ possible outcomes to enumerate.
 
 
-\subsection{Properties of the Distribution} \label{subsec:propty}
-Now let us study some basic properties of $\PMD$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Properties of the Distribution}
+In this section, we present some results on the properties of the $\PMD$.
 
 \begin{ppt}%\normalfont
-Suppose $\Xmat \sim \PMD (\Pmat)$, the mean of $\Xmat$ is
-   $$\EE(\Xmat) = \muvec = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1},p_{\cdot m}\right)'$$ where $p_{\cdot k} = \sum_{i=1}^{n}p_{i k}$.
-The variance-covariance matrix of $\Xvec$ denoted by $\Sig$ is an $m \times m$ matrix that has entries $\sigma_{ij}$ defined as
-\begin{equation*}
-   \sigma_{ij} =
+Suppose $\Xvec \sim \PMD (\Pmat)$. The mean of $\Xvec$ is
+$$\EE(\Xvec) = \muvec = \left( p_{\cdot1} ,\dots,p_{\cdot m}\right)',$$ 
+where $p_{\cdot j} = \sum_{i=1}^{n}p_{ij}$.
+The variance-covariance matrix of $\Xvec$, denoted by $\Sig$, is an $m \times m$ matrix with entries $\sigma_{jk}$ calculated as,
+\begin{align*}
+   \sigma_{jk} =
            \begin{cases}
-             \sum_{k=1}^{n}p_{ki}(1-p_{ki}) & \quad \text{if } i=j\\
-             -\sum_{k=1}^{n}p_{ki}p_{kj} & \quad \text{if } i \neq j\\
+             \sum_{i=1}^{n}p_{ij}(1-p_{ij}) & \text{ if } j=k\\
+             -\sum_{i=1}^{n}p_{ij}p_{ik} &  \text{ if } j \neq k\\
            \end{cases}.
-\end{equation*}
-For $\xvec = (x_1, \dots, x_m)'$, let $p(x_1,\ldots,x_{m})$ and $p(\xvec)$ both denote the probability $\Pr \left(\Xvec = \xvec \right)$. The characteristic function (cf) for the $\PMD$ is
-%\begin{equation*}
-%\phi_{\xvec}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n} \cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
-%\end{equation*}
-
-\begin{equation*}
-\phi_{\xvec}(t_1, \dots, t_{m})  =  \sum_{x_1 = 0}^{n} \cdots \sum_{x_{m} = 0}^n p(x_1,\ldots,x_{m})\exp\left(\ivec\sum_{j=1}^{m}t_jx_j\right).
-\end{equation*}
-
-where  $\ivec=\sqrt{-1}$.
-%\qedw
+\end{align*}
+The characteristic function (cf) for the $\PMD$ is,
+\begin{align*}
+\phi_{\xvec}(t_1, \dots, t_{m})  =  \sum_{x_1 = 0}^{n} \cdots \sum_{x_{m} = 0}^n p(\xvec)\exp\left(\ivec\sum_{j=1}^{m}t_jx_j\right).
+\end{align*}
+where $\xvec=(x_1, \dots, x_j, \dots, x_m)'$ and $\ivec=\sqrt{-1}$.
 \end{ppt}
-The derivations of mean and characteristic function are as trivial as following the definitions. The $\Sig$ can be calculated by observing that for any fixed $i=1,\dots,n$, $I_{ij}$ and $I_{ik}$ has covariance $-p_{ij}p_{ik},j=1,\dots,m,k=1,\dots,m$. One important thing is that the covariance matrix $\Sig$ is singular because the elements of $\Xvec$ are linear dependent.
 
-Notice that $\sum_{j=1}^{m}X_j = n$, without loss of generality, let $\Ivec_i^{\ast} = (I_{i1},\dots,I_{i,m-1})'$ and
- $$\Xvec^{\ast}=\sum_{i=1}^{n}\Ivec_{i}^{\ast}=(X_1,\dots,X_{m-1})'$$
-  with corresponding $\xvec^{\ast} = (x_1,\dots,x_{m-1})'$ be a realization from the support of $\Xvec^{\ast}$, $\chi^{\ast}$. And $\Pmat^{\ast}$ equals to the first $m-1$ columns of $\Pmat$. That is to define
+The derivations of the mean and cf are as straightforward by following the corresponding definitions. The $\Sig$ can be calculated by noting that for any fixed $i=1,\dots,n$, $I_{ij}$ and $I_{ik}$ has covariance $-p_{ij}p_{ik},j=1,\dots,m,k=1,\dots,m$. One property is that the covariance matrix $\Sig$ is singular, because the elements of $\Xvec$ are linearly dependent.
+
+For notation convenience and later development of computational algorithms, we introduce a reduced version of $\Xvec$, denoted by $\Xvec^{\ast}$. Notice that $\sum_{j=1}^{m}X_j = n$, without loss of generality, let $\Ivec_i^{\ast} = (I_{i1},\dots,I_{i,m-1})'$, and
+$$\Xvec^{\ast}=\sum_{i=1}^{n}\Ivec_{i}^{\ast}=(X_1,\dots,X_{m-1})',$$
+with corresponding $\xvec^{\ast} = (x_1,\dots,x_{m-1})'$ and $\Pmat^{\ast}$ equals to the first $m-1$ columns of $\Pmat$. That is,
 $$
-\Pmat^{\ast} = \left(\pvec_1^{\ast},\dots, \pvec_n^{\ast} \right)'.
+\Pmat^{\ast} = \left(\pvec_1^{\ast},\dots, \pvec_n^{\ast} \right)',
 $$
-where $\pvec_{i}^{\ast} = \left(p_{i1},\dots,p_{i,m-1} \right)', i = 1,\dots,n$. We call $\Xvec^{\ast}$ a reduced version of $\PMD$ random variable $\Xvec$. We can see that $\Xvec$ and $\Xvec^{\ast}$ uniquely determine each other.
+where $\pvec_{i}^{\ast} = \left(p_{i1},\dots,p_{i,m-1} \right)', i = 1,\dots,n$. It is easy to see that $\Xvec$ and $\Xvec^{\ast}$ uniquely determine each other.
 
-Then we denote the non-singular $(m-1) \times (m-1)$ covariance matrix of $\Xvec^{\ast}$ as $\Sigmavec^{\ast}$. We have
- $$\Var(\Xvec^{\ast}) =\Sig^{\ast}=\sum_{i=1}^n[\diag(\pvec_i^{\ast})-\pvec_i^{\ast} \pvec_i^{\ast \prime} ].$$
-where $\pvec_i^{\ast}$ is the $i$th row of $\Pmat^{\ast}$. Also, we denote the mean of $\Xvec^{\ast}$ as $\muvec^{\ast}$, then
-  $$\EE(\Xvec^{\ast}) =\muvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'.$$
- In addition, the cf of $\Xvec^{\ast}$ is
- \begin{equation*}
-\phi_{\xvec^{\ast}}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n} \cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
-\end{equation*}
+We denote the non-singular $(m-1) \times (m-1)$ covariance matrix of $\Xvec^{\ast}$ as $\Sigmavec^{\ast}$. We have,
+$$\Var(\Xvec^{\ast}) =\Sig^{\ast}=\sum_{i=1}^n[\diag(\pvec_i^{\ast})-\pvec_i^{\ast} \pvec_i^{\ast \prime}],$$
+where $\pvec_i^{\ast}$ is the $i$th row of $\Pmat^{\ast}$. Also, we denote the mean of $\Xvec^{\ast}$ as $\muvec^{\ast}$,
+$$\EE(\Xvec^{\ast}) =\muvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'.$$
+In addition, the cf of $\Xvec^{\ast}$ is
+\begin{align*}
+\phi_{\xvec^{\ast}}(t_1, \dots, t_{m-1})  =  \sum_{x_1 = 0}^{n} \cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right),
+\end{align*}
+where $p(x_1,\ldots,x_{m-1})=\Pr(\Xvec^{\ast}=\xvec^{\ast})=p(\xvec)$.
 
-\begin{ppt}%\normalfont
-Suppose a random variable $\Xvec \sim \PMD(\Pmat)$. If the SPM $\Pmat$ can be written as a block matrix composed of $\Pmat_1, \Pmat_2, \dots, \Pmat_{s}$ so that $\Pmat = \diag(\Pmat_{k}), k=1,\dots,s$. Also, consider independent random variables $\Xvec_{k} \sim \PMD(\Pmat_{k}), k=1,\dots,s$. Denote the realization of $\Xvec$ as $\xvec$ and the realizations of $\Xvec_{k}, k=1,\dots,s$ as $\xvec_k$. Then
-$$\xvec= (\xvec_{1},\dots,\xvec_{s}).$$
-And the pmf can computed as the product of the corresponding marginal pmfs. That is
+When the SPM $\Pmat$ is a block-diagonal matrix, the calculation of the pmf can be greatly simplified, which is give as follows.
+\begin{ppt}\label{prop:Pmat.product}
+Suppose $\Xvec \sim \PMD(\Pmat)$. If the SPM $\Pmat$ can be written as a block-diagonal matrix as,
+$$
+\Pmat=
+\begin{pmatrix}
+  \Pmat_1  & \zeromat & \cdots & \zeromat \\
+  \zeromat & \Pmat_2  & \cdots & \zeromat \\
+  \vdots   & \vdots   & \ddots & \vdots   \\
+  \zeromat & \zeromat & \cdots & \Pmat_s  \\
+\end{pmatrix}.
+$$
+In addition, consider independent random vectors $\Xvec_{k} \sim \PMD(\Pmat_{k}), k=1,\dots,s$. Let $\xvec$ be a point from the support set of $\Xvec$. We partition $\xvec$ according to the dimensions of $\Pmat_k$'s as,
+$$\xvec= (\xvec_{1}',\dots,\xvec_{s}')'.$$
+The pmf of $\Xvec$ can be calculated as the product of the corresponding marginal pmfs of those $\Xvec_k$'s. That is,
 \begin{align*}
 \Pr(\Xvec=\xvec)= \Pr(\Xvec_{1}=\xvec_{1}, \dots, \Xvec_{s}=\xvec_{s})= \prod_{k=1}^s \Pr(\Xvec_{k} = \xvec_{k}).
 \end{align*}
 %\qedw
 \end{ppt}
 
-To show this, we assume $\Pmat$ is $n \times m$ and $\Pmat_{k}$ is $n_k \times m_k$. $\sum_{k=1}^s n_k = n$ and $\sum_{k=1}^s m_k = m$. Suppose there are $n$ voters to vote $m$ candidates, certain groups of voters only vote for certain groups of candidates and there are no overlaps . Heuristically, we can separate candidates and voters into independent groups, in each group $k$, $k = 1,\dots,s$, voters voting for corresponding candidates described by probability matrix $\Pmat_{k}$. Strict proof can be done by decomposition of characteristic function of $\Pmat$ into characteristic functions of $\Pmat_{k}$'s.
+To show Proposition~\ref{prop:Pmat.product} in a heuristic way, we denote the size of $\Pmat_{k}$ as $n_k \times m_k$, and note that $\sum_{k=1}^s n_k = n$ and $\sum_{k=1}^s m_k = m$. Suppose there are $n$ voters for $m$ candidates, a certain group of voters only vote for a certain candidate and there are no overlaps. Thus, we can separate candidates and voters into independent groups. In group $k$, $k = 1,\dots,s$, voters voting for the corresponding candidate according to SPM $\Pmat_{k}$. Thus, the probability of the overall voting result can be calculated by the product of the probability of the voting result from each group. A rigorous proof can be done by the decomposition of cf of $\Xvec$ into the cf of those $\Xvec_k$'s.
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Computation of The Probability Mass Function} \label{sec:cmpt.pmf}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 We introduce three methods for computing the pmf, which are the method based on multidimensional discrete Fourier transformation ($\dft$) of cf, the normal approximation ($\NA$) method, and simulation based method ($\SIM$). The $\dft$ is an exact method while the other two are approximate methods.
@@ -364,27 +381,22 @@ Suppose a random variable $\Xvec =  (X_1, \dots, X_{m})' \sim \PMD(\Pmat)$. Equi
 \phi(t_1, \dots, t_{m-1}) & = \EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right]=\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right].
 \end{align}
 Here $\ivec=\sqrt{-1}$. We notice
-\begin{equation}\label{eq:2}
-\begin{split}
-  &\EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right] = \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).\\
-\end{split}
-\end{equation}
+\begin{align}\label{eq:2}
+\EE\left[\exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)\right] = \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right).
+\end{align}
 By definition,
-\begin{equation}\label{eq:3}
+\begin{align}\label{eq:3}
 \exp\left(\ivec\sum_{j=1}^{m-1}t_jX_j\right)= \exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)
-\end{equation}
+\end{align}
 The expectation of right hand side of (\ref{eq:3}) can be expressed as
-\begin{equation}\label{eq:4}
-\begin{split}
-  &\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right] = \EE\left[ \exp\left( \ivec\sum_{j=1}^{m-1} t_jI_{1j} + \dots + \ivec\sum_{j=1}^{m-1} t_jI_{nj}\right)\right].\\
-  \\
-  & = \prod_{i=1}^n \EE\left[ \exp\left( \ivec \sum_{j=1}^{m-1} t_j I_{ij}\right)\right] = \prod_{i=1}^n \left[(1 - \sum_{j=1}^{m-1}p_{ij})+\sum_{j=1}^{m-1}p_{ij}\exp(\ivec t_j)\right].
-\end{split}
-\end{equation}
+\begin{align}\label{eq:4}
+&\EE\left[\exp\left(\ivec\sum_{i = 1}^n \sum_{j=1}^{m-1}t_j I_{ij}\right)\right] = \EE\left[ \exp\left( \ivec\sum_{j=1}^{m-1} t_jI_{1j} + \dots + \ivec\sum_{j=1}^{m-1} t_jI_{nj}\right)\right]\\\nonumber
+& = \prod_{i=1}^n \EE\left[ \exp\left( \ivec \sum_{j=1}^{m-1} t_j I_{ij}\right)\right] = \prod_{i=1}^n \left[(1 - \sum_{j=1}^{m-1}p_{ij})+\sum_{j=1}^{m-1}p_{ij}\exp(\ivec t_j)\right].
+\end{align}
 We know (\ref{eq:4}) is equivalent to (\ref{eq:2}). Therefore we obtain,
-\begin{equation}\label{eq:5}
+\begin{align}\label{eq:5}
 \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n p(x_1,\ldots,x_{m-1})\exp\left(\ivec\sum_{j=1}^{m-1}t_jx_j\right)= \prod_{i=1}^{n}\left[(1 - \sum_{j=1}^{m-1}p_{ij})+\sum_{j=1}^{m-1}p_{ij}\exp(\ivec t_j)\right].
-\end{equation}
+\end{align}
 Let $t_j = \omega l_j$, $l_j = 0, \ldots, n$, $\omega = 2\pi/(n+1)$. Then the equation \eqref{eq:5} becomes
 \begin{align}\label{eq:6}
 \frac{1}{(n+1)^{m-1}} \sum_{x_1 = 0}^{n}\cdots \sum_{x_{m-1} = 0}^n & p(x_1,\ldots,x_{m-1}) \exp\left(\ivec\omega\sum_{j=1}^{m-1}l_j x_j\right)\\\nonumber
@@ -395,9 +407,9 @@ $$
 q(l_1, \ldots, l_{m-1})=\prod_{i=1}^{n}\left[(1 - \sum_{j=1}^{m-1}p_{ij})+\sum_{j=1}^{m-1}p_{ij}\exp(\ivec \omega l_j)\right].
 $$	
 Note that $q(l_1, \ldots, l_{m-1})$ can be computed directly. Notice the left hand side of equation (\ref{eq:6}) is the inverse multi-dimensional discrete Fourier transform of the sequence $ p(x_1,\ldots,x_{m-1}), x_i = 0 , \dots, n$. Therefore we can apply multi dimensional discrete Fourier transformation (MD-DFT) on both sides to recover the sequence, the pmf can be obtained as
-\begin{equation}\label{eq:7}
+\begin{align}\label{eq:7}
 p(x_1, \ldots, x_{m-1}) = \frac{1}{(n+1)^{m-1}}\sum_{l_1 = 0}^{n}\cdots \sum_{l_{m-1} = 0}^n q(l_1, \ldots, l_{m-1}) \exp\left(-\ivec\omega\sum_{j=1}^{m-1}l_j x_j\right).
-\end{equation}
+\end{align}
 Let $\ell = (l_1,\dots,l_{m-1})'$, then we will have $(n
 +1)^{m-1}$ different $\ell$ as $l_i$ varies from $0$ to $n$. For example, if we have $n=4$, $m=4$, then $\ell$ can be $(0, 0, 0)', (0, 0, 1)', \dots, (4, 4, 4)'$, 125 different vectors in total. Now we have $q(l_1,\dots,l_{m-1}) = q(\ell)$. We design to use these vectors to generate respective $p(x_1,\dots,x_{m-1})$. For each $\ell$, we get a $p(x_1,\dots,x_{m-1})$.
 
@@ -438,9 +450,9 @@ To show Theorem~\ref{thm:normal}, notice
 Intuitionally, $\Ivec_i^{\ast} - \EE(\Ivec_i^{\ast})$ has mean 0. Hereby $\Xvec^{\ast} - \EE (\Xvec^{\ast}) = \sum_{i=1}^{n} [\Ivec_i^{\ast} - \EE (\Ivec_{i}^{\ast})]$ also has mean~$\zerovec$.
 
 Since $\Sig^{\ast}$ is non-singular, there exists a non-singular matrix $\Cmat$ such that the covariance of $\Xvec^{\ast}$ is $\Sig^{\ast} = \Cmat\Cmat'$. By extending Berry-Esseen theory to nonidentical distributed case \cite{article}, there existing  a constant $c$ such that
-\begin{equation*}
+\begin{align*}
     |\Pr\left(\Xvec^{\ast} \in \mathcal{A}_{\xvec_i^{\ast}}\right) - \Pr\left(\Zvec \in \mathcal{A}_{\xvec_i^{\ast}-\muvec^{\ast}} \right)| \leq c(m-1)^{\frac{1}{4}}\sum_{i=1}^{n} \EE \left\|\Cmat^{-1}(\Ivec_{i}^{\ast}-\pvec_{i}^{\ast})\right\|_1^3,
-\end{equation*}
+\end{align*}
 where $\Zvec$ is CLT multivariate normal distribution of with $\zerovec$ mean and covariance $\Sig^{\ast}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -532,9 +544,9 @@ $\mathrm{\MAE} = \underset{\xvec \in \chi}{\max}|p(\xvec) - p_{\text{true}}(\xve
 \end{center}
 which is the max value of the differences between probability densities computed by our methods and true ones.
 We also use total absolute error ($\TAE$) which is defined as,
-\begin{equation*}
+\begin{align*}
     \mbox{\TAE} = \sum_{\xvec \in \chi} |p(\xvec) - p_{\text{true}}(\xvec)|.
-\end{equation*}
+\end{align*}
 We also compare the differences between the max, $0.95$ and $0.90$ quantiles of the true pmf and the pmf computed by simulation method. The machine we use is Tinkercliff, which is a Linux server belongs to Virginia Tech ARC scientific computing center. The processor is AMD EPYC 7702 (128 cores, 2GHz) with 256GB RAM.
 
 Since there are no justified methods that can compute the true pmf for $\PMD$ precisely, we perform the accuracy tests as following.
@@ -587,9 +599,9 @@ Figure~\ref{fig:mae.tae.bino} and Figure~\ref{fig:mae.tae.poi} show the accuracy
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Among the three computing algorithms we proposed, one of them is able to calculate the exact probability while the other two are approximation methods. Therefore, it is necessary to explore accuracy of the approximation methods under different circumstances. The accuracy metric for $\NA$ is $\MAE$. Probability mass points computed by $\dft$ are considered as true probabilities, denote it as $p_{\textrm{true}}$.
 $\MAE$ for normal approximation is given by
-\begin{equation*}
+\begin{align*}
     \MAE = \max_{\xvec \in \chi}|p_{\NA}(\xvec)-p_{\textrm{true}}(\xvec)|.
-\end{equation*}
+\end{align*}
 Figure~\ref{fig:mae.na} illustrates the accuracy of the $\NA$ method. Specifically, in the plot we introduce a pattern called baseline to express the sparsity of $\PMD$ as $n$ and $m$ increase. The baseline is the $\MAE$ if we estimate all probability mass points at 0. Then for a given $\Pmat$, the value of baseline will be the max probability. Given $n$ and $m$,  randomly generate 5000 $\Pmat$s and use their average maximum probability as the value of baseline that showed in Figure~\ref{fig:mae.na} so that the effect of noise will be eliminated. It shows that the pattern of baseline is decreasing as $n$ increases, which describes the sparsity.
 \begin{figure}%[h]
 \begin{center}
@@ -692,9 +704,9 @@ First introduce the logistic type model to fit a given aggregated dataset with s
 
 By dividing the rows of our data into $h$ groups via some given criterion, the group size of each group is $n_i,i=1,\dots,h$. Each $n_i$ are positive integer but not necessarily equal to each other. Let the counts for the aggregated response variable of the $i$th group be
 $\xvec_i = (x_{i1}, \dots,x_{im})'$, where $m$ is the category number. Denote $\Gmat_i$ to be the covariate matrix of the $i$th group, then $\Gmat_i = (\onevec', \gvec_{i 1}',\dots,\gvec_{i n_i}')'$ is a $n_i \times (v+1)$ matrix with first column being $\onevec$, where $v$ is the number of covariates. Let $\Pmat_i = (p_{ijk})$ be the SPM for the $i$th group, $i = 1, \dots, h$, $j = 1,\dots ,n_i$ and $k = 1,\dots, m$. Let the probability of getting $\xvec_i$ for the $i$th group be $p(\xvec_i)$. The total log-likelihood for all groups can be computed as
-\begin{equation*}
+\begin{align*}
 \loglik(\betavec) = \sum_{i=1}^{h}\loglik_i(\betavec) = \sum_{i=1}^{h}\log[p(\xvec_i)],
-\end{equation*}
+\end{align*}
 where $p(\xvec_i)$ can be computed via $\PMD$ with SPM $\Pmat_i$. Set category $m$ as baseline and use softmax function to form the $\Pmat_i$ for each group through parameter $\betavec = (\betavec_1', \dots, \betavec_{m-1}')'$ as
 \begin{align*}
     p_{i j k} = \frac{\exp{\left(\gvec_{ij}' \betavec_{k}\right)}}{1 + \sum_{k=1}^{m-1}\exp{\left( \gvec_{ij}' \betavec_{k} \right)}},
@@ -702,9 +714,9 @@ where $p(\xvec_i)$ can be computed via $\PMD$ with SPM $\Pmat_i$. Set category $
     p_{i j m} = \frac{1}{1 + \sum_{k=1}^{m-1}\exp{\left( \gvec_{ij}' \betavec_{k} \right)}}.
 \end{align*}
 %The likelihood will become
-%\begin{equation*}
+%\begin{align*}
 %\loglik (\betavec) = \sum_{i=1}^{h}\loglik_i (\betavec)= \sum_{i=1}^{h}\log[ p(\xvec_i)].
-%\end{equation*}
+%\end{align*}
 Then we are able to estimate our parameters on the direction of minimizing total log-likelihood and finally get our estimate $\wh{\Pmat}_i$.
 
 In the rest of this part, we apply the model to the
@@ -716,18 +728,17 @@ For demonstration purpose, here we only use the first 1000 rows and Product type
 We randomly divide the dataset into 100 groups, the smallest group has size of three rows and the largest one has 18 rows. Note that readers can use other criterion to divide the dataset by their own. Notice the covariate number is three including intercept and the response has three categories, thus the dimension of our parameter matrix $\betavec$ will be $3 \times 2$ if we set category 3 as baseline.
 
 The estimates of the parameters are
-\begin{equation*}
+\begin{align*}
 \wh{\betavec} =
 \begin{pmatrix}
  1.07484986 & 2.2820922 \\
  1.62342045 & 1.9108976 \\
  -0.06277732 &-0.8455964\\
 \end{pmatrix}
-\end{equation*}
+\end{align*}
 The corresponding $\wh{\Pmat}_1$ and $\wh{\Pmat}_5$ for group 1 and group 5 are
-\begin{equation*}
-    \wh{\Pmat}_1 = \begin{pmatrix}
-
+\begin{align*}
+\wh{\Pmat}_1 = \begin{pmatrix}
  0.11914 & 0.63310 & 0.24776\\
  0.12326 & 0.57268 & 0.30406\\
  0.14809 & 0.47560 & 0.37631\\
@@ -736,7 +747,7 @@ The corresponding $\wh{\Pmat}_1$ and $\wh{\Pmat}_5$ for group 1 and group 5 are
  0.04170 & 0.55944 & 0.39886\\
  0.03559 & 0.53568 & 0.42873\\
  0.04890 & 0.54668 & 0.40442
-    \end{pmatrix}, \quad
+\end{pmatrix}, \quad
     \wh{\Pmat}_5= \begin{pmatrix}
  0.15604 & 0.70766 & 0.13630\\
  0.14469 & 0.73976 & 0.11555\\
@@ -750,7 +761,7 @@ The corresponding $\wh{\Pmat}_1$ and $\wh{\Pmat}_5$ for group 1 and group 5 are
  0.08194 & 0.54561 & 0.37245\\
  0.06307 & 0.58191 & 0.35502
     \end{pmatrix}
-\end{equation*}
+\end{align*}
 For group 1 and 5, $\xvec_1 = (1,5,2)'$ and $\xvec_5 = (2,6,3)'$, so $p(\xvec_1) = 0.070$, $p(\xvec_5) = 0.067$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
