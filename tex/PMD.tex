@@ -5,6 +5,10 @@
 \usepackage{listings}
 \usepackage{graphics}
 
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
 \usepackage{subcaption}
 %\usepackage[labelformat=parens,labelsep=quad,skip=3pt]{caption}
 \usepackage{graphicx}
@@ -110,6 +114,8 @@
 \newcommand{\code}{\texttt}
 
 
+
+
 %mu sigma vector
 \newcommand{\Sig}{\boldsymbol{\Sigma}}
 \newcommand{\mvec}{\boldsymbol{\mu}}
@@ -130,7 +136,7 @@
 \renewcommand{\arraystretch}{.8}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage[ruled,vlined]{algorithm2e}
+%\usepackage[ruled,vlined]{algorithm2e}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\theoremstyle{definition}
@@ -239,7 +245,7 @@ The rest of the paper is organized as follows. In Section~\ref{sec:pmd}, we desc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Poisson Multinomial Distribution} \label{sec:pmd}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Definition of the Distribution}
+\subsection{Definition of the Distribution} \label{subsec:def}
 Let $\Ivec_{i} = (I_{i1}, \dots, I_{im})', i=1, \dots, n$ be independent vectors of random indicators (i.e., 0/1 valued). Let the associated probabilities be $\pvec_{i} = (p_{i1}, \dots, p_{im})'$. For a fixed $i$, we have $\sum_{j=1}^{m}p_{ij}=1$ and $\sum_{j=1}^{m}I_{ij}=1$. Note that $\pr(I_{ij}=1)=p_{ij}$, $i=1,\ldots, n,$ and  $j=1, \ldots, m$. 
 
 The sum of the random vectors, $\Xvec = (X_{1}, \dots, X_{m})'= \sum_{i=1}^{n}\Ivec_{i}$, follows a PMD. We denote it as
@@ -249,7 +255,9 @@ $$\Xvec \sim \PMD(\Pmat).$$ where $X_{j} = \sum_{i=1}^{n} I_{ij}, j=1,\dots,m$. 
 \end{equation*}
 Note that the random variables, $X_1, \dots, X_{m}$ satisfy the following constraint $$\sum_{j=1}^{m}X_{j} = n.$$ Hence we can replace one of them, for example, $X_m$ with $n-\sum_{j=1}^{m-1}X_j$.
 
-Let $\xvec = (x_1,\dots,x_m)'$ be any element from the support of a $\PMD$ random variable $\Xvec$. The probability mass function (pmf) of PMD is defined as,
+Given a $\PMD$ with $n\times m $ SPM $\Pmat$, denote its support as $\chi$, which contains all distinct realizations that have positive probability. Then the number of elements for $\chi$ is $\binom{n+m-1}{m-1}$, which is the number of non-negative integer solution for equation $x_1 + \dots + x_m = n$.
+
+ Let $\xvec = (x_1,\dots,x_m)'$ be any element from $\chi$. The probability mass function (pmf) of PMD is defined as,
 $$\pr(\Xvec=\xvec) = \text{Pr} \left( X_1 = x_1, \dots, X_m = x_{m-1}, X_{m} = n-\sum_{i=1}^{m}x_i \right).$$
 
 Here we give a simple example in election to illustrate the calculation of the pmf by enumeration.
@@ -276,12 +284,12 @@ P\left( \Xvec = \xvec \right)  =  & 0.1\times 0.2 \times 0.5 \times 0.1 +
 %\qedw
 \end{example}
 
-Note that the total number of possible outcomes of $\PMD$ with $n \times m$ SPM is $\binom{n+m-1}{m-1}$, which is the number of non-negative integer solution for equation $x_1 + \dots + x_m = n$. When the dimension of $\Pmat$ is small, enumeration is an exact way to calculate the probability mass function. Nonetheless, as $n \times m$ gets large, it becomes impossible to enumerate all possible outcomes since $N$ will be enormous.
+When the dimension of $\Pmat$ is small, enumeration is an exact way to calculate the probability mass function. Nonetheless, as $n \times m$ gets large, it becomes impossible to enumerate all possible outcomes since $N$ will be enormous.
 
 For some special cases, when the SPM is identical across all rows, that is, $I_{i}$, $i = 1, \dots n$ are identically distributed, the distribution of $X$ can be simplified as multinomial distribution. Hence, the $\PMD$ is a generalization of the multinomial distribution. Similarly, when $m=2$, the $\PMD$ is reduced to the Poisson binomial distribution, which is a generalization of binomial distribution.
 
 
-\subsection{Properties of the Distribution}
+\subsection{Properties of the Distribution} \label{subsec:propty}
 Now let us study some basic properties of $\PMD$.
 
 \begin{ppt}%\normalfont
@@ -311,7 +319,7 @@ The derivations of mean and characteristic function are as trivial as following 
 
 Notice that $\sum_{j=1}^{m}X_j = n$, without loss of generality, let $\Ivec_i^{\ast} = (I_{i1},\dots,I_{i,m-1})'$ and
  $$\Xvec^{\ast}=\sum_{i=1}^{n}\Ivec_{i}^{\ast}=(X_1,\dots,X_{m-1})'$$
-  with corresponding $\xvec^{\ast} = (x_1,\dots,x_{m-1})'$ and $\Pmat^{\ast}$ equals to the first $m-1$ columns of $\Pmat$. That is to define
+  with corresponding $\xvec^{\ast} = (x_1,\dots,x_{m-1})'$ be a realization from the support of $\Xvec^{\ast}$, $\chi^{\ast}$. And $\Pmat^{\ast}$ equals to the first $m-1$ columns of $\Pmat$. That is to define
 $$
 \Pmat^{\ast} = \left(\pvec_1^{\ast},\dots, \pvec_n^{\ast} \right)'.
 $$
@@ -400,18 +408,30 @@ To speed up the computing, we apply the fast Fourier transformation (FFT) algori
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Normal-Approximation Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Since covariance matrix of any $\Xvec \sim \PMD$ is singular, we use the reduced $\PMD$ $\Xvec^{\ast}$ to establish the normal approximation. From \citeN{Daskalakis2015OnTS}  we know that central limit theory can be applied to $\PMD$, the following theorem studies the error bound of normal approximation of $\PMD$.
-\begin{thm}
-Suppose a random variable $\Xvec \sim \PMD(\Pmat)$. Correspondingly, we have $\Xvec^{\ast}$ with mean vector $\mvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$ and non-singular covariance matrix $\Sig^{\ast}$. For each possible outcome $\xvec_r^{\ast}$, and its neighbourhood interval $\mathcal{A}_{\xvec_r^{\ast}} = [\xvec_r^{\ast}-0.5, \xvec_r^{\ast}+0.5]$. There exists a non-singular matrix $\Cmat$ such that $\Sig^{\ast} = \Cmat\Cmat'$ and the error bound of the approximation by the theorem (CLT) is
+Since covariance matrix of any $\Xvec \sim \PMD$ is singular, we use the reduced $\PMD$ $\Xvec^{\ast}$ to establish the normal approximation. \citeN{Daskalakis2015OnTS}  has proved that CLT can be applied to $\PMD$. 
+
+Also, we know from Section~\ref{subsec:propty} that $\Xvec^{\ast}$ has variance  $\Sigmavec^{\ast}$. 
+$$\Sig^{\ast}=\sum_{i=1}^n[\diag(\pvec_i^{\ast})-\pvec_i^{\ast} \pvec_i^{\ast \prime} ].$$
+where $\pvec_i^{\ast}$ is the $i$th row of $\Pmat^{\ast}$. And the mean of $\Xvec^{\ast}$
+  $$\EE(\Xvec^{\ast}) =\muvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'.$$
+By CLT, we have 
+ 
+$$\Xvec^{\ast} - \muvec^{\ast} \dot\sim \N\left(\zerovec, \Sig^{\ast}\right).$$
+The $\PMD$ is discrete, thus here we use continuity correction as an adjustment. Given any realization $\xvec \in \chi^{\ast}$, we have
+
+$$\Pr \left( \Xvec^{\ast} = \xvec^{\ast} \right) \approx \Pr \left( \xvec^{\ast} - 0.5 < Z < \xvec^{\ast} + 0.5 \right).$$
+Where $Z \sim \N \left(\zerovec, \Sig^{\ast}\right)$, and $\xvec^{\ast}\pm0.5 = (x_1\pm0.5, \dots, x_{m-1}\pm0.5)'.$
+
+
+We still need to consider the convergence behavior of $\PMD$, the following theorem studies the error bound of normal approximation of $\PMD$ by using an extension of Berry-Esseen theorem .
+\begin{thm} \label{thm:normal}
+Suppose a random variable $\Xvec \sim \PMD(\Pmat)$. Correspondingly, we have $\Xvec^{\ast}$ with mean vector $\mvec^{\ast} = \left( p_{\cdot1} ,\dots,p_{\cdot,m-1}\right)'$ and non-singular covariance matrix $\Sig^{\ast}$. There exists a non-singular matrix $\Cmat$ such that $\Sig^{\ast} = \Cmat\Cmat'$. For each $\xvec^{\ast}\in \chi^{\ast}$, and its neighbourhood interval $\mathcal{A}_{\xvec^{\ast}} = [\xvec^{\ast}-0.5, \xvec^{\ast}+0.5]$, the error bound of the approximation by the theorem (CLT) is
 \begin{equation*}
-    |\Pr(\Xvec^{\ast} \in \mathcal{A}_{\xvec_r^{\ast}}) - \Pr(\Zvec \in \mathcal{A}_{\xvec_r^{\ast}-\mvec^{\ast}})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE\|\Cmat^{-1}(\Ivec_{i}^{\ast}-\pvec_{i}^{\ast})\|_1^3,
+    |\Pr(\Xvec^{\ast} \in \mathcal{A}_{\xvec^{\ast}}) - \Pr(\Zvec \in \mathcal{A}_{\xvec^{\ast}-\mvec^{\ast}})| \leq b (m-1)^{\frac{1}{4}} \sum_{i=1}^{n}\EE\|\Cmat^{-1}(\Ivec_{i}^{\ast}-\pvec_{i}^{\ast})\|_1^3,
 \end{equation*}
 where $\Zvec$ is multivariate normal with mean $\zerovec$ and covariance matrix $\Sig^{\ast}$.
 \end{thm}
-By CLT,
-$$\left(\frac{\Xvec^{\ast}}{n}-\pvec^{\ast}\right)\dot\sim \N\left(\zerovec, \frac{1}{n}\Sig^{\ast}\right).$$
-where $\pvec^{\ast} = \frac{1}{n}\sum_{i=1}^{n}\pvec_i^{\ast}$.
-To show Theorem 1, notice
+To show Theorem~\ref{thm:normal}, notice
 \begin{align*}
     \Xvec^{\ast} = (X_1,\dots,X_{m-1})' = \sum_{i=1}^{n} \Ivec_{i}^{\ast}= \sum_{i=1}^{n} (I_{i1},\dots,I_{i,m-1})'
 \end{align*}
@@ -426,7 +446,8 @@ where $\Zvec$ is CLT multivariate normal distribution of with $\zerovec$ mean an
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation-Based Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-As we know, $\Ivec_i, i=1,\dots,n$ is a $m$ dimensional random indicator. In fact, it follows a multinomial distribution that has only one trial with probability $\pvec_i$. Therefore, for all $i=1,\dots, n$, one can simulate $\Ivec_i$ from such multinomial distributions. Then $\Xvec = \sum_{i=1}^{n}\Ivec_i$ is a random sample from $\PMD$ with $\Pmat = (\pvec_1, \dots,\pvec_n)'$. Repeat this many times to generate enough samples from $\Xvec \sim \PMD(\Pmat)$. Then use the sample distribution to approximate the true distribution. To be specific, let $\xvec$ be a given realization of $\Xvec$, the probability $\Pr(\Xvec=\xvec)$ can be simulated by following steps,
+As we know, $\Ivec_i, i=1,\dots,n$ is a $m$ dimensional random indicator. In fact, it follows a multinomial distribution that has only one trial with probability $\pvec_i$. Therefore, for all $i=1,\dots, n$, one can simulate $\Ivec_i$ from such multinomial distributions. Then $\Xvec = \sum_{i=1}^{n}\Ivec_i$ is a random sample from $\PMD$ with $\Pmat = (\pvec_1, \dots,\pvec_n)'$. Repeat this many times to generate enough samples from $\Xvec \sim \PMD(\Pmat)$. Then use the sample distribution to approximate the true distribution. To be specific, the pmf of given $\PMD$ with known $n \times m$ dimension and $\Pmat$ can be simulated by the following scheme.
+
 \begin{enumerate}[Step 1]
     \item for each $i=1,\dots,n$,  randomly generate $\Ivec_i$ once with given $\pvec_i$ using multinomial distribution, calculate $\Xvec = \sum_{i=1}^{n}\Ivec_i$.
     \item repeat step 1 $B$ times to get $\Xvec_{1},\dots,\Xvec_{B}.$
@@ -437,34 +458,69 @@ Consequently, we can simulate each mass point one by one and eventually the pmf 
 	\item generate $\Xvec_{1},\dots,\Xvec_{B}$.
 	\item count the frequency of each probability mass point showing up in $\Xvec_{1},\dots,\Xvec_{B}$ as the pmf.
 \end{enumerate}
+ We design the Algorithm 1, which is a C++ based algorithm to perform this simulation process as we demonstrated above. Our algorithm uses the first scheme to calculate probabilities of $\xvec$'s as user input  and use the second scheme to calculate pmf if $\xvec$ is not specified. For conveniency, denote the elements in $\chi$ as $\xvec_1, \dots, \xvec_h$, where $h=\binom{n+m-1}{m-1}$.
 
-We design a C++ based algorithm to perform this simulation process. Our algorithm uses the first scheme to calculate probabilities of $\xvec$'s as user input  and use the second scheme to calculate pmf if $\xvec$ is not specified.
+\begin{algorithm}
+\caption{Simulation method}
+\begin{algorithmic}
+    \If{user input an $\xvec \in \chi$}
+    	\State initialize $f_{\xvec}=0$
+         \For{b = 1 to B}
+        			\For{i = 1 to n}
+				\State generate $\Ivec_i$ from multinomial($\pvec_i$)
+			\EndFor
+				\State calculate $\xvec_{s}=\sum_{i=1}^{n}\Ivec_i$
+				\If{$\xvec_{s}=\xvec$} \State $f_{\xvec}=f_{\xvec}+1$
+				\EndIf
+			\State  $\Pr\left(\Xvec = \xvec \right) = \frac{f}{B}$
+        	\EndFor
+    \Else
+    	\State initialize $f_{\xvec_j}=0, j=1,\dots,h$
+    	\For{b=1 to B}
+		\For{i=1 to n}
+			\State generate $\Ivec_i$ from multinomial($\pvec_i$)
+		\EndFor
+		\State calculate $\xvec_{s_{b}}=\sum_{i=1}^{n}\Ivec_i$
+	\EndFor
+	\For{b=1 to B}
+		\For{j=1 to h}
+				\If{$\xvec_{s_b}=\xvec_j$}  $f_{\xvec_j}=f_{\xvec_j} + 1$
+					 \EndIf
+			  \EndFor
+	\EndFor
+	\State  $\Pr\left(\Xvec = \xvec_j \right) = \frac{f_{\xvec_j}}{B}, j=1,\dots,h$
+     \EndIf
+\end{algorithmic}
+\end{algorithm}
+
+
 
 The following theorem studies the expected error bound of the simulation method by given $\Pmat$ and $B$.
 \begin{thm}
-Given repeating time $B$ and $n \times m$ matrix $\Pmat$, there will be totally  $h=\binom{n+m-1}{m-1}$ different results denoted as $\xvec_r, r=1,\dots,h$. The probability for a specific result $\xvec_{r}$ to happen is $p(\xvec_{r})$, $i=1,\dots,h$. The estimate of  $p(\xvec_r)$ using simulation method is $\wh{p}(\xvec_r)$. We have the following expected error,
+Given repeating time $B$ and $n \times m$ matrix $\Pmat$, there will be totally  $h=\binom{n+m-1}{m-1}$ different results. The probability for any result $\xvec \in \chi$ to happen is $p(\xvec) = \Pr(\Xvec = \xvec)$. The estimate of  $p(\xvec)$ using simulation method is $\wh{p}(\xvec)$. We have the following expected error,
 \begin{equation*}
-\EE|p(\xvec_r) - \wh{p}_{\xvec_r}| \approx  \sqrt{\frac{2 p(\xvec_r)(1-p(\xvec_r))}{\pi b}}.
+\EE|p(\xvec) - \wh{p}_{\xvec}| \approx  \sqrt{\frac{2 p(\xvec)(1-p(\xvec))}{\pi b}}.
 \end{equation*}
 The expected total absolute error,
-$$\sum_{r=1}^{h} \EE|p(\xvec_r) - \wh{p}_{\xvec_r}| \leq \sqrt{\frac{2(h-1)}{\pi b}}.$$
+$$\sum_{\xvec \in \chi}\EE|p(\xvec) - \wh{p}_{\xvec}| \leq \sqrt{\frac{2(h-1)}{\pi b}}.$$
 \end{thm}
 
-For any result $\xvec_r,i=1,\dots,h$. Consider a Bernoulli random variable $Y_r$ with probability $p(\xvec_r)$ to be 1, and $1-p(\xvec_r)$ to be 0. By repeating the trial for $b$ times, we obtain iid random variables $Y_r^{(1)},\dots,Y_r^{(b)}$. By CLT,
+For any result $\xvec \in \chi$. Consider a Bernoulli random variable $Y_{\xvec}$ with probability $p(\xvec)$ to be 1, and $1-p(\xvec)$ to be 0. By repeating the trial for $b$ times, we obtain iid random variables $Y_{\xvec}^{(1)},\dots,Y_{\xvec}^{(b)}$. By CLT,
 \begin{equation*}
-    \Bar{Y_r}-p(\xvec_r) \xrightarrow{d} \textrm{N}(0,\sigma^2).
+    \Bar{Y_{\xvec}}-p(\xvec) \xrightarrow{d} \textrm{N}(0,\sigma^2).
 \end{equation*}
-where $\sigma^2 = p(\xvec_r)(1-p(\xvec_r))/b$. Then the expectation of absolute error for a single $\xvec_r$
+where $\sigma^2 = p(\xvec)(1-p(\xvec))/b$. Then the expectation of absolute error for a single $\xvec$
 \begin{equation*}
-    \EE |\Bar{Y}-p(\xvec_r)| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi b}p(\xvec_r)(1-p(\xvec_r))}.
+    \EE |\Bar{Y}-p(\xvec)| = \frac{\sqrt{2}}{\sqrt{\pi}}\sigma = \sqrt{\frac{2}{\pi b}p(\xvec)(1-p(\xvec))}.
 \end{equation*}
-Let $c = \sqrt{2/(\pi b)}$ for simplicity, then
+Let $c = \sqrt{2/(\pi b)}$ for simplicity, then by the inequalities between arithmetic mean and quadratic mean, we have
 \begin{align*}
-    & \sum_{r=1}^{h}\EE |\Bar{Y_r}-p(\xvec_r)| = c \sum_{r=1}^{h} \sqrt{p(\xvec_r)(1-p(\xvec_r))}  = c h \sum_{r=1}^{h}\frac{\sqrt{p(\xvec_r)(1-p(\xvec_r))}}{h} \\
-    & \leq c h \sqrt{\sum_{r}p(\xvec_r)(1-p(\xvec_r))/h} = c \sqrt{h} \sqrt{1-\sum p_{\xvec_{r}}^2}\\ &\leq c \sqrt{h} \sqrt{1-1/h} = c\sqrt{h-1} = \sqrt{\frac{2(h-1)}{\pi b}}.
+    & \sum_{\xvec \in \chi}\EE |\Bar{Y_{\xvec}}-p(\xvec)| = c \sum_{r=1}^{h} \sqrt{p(\xvec)(1-p(\xvec))}  = c h \sum_{\xvec\in\chi}\frac{\sqrt{p(\xvec)(1-p(\xvec))}}{h} \\
+    & \leq c h \sqrt{\sum_{\xvec \in \chi}p(\xvec)(1-p(\xvec))/h} = c \sqrt{h} \sqrt{1-\sum p_{\xvec}^2} \\ &\leq c \sqrt{h} \sqrt{1-1/h} = c\sqrt{h-1} = \sqrt{\frac{2(h-1)}{\pi b}}.
 \end{align*}
 %The equality will be achieved if $p(\xvec_1) = \dots = p(\xvec_h)$.
-
+Also, by dominated convergence theorem, 
+$\EE|p(\xvec) - \wh{p}_{\xvec}|$ converges to 0 as $B$ increase to $\infty$.
 For a fixed repeating time $B$, due to the sparsity of $\PMD$, the expected total absolute error goes up that as the dimension of $\Pmat$ goes up. Therefore for higher dimensional $\Pmat$ we need higher $B$ to maintain accuracy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -597,23 +653,35 @@ In classification, we illustrate an application of $\PMD$ in soft classification
 \subsection{Calculation of Voting Probability}
 In voting scenarios, people always pay attention to the election result. The most thing we usually care about is who will win the election and how many chances each candidate has to win the election. A Poisson multinomial distribution can fit the situation perfectly under some assumptions.
 
-Suppose a election has $n$ voters and $m$ candidates, there will be $h = \binom{n+m-1}{m-1}$ possible outcomes denoted as $\xvec_r, r = 1, \dots, h$, respectively. Each $\xvec_r$ is a $m$ dimension vector that has three elements denoting the number of votes each candidate gets. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.
+Suppose an election has $n$ voters and $m$ candidates, there will be $h = \binom{n+m-1}{m-1}$ possible outcomes and they are in the set $\chi$, respectively. Each $\xvec$ is a $m$ dimensional vector that has three elements denoting the number of votes each candidate gets. Assume we know the $\Pmat$ based on prior polls, for example, we can always estimate the approval rate of each candidate in a certain constituency from the monthly polls or exit polls. Then we are able to compute the notional result.
 
-To demonstrate that, suppose we have $n=10$ electoral voters and $m=3$ candidates with $\Pmat$ matrix that has means of column 1, 2 and 3 to be $0.3631,0.3405$ and $0.2964$, the first five rows are as following,
+To demonstrate that, suppose we have $n=10$ electoral voters and $m=3$ candidates with $\Pmat$ matrix that has means of column 1, 2 and 3 to be $0.25, 0.3697$ and $0.3803$.
 \begin{equation*}
-\begin{pmatrix}
-0.071 & 0.589 & 0.340\\
-0.365 & 0.195 & 0.440\\
-0.445 & 0.505 & 0.050\\
-0.353 & 0.382 & 0.265\\
-0.620 & 0.111 & 0.269
-    \end{pmatrix}
+\Pmat' = \begin{pmatrix}
+ 0.180 &0.035 &0.439 &0.159 &0.35& 0.294 &0.099& 0.102& 0.359 &0.483\\
+ 0.333 &0.348 &0.211 &0.457 &0.38& 0.696 &0.422 &0.323 &0.456 &0.071\\
+ 0.487 &0.617& 0.350 &0.384& 0.27& 0.010 &0.479& 0.575& 0.185& 0.446
+ \end{pmatrix}
 \end{equation*}
+Figure~\ref{fig:3dplot} shows the shape pmf of $\Pmat$, the z axis (the perpendicular axis) is the value of probability. $x1$ is the axis for the first candidate and axis $x2$ represents the second candidate. We can observe that the point $x1=2, x2=4$ has the highest prob value.
+
+
+\begin{figure}%[h]
+\begin{center}
+	\includegraphics[width=0.6\textwidth]{figures/3dplot.png}
+	\caption{3D plot of pmf for the $\Pmat$ }
+	\label{fig:3dplot}
+\end{center}
+\end{figure}
+
+
+
+
 To compute the probability of each candidate winning the election, just need to introduce constraints. For instance, under the constraint $\chi_1 = \left\{\text{the first element is the largest one}\right\} = \left\{x_1>x_2, x_1>x_3; x_1, x_2,x_3 \in \left\{0,\dots,10\right\}\right\}$, we are able to compute the winning rate of the first candidate is
 \begin{equation*}
-\Pr(\text{the 1st candidate wins}) = \sum_{\xvec \in \chi_{1}} p(\xvec) = 0.3429
+\Pr(\text{the 1st candidate wins}) = \sum_{\xvec \in \chi_{1}} p(\xvec) = 0.1095
 \end{equation*}
-Similarly, the probabilities for the second candidate and the third candidate to win are $0.2745$ and $0.2001$. Additionally, the most possible result is $\xvec=(4,3,3)'$, which has probability 0.08546.
+Similarly, the probabilities for the second candidate and the third candidate to win are $0.3450$ and $0.3736$. Additionally, the most possible result is $\xvec=(2,4,4)'$, which has probability 0.0864.
 
 
 
@@ -714,7 +782,7 @@ The work of \shortciteN{Deitsch2019}, \shortciteN{Buerhop2018}, and \shortciteN{
 \end{table}
 %According to the probability how likely the product is defective, we assign four labels to sollar cells, 0\%, 33.33\%, 66.66\%, 100\%.
 
-We split our data to training data (80\%) and test data (20\%), then train a CNN \cite{DBLP:journals/corr/LongSD14} model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class. Table~\ref{tbl:elpmat} provides a subset of the CNN model output. For true class for the first sample in Table~\ref{tbl:elpmat} is A. If we predict the class of the first sample using the highest probability, then the prediction is A and there's no randomness. If we allow the model to make predictions based on the probability vector as shown in the first row then there are randomness in the confusion matrix. We can consider the confusion matrix to follow a PMD distribution then we can quantify the uncertainty in confusion matrix using PMD.
+We split our data to training data (80\%) and test data (20\%), then train a CNN \cite{long2015fully} model on the training set. In CNN model, we use Relu activation function and set the kernel size $3 \times 3$ and stride $1 \times 1$. For each image in the testing set, the model provides a probability that the prediction belongs to each class. Table~\ref{tbl:elpmat} provides a subset of the CNN model output. For true class for the first sample in Table~\ref{tbl:elpmat} is A. If we predict the class of the first sample using the highest probability, then the prediction is A and there's no randomness. If we allow the model to make predictions based on the probability vector as shown in the first row then there are randomness in the confusion matrix. We can consider the confusion matrix to follow a PMD distribution then we can quantify the uncertainty in confusion matrix using PMD.
 
 Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. For example, in the first row first column panel cell in Figure~\ref{fig:confusion.hist}, we know the possible counts that the model correctly predict class A as well as the corresponding probability. In this way, we have a uncertainty quantification in the confusion matrix.
 
@@ -740,7 +808,7 @@ Figure~\ref{fig:confusion.hist} shows the marginal probability of each cell. For
 
 \begin{figure}
 \begin{center}
-	\includegraphics[width=0.9\textwidth]{figures/Confusionbar.pdf}
+	\includegraphics[width=0.9\textwidth]{figures/Confusionbar.eps}
 	\caption{The barplot shows the confusion matrix prediction. For each panel cell, the plot shows the corresponding prediction counts fall in this cell as well as their probability. We also present the mean and 95\% naive prediction interval.}
 	\label{fig:confusion.hist}
 \end{center}
