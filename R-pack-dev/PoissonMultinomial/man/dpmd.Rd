@@ -81,3 +81,6 @@ dpmd(pmat = pp, xmat = x, method = "SIM", B = 1e3)
 dpmd(pmat = pp, xmat = x1, method = "SIM", B = 1e3)
 
 }
+\references{
+Lin, Z., Wang, Y., and Hong, Y. (2022). The Poisson Multinomial Distribution and Its Applications in Voting Theory, Ecological Inference, and Machine Learning, arXiv: .
+}

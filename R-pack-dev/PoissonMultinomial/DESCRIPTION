@@ -2,14 +2,14 @@ Package: PoissonMultinomial
 Type: Package
 Title: The Poisson-Multinomial Distribution
 Version: 1.0
-Date: 2021-08-06
+Date: 2022-01-15
 Authors@R: c(person("Yili Hong", role = c("aut", "cre"),
                      email = "yilihong@vt.edu"),
               person("Zhengzhi Lin", role = c("aut","ctb"), email = "zhengzhi@vt.edu"),
               person("Yueyao Wang",  role = c("aut","ctb"), email = "yueyao94@vt.edu"),
               person("Florian Junge", role = c("aut", "ctb"), email = "florian.junge@h-da.de"))
 Maintainer: Yili Hong <yilihong@vt.edu>
-Description: Implementation of the exact, normal approximation, and simulation-based methods for computing the probability mass function (pmf) and cumulative distribution function (cdf) of the Poisson-Multinomial distribution, together with a random number generator for the distribution. The exact method is based on multi-dimensional fast Fourier transformation (FFT) of the characteristic function of the Poisson-Multinomial distribution. The normal approximation method uses a multivariate normal distribution to approximate the pmf of the distribution based on central limit theorem. The simulation method is based on the law of large numbers.
+Description: Implementation of the exact, normal approximation, and simulation-based methods for computing the probability mass function (pmf) and cumulative distribution function (cdf) of the Poisson-Multinomial distribution, together with a random number generator for the distribution. The exact method is based on multi-dimensional fast Fourier transformation (FFT) of the characteristic function of the Poisson-Multinomial distribution. The normal approximation method uses a multivariate normal distribution to approximate the pmf of the distribution based on central limit theorem. The simulation method is based on the law of large numbers. Details about the methods are available in Lin, Wang, and Hong (2022) <arXiv: >.
 License: GPL (>= 2)
 Encoding: UTF-8
 Imports:
