@@ -2,7 +2,7 @@ Package: PoissonMultinomial
 Type: Package
 Title: The Poisson-Multinomial Distribution
 Version: 1.0
-Date: 2022-01-15
+Date: 2022-01-12
 Authors@R: c(person("Yili Hong", role = c("aut", "cre"),
                      email = "yilihong@vt.edu"),
               person("Zhengzhi Lin", role = c("aut","ctb"), email = "zhengzhi@vt.edu"),

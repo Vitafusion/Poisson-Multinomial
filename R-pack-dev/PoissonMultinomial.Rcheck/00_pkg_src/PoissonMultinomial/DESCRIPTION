@@ -2,7 +2,7 @@ Package: PoissonMultinomial
 Type: Package
 Title: The Poisson-Multinomial Distribution
 Version: 1.0
-Date: 2022-01-15
+Date: 2022-01-12
 Authors@R: c(person("Yili Hong", role = c("aut", "cre"),
                      email = "yilihong@vt.edu"),
               person("Zhengzhi Lin", role = c("aut","ctb"), email = "zhengzhi@vt.edu"),
@@ -17,7 +17,7 @@ LinkingTo: Rcpp, RcppArmadillo
 SystemRequirements: fftw3(>=3.3)
 RoxygenNote: 7.1.1
 NeedsCompilation: yes
-Packaged: 2022-01-11 23:43:41 UTC; yilih
+Packaged: 2022-01-12 01:35:04 UTC; yilih
 Author: Yili Hong [aut, cre],
   Zhengzhi Lin [aut, ctb],
   Yueyao Wang [aut, ctb],
