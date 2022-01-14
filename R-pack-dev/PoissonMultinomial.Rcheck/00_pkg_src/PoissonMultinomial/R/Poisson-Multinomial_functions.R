@@ -6,7 +6,7 @@
 #' of pmf at certain point(s). 
 #' 
 #' @references 
-#' Lin, Z., Wang, Y., and Hong, Y. (2022). The Poisson Multinomial Distribution and Its Applications in Voting Theory, Ecological Inference, and Machine Learning, arXiv: . 
+#' Lin, Z., Wang, Y., and Hong, Y. (2022). The Poisson Multinomial Distribution and Its Applications in Voting Theory, Ecological Inference, and Machine Learning, arXiv:2201.04237. 
 #'  
 #'
 #' @param pmat      An \eqn{\rm n \times m} success probability matrix. Here, \eqn{\rm n} is the number of independent trials, and
