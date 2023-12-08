@@ -13,9 +13,6 @@
 ##PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) 
 ##PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
-PKG_CPPFLAGS = -I../inst/include -I/usr/local/include $(FFTW3_CPPFLAG)
-PKG_LIBS= -L/usr/local/lib -lfftw3 $(FFTW3_LIB)
-
-all: $(SHLIB)
-
+PKG_CPPFLAGS=-I$(LIB_FFTW)/include 
+PKG_LIBS=-L$(LIB_FFTW)/lib -l fftw3
 
