@@ -1,18 +1,13 @@
-* installing *source* package 'PoissonMultinomial' ...
+
+Welcome to RRR!
+* installing *source* package ‘PoissonMultinomial’ ...
 ** using staged installation
 ** libs
-
-*** arch - i386
-"C:/rtools40/mingw32/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c RcppExports.cpp -o RcppExports.o
-"C:/rtools40/mingw32/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c pm-fft.cpp -o pm-fft.o
-C:/rtools40/mingw32/bin/g++ -std=gnu++11 -shared -s -static-libgcc -o PoissonMultinomial.dll tmp.def RcppExports.o pm-fft.o -L/lib -l fftw3 -LC:/PROGRA~1/R/R-41~1.0/bin/i386 -lR
-installing to C:/Users/yilih/Documents/GitHub/Git-Poisson-Multinomial/R-pack-dev/PoissonMultinomial.Rcheck/00LOCK-POISSO~1/00new/PoissonMultinomial/libs/i386
-
-*** arch - x64
-"C:/rtools40/mingw64/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c RcppExports.cpp -o RcppExports.o
-"C:/rtools40/mingw64/bin/"g++ -std=gnu++11  -I"C:/PROGRA~1/R/R-41~1.0/include" -DNDEBUG -I/include  -I'C:/Users/yilih/Documents/R/win-library/4.1/Rcpp/include' -I'C:/Users/yilih/Documents/R/win-library/4.1/RcppArmadillo/include'        -O2 -Wall  -mfpmath=sse -msse2 -mstackrealign  -c pm-fft.cpp -o pm-fft.o
-C:/rtools40/mingw64/bin/g++ -std=gnu++11 -shared -s -static-libgcc -o PoissonMultinomial.dll tmp.def RcppExports.o pm-fft.o -L/lib -l fftw3 -LC:/PROGRA~1/R/R-41~1.0/bin/x64 -lR
-installing to C:/Users/yilih/Documents/GitHub/Git-Poisson-Multinomial/R-pack-dev/PoissonMultinomial.Rcheck/00LOCK-POISSO~1/00new/PoissonMultinomial/libs/x64
+/usr/local/bin/g++ -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG -I../inst/include -I/usr/local/include -I/opt/homebrew/Cellar/fftw/3.3.10_1/include  -I'/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/Rcpp/include' -I'/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/RcppArmadillo/include' -I/opt/R/arm64/include   -fPIC  -falign-functions=64 -Wall -g -O2  -c RcppExports.cpp -o RcppExports.o
+/usr/local/bin/g++ -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG -I../inst/include -I/usr/local/include -I/opt/homebrew/Cellar/fftw/3.3.10_1/include  -I'/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/Rcpp/include' -I'/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/RcppArmadillo/include' -I/opt/R/arm64/include   -fPIC  -falign-functions=64 -Wall -g -O2  -c pm-fft.cpp -o pm-fft.o
+/usr/local/bin/g++ -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress -L/Library/Frameworks/R.framework/Resources/lib -L/opt/R/arm64/lib -o PoissonMultinomial.so RcppExports.o pm-fft.o -L/usr/local/lib -lfftw3 -L/opt/homebrew/Cellar/fftw/3.3.10_1/lib -lfftw3 -F/Library/Frameworks/R.framework/.. -framework R -Wl,-framework -Wl,CoreFoundation
+ld: warning: dylib (/opt/homebrew/Cellar/fftw/3.3.10_1/lib/libfftw3.dylib) was built for newer macOS version (13.0) than being linked (11.2)
+installing to /Users/alex/Desktop/research/pmd/git/Poisson-Multinomial/R-pack-dev/PoissonMultinomial.Rcheck/00LOCK-PoissonMultinomial/00new/PoissonMultinomial/libs
 ** R
 ** inst
 ** byte-compile and prepare package for lazy loading
@@ -20,10 +15,7 @@ installing to C:/Users/yilih/Documents/GitHub/Git-Poisson-Multinomial/R-pack-dev
 *** installing help indices
 ** building package indices
 ** testing if installed package can be loaded from temporary location
-*** arch - i386
-*** arch - x64
+** checking absolute paths in shared objects and dynamic libraries
 ** testing if installed package can be loaded from final location
-*** arch - i386
-*** arch - x64
 ** testing if installed package keeps a record of temporary installation path
 * DONE (PoissonMultinomial)

@@ -22,5 +22,5 @@ pmd_simulation_allpoints <- function(pp, nnt, l_vec, cn_vec, t) {
 
 # Register entry points for exported C++ functions
 methods::setLoadAction(function(ns) {
-    .Call('_PoissonMultinomial_RcppExport_registerCCallable', PACKAGE = 'PoissonMultinomial')
+    .Call(`_PoissonMultinomial_RcppExport_registerCCallable`)
 })
